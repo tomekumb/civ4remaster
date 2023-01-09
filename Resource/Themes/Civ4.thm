@@ -1,0 +1,9 @@
+
+// *** Control Bitmap Theme file
+
+// Set the resource 
+resource_path	"Resource";
+
+// Setup common properties
+include			"Resource/Themes/Civ4/Civ4Theme.thm";
+
