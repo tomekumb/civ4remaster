@@ -3,13 +3,13 @@
 #########################################
 
 #### Paths ####
-TOOLKIT=C:\Dev\Microsoft Visual C++ Toolkit 2003
-PSDK=C:\Dev\WindowsSDK
-CIVINSTALL=D:\games\Civilization IV\Beyond the Sword
+TOOLKIT=D:\Dev\Microsoft Visual C++ Toolkit 2003
+PSDK=D:\Dev\WindowsSDK
+CIVINSTALL=D:\SteamLibrary\steamapps\common\Sid Meier's Civilization IV Beyond the Sword
 GLOBALBOOST=$(CIVINSTALL)\CvGameCoreDLL\Boost-1.32.0
 GLOBALPYTHON=$(CIVINSTALL)\CvGameCoreDLL\Python24
 ## Uncomment to have newly compiled dlls copied to your mod's Assets directory
-#YOURMOD=$(CIVINSTALL)\Mods\MyMod
+YOURMOD=$(CIVINSTALL)\Mods\Civ IV Remaster
 
 #### Tools ####
 CC="$(TOOLKIT)\bin\cl.exe"

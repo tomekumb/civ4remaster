@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CvGameCoreDLL">
+</Property><Property Name="Solution File" Value="D:\SteamLibrary\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword\Mods\Civ IV Remaster\CvGameCoreDLL\CvGameCoreDLL.sln">
+</Property><Property Name="Date" Value="niedziela, 8 stycznia 2023">
+</Property><Property Name="Time" Value="22:04">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="CvGameCoreDLL.sln" Description="File successfully backed up as D:\SteamLibrary\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword\Mods\Civ IV Remaster\CvGameCoreDLL\CvGameCoreDLL.sln.old">
+</Event><Event ErrorLevel="0" Project="CvGameCoreDLL" Source="CvGameCoreDLL.vcproj" Description="Converting project file 'D:\SteamLibrary\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword\Mods\Civ IV Remaster\CvGameCoreDLL\CvGameCoreDLL.vcproj'.">
+</Event><Event ErrorLevel="1" Project="CvGameCoreDLL" Source="CvGameCoreDLL.vcproj" Description="VCConvertEngine could not convert attribute CompileAsManaged =  under Tool VCNMakeTool.">
+</Event><Event ErrorLevel="1" Project="CvGameCoreDLL" Source="CvGameCoreDLL.vcproj" Description="VCConvertEngine could not convert attribute CompileAsManaged =  under Tool VCNMakeTool.">
+</Event><Event ErrorLevel="0" Project="CvGameCoreDLL" Source="CvGameCoreDLL.vcproj" Description="Done converting to new project file 'D:\SteamLibrary\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword\Mods\Civ IV Remaster\CvGameCoreDLL\CvGameCoreDLL.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="CvGameCoreDLL" Source="CvGameCoreDLL.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="CvGameCoreDLL.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="CvGameCoreDLL.sln" Description="Converted">
+</Event></UpgradeLog>
