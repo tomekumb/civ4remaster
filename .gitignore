@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+CvGameCoreDLL/CvGameCoreDLL.sdf
+CvGameCoreDLL/CvGameCoreDLL.opensdf
+CvGameCoreDLL/.vs/CvGameCoreDLL/v16/Browse.VC.db
+CvGameCoreDLL/.vs/CvGameCoreDLL/v16/.suo
+CvGameCoreDLL/CvGameCoreDLL.sdf
