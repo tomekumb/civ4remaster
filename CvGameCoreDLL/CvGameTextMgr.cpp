@@ -30,6 +30,7 @@
 #include "FProfiler.h"
 #include "CyArgsList.h"
 #include "CvDLLPythonIFaceBase.h"
+#include <algorithm>
 
 int shortenID(int iId)
 {
@@ -12211,7 +12212,10 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 
 void CvGameTextMgr::buildCityBillboardCityNameString( CvWStringBuffer& szBuffer, CvCity* pCity)
 {
-	szBuffer.assign(pCity->getName());
+	CvWString cityName = pCity->getName();
+	std::transform(cityName.begin(), cityName.end(), cityName.begin(), ::toupper);
+
+	szBuffer.assign(cityName);
 
 	if (pCity->canBeSelected())
 	{
@@ -12237,7 +12241,7 @@ void CvGameTextMgr::buildCityBillboardProductionString( CvWStringBuffer& szBuffe
 {
 	if (pCity->getOrderQueueLength() > 0)
 	{
-		szBuffer.assign(pCity->getProductionName());
+		//szBuffer.assign(pCity->getProductionName());
 
 		if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
 		{
@@ -12245,7 +12249,7 @@ void CvGameTextMgr::buildCityBillboardProductionString( CvWStringBuffer& szBuffe
 
 			if (iTurns < MAX_INT)
 			{
-				szBuffer.append(CvWString::format(L" (%d)", iTurns));
+				szBuffer.append(CvWString::format(L"%d", iTurns));
 			}
 		}
 	}

@@ -12299,38 +12299,9 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 	NiColorA kWhite(1,1,1,1);
 	NiColorA kBlack(0,0,0,1);
 
-	if ((getTeam() == GC.getGameINLINE().getActiveTeam()))
-	{
-		if (foodDifference() < 0)
-		{
-			if ((foodDifference() == -1) && (getFood() >= ((75 * growthThreshold()) / 100)))
-			{
-				kDotColor = kStagnant;
-				kTextColor = kBlack;	
-			}
-			else
-			{
-				kDotColor = kShrinking;
-				kTextColor = kBlack;
-			}
-		}
-		else if (foodDifference() > 0)
-		{
-			kDotColor = kGrowing;
-			kTextColor = kBlack;
-		}
-		else if (foodDifference() == 0)
-		{
-			kDotColor = kStagnant;
-			kTextColor = kBlack;
-		}
-	}
-	else
-	{
-		kDotColor = kPlayerColor;
-		NiColorA kPlayerSecondaryColor = GC.getColorInfo((ColorTypes) GC.getPlayerColorInfo(GET_PLAYER(getOwnerINLINE()).getPlayerColor()).getColorTypeSecondary()).getColor();
-		kTextColor = kPlayerSecondaryColor;
-	}
+	kDotColor = kPlayerColor;
+	NiColorA kPlayerSecondaryColor = GC.getColorInfo((ColorTypes) GC.getPlayerColorInfo(GET_PLAYER(getOwnerINLINE()).getPlayerColor()).getColorTypeSecondary()).getColor();
+	kTextColor = kPlayerSecondaryColor;
 }
 
 const TCHAR* CvCity::getCityBillboardProductionIcon() const
