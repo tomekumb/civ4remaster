@@ -101,18 +101,45 @@ sampler ShadowMapSampler = sampler_state{ Texture = (ShadowMap);    AddressU = w
 sampler FogOfWarSampler  = sampler_state{ Texture = (FogOfWarMap);  AddressU = wrap; AddressV = wrap; MagFilter = linear; MinFilter = linear; MipFilter = linear;};
 
 
-PIXELSHADER Shadowmap_PS = asm
-{
-	ps_1_1	
-	tex			t0				//base		
-	tex			t1				//fow
-	//tex		    t2				//shadowmap					
+sampler Base : register(s0);
+sampler Fow : register(s1);
 
-	texkill  t2
-	mul			r0, t0,t1		// base * fow
-	//mul			r0, r0,t2		// base * fow * shadow
-	mul			r0, r0, v0.rgba // base * fow * shadow * color
+float4 Shadowmap_PS_Normal(float4 baseTexCoord : TEXCOORD0, float4 fowTexCoord : TEXCOORD1, float4 color: COLOR) : COLOR
+{
+    // Sample the textures
+    float4 base = tex2D(Base, baseTexCoord);
+    float4 fow = tex2D(Fow, fowTexCoord);
+
+    // Multiply the base and fow together
+    float4 result = base * fow;
+
+    // Multiply the result with the color
+    result *= color;
+
+	if (fow.r < 0.5f) {
+		result.a = 0.0f;
+	}
+
+    return result;
+}
+
+Pixelshader Shadowmap_PS =
+{
+	compile ps_1_1 Shadowmap_PS_Normal(),
 };
+
+// PIXELSHADER Shadowmap_PS = asm
+// {
+// 	ps_1_1	
+// 	tex			t0				//base		
+// 	tex			t1				//fow
+// 	//tex		    t2				//shadowmap					
+
+// 	texkill  t2
+// 	mul			r0, t0,t1		// base * fow
+// 	//mul			r0, r0,t2		// base * fow * shadow
+// 	mul			r0, r0, v0.rgba // base * fow * shadow * color
+// };
 
 //------------------------------------------------------------------------------------------------
 //                          TECHNIQUES //bool UsesNIRenderState = true;>

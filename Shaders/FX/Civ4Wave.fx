@@ -93,6 +93,10 @@ float4 WavePS_11( VS_OUTPUT vIn ) : COLOR
 	// apply fog of war
 	float3 f4FOWTex   = tex2D( Fog, vIn.f2FowTex ).rgb;
 	f4FinalColor.rgb *= f4FOWTex;
+
+    if (f4FOWTex.r < 0.5f) {
+		f4FinalColor.a = 0.0f;
+	}
 	
 	return f4FinalColor;
 }

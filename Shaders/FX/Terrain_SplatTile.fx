@@ -14,7 +14,7 @@
 //------------------------------------------------------------------------------------------------
 //  Copyright (c) 2003 Firaxis Games, Inc. All rights reserved.
 //------------------------------------------------------------------------------------------------
- 
+
 // Transformations
 float4x4	mtxWorldViewProj	: WORLDVIEWPROJECTION;
 float4x4    mtxWorld   : WORLD;
@@ -23,6 +23,7 @@ float4x4    mtxLightmap: GLOBAL;
 float		fDetailTexScaling:GLOBAL = 2.0f;
 int			iTrilinearTextureIndex : GLOBAL = 0;
 int			iMipStatus : GLOBAL = 2; //LINEAR
+float fFrameTime : GLOBAL;
 
 //------------------------------------------------------------------------------------------------
 // VERTEX OUTPUT FORMATS
@@ -113,6 +114,7 @@ sampler TerrainFOWar = sampler_state  { Texture = (TerrainFOWarTexture);  Addres
 sampler TerrainLightmap= sampler_state{ Texture = (TerrainLightmapTexture); AddressU = Clamp; AddressV = Clamp; MagFilter = Linear; MipFilter = Linear; MinFilter = Linear; };
 sampler TerrainDetail = sampler_state { Texture = (TerrainDetailTexture  );  AddressU = Wrap; AddressV = Wrap; MagFilter = Linear; MipFilter = Linear; MinFilter = Linear; };
 sampler TerrainPlotFog = sampler_state  { Texture = (TerrainPlotFogTexture);  AddressU = Clamp; AddressV = Clamp; MagFilter = Point; MipFilter = None; MinFilter = Point; };
+sampler TerrainClouds = sampler_state { Texture = (TerrainDetailTexture  );  AddressU = Wrap; AddressV = Wrap; MagFilter = Linear; MipFilter = Linear; MinFilter = Linear; };
 
 //------------------------------------------------------------------------------------------------ 
 //      PSTerrain_Blender - Blends a 4 Base and an 3 Alpha textures 
@@ -163,7 +165,6 @@ float4 PSTerrain_SPLATTILE_LMFW_14 ( VS_OUTPUT_14 Input, uniform sampler Terrain
 	return f4FinalColor;
 }
 
-
 float4 PSTerrain_SPLATTILE_LMFW_20 ( VS_OUTPUT_14 Input, uniform sampler TerrainBaseSampler, uniform bool bAlphaShader ) : COLOR
 {
 	// Read all our base textures, the grid and FOW texture
@@ -183,7 +184,30 @@ float4 PSTerrain_SPLATTILE_LMFW_20 ( VS_OUTPUT_14 Input, uniform sampler Terrain
 	//This won't work because of the HLSL compiler
 	f4FinalColor.rgb = f4FinalColor.rgb + (f3DetailTex.rgb - 0.5f);	// blend in detail map
 	f4FinalColor.rgb = f4FinalColor.rgb + (f3Lightmap.rgb - 0.5f);	// modulate by the diffuse,ambient, shadow term(no specular)
-	f4FinalColor.rgb *= f3FOWTex.rgb;				//FOW textures
+	//f4FinalColor.rgb *= f3FOWTex.rgb;				//FOW textures
+	
+	float4 f4CloudColor = 1.0f;
+	float fCloudSpeed = fFrameTime * 0.01f;
+
+	float2 cloudUV = float2(Input.f2BaseTex.x, Input.f2BaseTex.y);
+	float2 cloudOffset = float2(fCloudSpeed, fCloudSpeed);
+
+	float2 scroll = cloudUV + cloudOffset;
+	float3 res = tex2D(TerrainClouds, frac(scroll));
+
+	f4CloudColor.r = res.r;
+	f4CloudColor.g = res.g;
+	f4CloudColor.b = res.b;
+	f4CloudColor.rgb *= 1.6f;
+
+	if (f3FOWTex.r <= 0.1f) {
+		f4FinalColor = f4CloudColor;
+	} else if (f3FOWTex.r < 0.4f) {
+		f4FinalColor = lerp(f4CloudColor, f4FinalColor, f3FOWTex.r);
+	}
+	else {
+		f4FinalColor.rgb *= f3FOWTex.rgb;
+	}
 	
 	if(bAlphaShader)
 		f4FinalColor.a = lerp(1, f4FinalColor.a, f3FOWTex.r);

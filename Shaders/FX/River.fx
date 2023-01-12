@@ -209,7 +209,9 @@ float4 RiverPS11_0( VS_OUTPUT_11_0 vIn ) : COLOR
 	
 	//FOW
 	f4FinalColor.rgb *= f4FOW.rgb;
-	
+	if (f4FOW.r < 0.5f) {
+		f4FinalColor.a = 0.0f;
+	}
 	return f4FinalColor;
 }
 
@@ -237,7 +239,9 @@ float4 RiverPS11_1( VS_OUTPUT_11_1 vIn ) : COLOR
 	
 	// Get FOW
 	f4FinalColor.rgb *= f4FOW.rgb;
-	
+	if (f4FOW.r < 0.5f) {
+		f4FinalColor.a = 0.0f;
+	}
 	return f4FinalColor;
 }
 //------------------------------------------------------------------------------------------------
