@@ -9,7 +9,7 @@ md %outdir%
 @REM )
 
 
-for %%I in (Terrain_splatTile ContourShader River Civ4Wave) do (
+for %%I in (Terrain_splatTile ContourShader River Civ4Wave Water) do (
 	%FXC% /LD /nologo /T fx_2_0 /Fo %Outdir%\%%I.fx %%I.fx
 )
 
