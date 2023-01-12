@@ -23,7 +23,7 @@ float4x4    mtxLightmap: GLOBAL;
 float		fDetailTexScaling:GLOBAL = 2.0f;
 int			iTrilinearTextureIndex : GLOBAL = 0;
 int			iMipStatus : GLOBAL = 2; //LINEAR
-float fFrameTime : GLOBAL;
+float 		fFrameTime : GLOBAL;
 
 //------------------------------------------------------------------------------------------------
 // VERTEX OUTPUT FORMATS
@@ -83,7 +83,7 @@ VS_OUTPUT_14 VSTerrain_Tile_14( VS_INPUT vIn )
 	//Transform position
 	vOut.f4Position  = mul(float4(vIn.f3Position, 1), mtxWorldViewProj);	
     float3 P = mul(float4(vIn.f3Position, 1), (float4x3)mtxWorld);			//todotw: if we're only going to need this for Fog combine the 2 and remove the transform
-
+	
 	// Copy over the texture coordinates
 	vOut.f2BaseTex     = vIn.f2BaseTex;
 	vOut.f2FOWTex      = mul(float4(P,1),mtxFOW);				// fog of war

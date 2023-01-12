@@ -59,10 +59,10 @@ VS_OUTPUT WaterVS_11( VS_INPUT vIn )
 	float3 worldPos = mul(float4(vIn.f3Pos,1), (float4x3)mtxWorld);			
 
 	// Set texture coordinates
-	// vOut.f2BaseTex1 = mul(float4(worldPos,1),mtxWaterTextureMat);
-	// vOut.f2BaseTex2 = mul(float4(worldPos,1),mtxWaterTextureMat2);
-	// vOut.f2CoastTex = vIn.f2CoastTex;
-	// vOut.f2FowTex   = vIn.f2FowTex;
+	vOut.f2BaseTex1 = mul(float4(worldPos,1),mtxWaterTextureMat);
+	vOut.f2BaseTex2 = mul(float4(worldPos,1),mtxWaterTextureMat2);
+	vOut.f2CoastTex = vIn.f2CoastTex;
+	vOut.f2FowTex   = vIn.f2FowTex;
 
 	return vOut;
 }
@@ -96,16 +96,17 @@ float4 WaterPS_11( VS_OUTPUT vIn ) : COLOR
 	// Get Alpha textures 
 	float f4Alpha1  = tex2D( WaterBase, vIn.f2BaseTex1 ).a;
 	float f4Alpha2  = tex2D( WaterBase, vIn.f2BaseTex2 ).a;
-	float alphablend = f4Alpha1  * f4Alpha2 * coastAlpha ;
+	// float alphablend = f4Alpha1  * f4Alpha2 * coastAlpha ;
 	
-	f4FinalColor.rgb += alphablend;
+	// f4FinalColor.rgb += alphablend;
 
 	// Get FOW
 	float4 f4FOWTex   = tex2D( Fog, vIn.f2FowTex );
+
 	f4FinalColor *= f4FOWTex;
 	
 	// Now adjust alpha by Diffuse Alpha
-	f4FinalColor.a = f3WaterAlpha * coastAlpha;
+	f4FinalColor.a = f3WaterAlpha * coastAlpha * f4FOWTex.r;
 
 	return f4FinalColor;
 }
