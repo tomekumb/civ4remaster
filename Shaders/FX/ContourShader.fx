@@ -116,7 +116,7 @@ float4 Shadowmap_PS_Normal(float4 baseTexCoord : TEXCOORD0, float4 fowTexCoord :
     // Multiply the result with the color
     result *= color;
 
-	if (fow.r < 0.5f) {
+	if (fow.r < 0.3f) {
 		result.a = 0.0f;
 	}
 

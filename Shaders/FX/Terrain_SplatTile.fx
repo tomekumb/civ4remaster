@@ -83,7 +83,6 @@ VS_OUTPUT_14 VSTerrain_Tile_14( VS_INPUT vIn )
 	//Transform position
 	vOut.f4Position  = mul(float4(vIn.f3Position, 1), mtxWorldViewProj);	
     float3 P = mul(float4(vIn.f3Position, 1), (float4x3)mtxWorld);			//todotw: if we're only going to need this for Fog combine the 2 and remove the transform
-	
 	// Copy over the texture coordinates
 	vOut.f2BaseTex     = vIn.f2BaseTex;
 	vOut.f2FOWTex      = mul(float4(P,1),mtxFOW);				// fog of war
@@ -165,6 +164,12 @@ float4 PSTerrain_SPLATTILE_LMFW_14 ( VS_OUTPUT_14 Input, uniform sampler Terrain
 	return f4FinalColor;
 }
 
+float2 offset1 = float2(0.5,0.25); 
+float2 offset2 = float2(0.0,0.5); 
+float2 offset3 = float2(0.5,-0.25);
+float2 direction = float2(-0.5,-0.25); 
+float speed = 0.005;
+
 float4 PSTerrain_SPLATTILE_LMFW_20 ( VS_OUTPUT_14 Input, uniform sampler TerrainBaseSampler, uniform bool bAlphaShader ) : COLOR
 {
 	// Read all our base textures, the grid and FOW texture
@@ -187,31 +192,34 @@ float4 PSTerrain_SPLATTILE_LMFW_20 ( VS_OUTPUT_14 Input, uniform sampler Terrain
 	//f4FinalColor.rgb *= f3FOWTex.rgb;				//FOW textures
 	
 	float4 f4CloudColor = 1.0f;
-	float fCloudSpeed = fFrameTime * 0.01f;
 
-	float2 cloudUV = float2(Input.f2BaseTex.x, Input.f2BaseTex.y);
-	float2 cloudOffset = float2(fCloudSpeed, fCloudSpeed);
+	float2 cloudUV = float2(Input.f2FOWTex.x*4, Input.f2FOWTex.y*4);
 
-	float2 scroll = cloudUV + cloudOffset;
-	float3 res = tex2D(TerrainClouds, frac(scroll));
+	// scroll clouds
+	float4 color = tex2D(TerrainClouds, cloudUV);
+	float4 layer1 = tex2D(TerrainClouds, cloudUV + (direction * fFrameTime * speed)); 
+	float4 layer2 = tex2D(TerrainClouds, cloudUV + (direction * fFrameTime * speed) + offset1); 
+	float4 layer3 = tex2D(TerrainClouds, cloudUV + (direction * fFrameTime * speed) + offset2); 
+	float4 layer4 = tex2D(TerrainClouds, cloudUV + (direction * fFrameTime * speed) + offset3); 
+	float4 layer_1_2_merged = lerp(layer1, layer2, layer2.a); 
+	float4 layer_3_4_merged = lerp(layer3, layer4, layer4.a); 
+	float4 layers_merged = lerp(layer_1_2_merged, layer_3_4_merged, layer_3_4_merged.a); 
+	float4 res = lerp(color, layers_merged, color.a); 
 
 	f4CloudColor.r = res.r;
 	f4CloudColor.g = res.g;
 	f4CloudColor.b = res.b;
 	f4CloudColor.rgb *= 1.6f;
 
-	if (f3FOWTex.r <= 0.1f) {
-		f4FinalColor = f4CloudColor;
-	} else if (f3FOWTex.r < 0.4f) {
-		f4FinalColor = lerp(f4CloudColor, f4FinalColor, f3FOWTex.r);
-	}
-	else {
-		f4FinalColor.rgb *= f3FOWTex.rgb;
-	}
+	f4FinalColor.rgb *= f3FOWTex.rgb;
 	
+	if (f3FOWTex.r <= 0.4f) {
+		f4FinalColor = lerp(f4CloudColor, f4FinalColor, f3FOWTex.r * 2.5f);
+	}
+
 	if(bAlphaShader)
 		f4FinalColor.a = lerp(1, f4FinalColor.a, f3FOWTex.r);
-	
+
 	// Return the result	
 	return f4FinalColor;
 }

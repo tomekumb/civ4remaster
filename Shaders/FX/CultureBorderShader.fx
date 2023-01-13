@@ -211,6 +211,10 @@ float4 CultureBorderPS11_0( VS_OUTPUT_11_0 vIn ) : COLOR
 		
 	f4FinalColor.rgb *= f4FOWTex.rgb;		//FOW textures
 			
+	if (f4FOWTex.r < 0.3f) {
+		f4FinalColor.a = 0.0f;
+	}
+
 	return f4FinalColor;
 }
 
@@ -309,7 +313,7 @@ technique TCultureBorder_Shader14
         
         // Set up textures and texture stage states
         VertexShader = compile vs_1_1 CultureBorderVS11_0();
-        PixelShader  = compile ps_1_1 CultureBorderPS11_0();
+        PixelShader  = compile ps_2_0 CultureBorderPS11_0();
     }
     
     pass P1
@@ -351,7 +355,7 @@ technique TCultureBorder_Shader11
         
         // Set up textures and texture stage states
         VertexShader = compile vs_1_1 CultureBorderVS11_0();
-        PixelShader  = compile ps_1_1 CultureBorderPS11_0();
+        PixelShader  = compile ps_2_0 CultureBorderPS11_0();
     }
     
     pass P1
