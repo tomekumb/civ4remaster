@@ -115,7 +115,7 @@ VS_OUTPUT_14 VSTerrain_Tile_14( VS_INPUT vIn )
 	vOut.f2Detail      = vIn.fDetailTex * fDetailTexScaling;	// Detail 
 		
 	float4 fowColor = tex2Dlod(TerrainFOWar, float4(vOut.f2FOWTex,0.5f,0.5f));
-	if (fowColor.r < 0.5f) 
+	if (fowColor.r < 0.3f) 
 	{
 		vOut.f4Position.z = 0;
 	}
