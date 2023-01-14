@@ -20,6 +20,18 @@
 
 static const int kBufSize = 2048;
 
+/*	trs.xmlload: Prefer a failed assertion over a message box when debugging.
+	I've redirected (w/o comment) all MessageBox calls to this function. */
+void CvXMLLoadUtility::errorMessage(char const* szMessage, XMLErrorTypes eErrType)
+{
+	#ifdef _DEBUG
+		FErrorMsg(szMessage);
+	#else
+		gDLL->MessageBox(szMessage, eErrType == XML_LOAD_ERROR ?
+				"XML Load Error" : "XML Error");
+	#endif
+}
+
 //
 // for logging
 //
@@ -41,7 +53,7 @@ bool CvXMLLoadUtility::CreateFXml()
 	{
 		char	szMessage[512];
 		sprintf( szMessage, "Caught unhandled exception creating XML parser object \n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
-		gDLL->MessageBox( szMessage, "Loading Error" );
+		errorMessage(szMessage, XML_LOAD_ERROR);
 		return false;
 	}
 	return true;
@@ -328,7 +340,7 @@ int CvXMLLoadUtility::FindInInfoClass(const TCHAR* pszVal, bool hideAssert)
 		{
 			char errorMsg[1024];
 			sprintf(errorMsg, "Tag: %s in Info class was incorrect \n Current XML file is: %s", pszVal, GC.getCurrentXMLFile().GetCString());
-			gDLL->MessageBox(errorMsg, "XML Error");
+			errorMessage(errorMsg);
 		}
 	}
 
@@ -365,6 +377,7 @@ bool CvXMLLoadUtility::LoadCivXml(FXml* pFXml, const TCHAR* szFilename)
 
 	if (!gDLL->getXMLIFace()->LoadXml(pFXml, szPath))
 	{
+		FErrorMsg("LoadCivXml failed"); // trs.xmlload
 		logMsg("Load XML file %s FAILED\n", szPath.c_str());
 		return false;
 	}

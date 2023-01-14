@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <map>
 #include <hash_map>
+#include <algorithm> // trs.
 
 #define DllExport   __declspec( dllexport ) 
 
@@ -166,18 +167,22 @@ void stopProfilingDLL();
 # include <boost/python/def.hpp>
 
 namespace python = boost::python;
+// <trs.modname> Tokenization in C++03 is a horror (even with Boost)
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp> // </trs.modname>
 
 #include "FAssert.h"
 #include "CvGameCoreDLLDefNew.h"
 #include "FDataStreamBase.h"
 #include "FFreeListArrayBase.h"
 #include "FFreeListTrashArray.h"
-#include "FFreeListArray.h"
+//#include "FFreeListArray.h" // trs.build: Unused, removed from project.
 //#include "FVariableSystem.h"
 #include "CvString.h"
 #include "CvEnums.h"
 #include "CvStructs.h"
 #include "CvDLLUtilityIFaceBase.h"
+#include "CvInitCore.h" // trs.build
 
 //jason tests
 #include "CvPlayerAI.h"

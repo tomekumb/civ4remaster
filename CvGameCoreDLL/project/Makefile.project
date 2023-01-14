@@ -1,0 +1,26 @@
+SOURCE_DIR = ..
+PROJECT_CFLAGS = /W3 /WX /D_MOD_AIAUTOPLAY
+# Further BULL options. Note that MOD_GWARM will break save-compatibility with BtS.
+# And may want to keep the defines here consistent with those in the VS project file.
+#/D_MOD_FRACTRADE /D_MOD_SENTRY /D_MOD_GOVWORKERS /D_MOD_SHAM_SPOILER /D_MOD_GWARM
+# And a Taurus option: (Seems that the XML cache is never used for mods)
+#/D_XML_FILE_CACHE
+# Allow inline expansion of functions with an inline keyword even for debug builds
+PROJECT_LIBS = ../CxImage/lib/Gdi32.Lib ../CxImage/lib/Ole32.Lib
+PROJECT_RELEASE_LIBS = ../CxImage/lib/CxImage.lib
+#PROJECT_DEBUG_LIBS = ../CxImage/lib/CxImage_debug.lib
+# The _debug lib also seems to require msvcr71d.dll to work properly.
+# At least I'm getting an error message about that file when debugging
+# with CxImage_debug.lib. Annoying, and who needs symbols for CxImage anyway?
+PROJECT_DEBUG_LIBS = ../CxImage/lib/CxImage.lib
+PROJECT_Debug_CFLAGS = /Ob1
+# For debugging memory errors that don't occur in debug builds
+#PROJECT_DebugOpt_CFLAGS = /DFASSERT_ENABLE /Oy-
+# May want to enable global optimization when inspecting optimized disassembly (and also for profile builds). Slow to compile though.
+#PROJECT_DebugOpt_CFLAGS = /GL
+# DLL-internal profiler: /DUSE_INTERNAL_PROFILER
+# External profiler, e.g. Very Sleepy: No profile flags needed; profile builds always use Z7.
+# Standard Firaxis profiler (not sure if this can work w/o access to the EXE): /DFP_PROFILE_ENABLE
+PROJECT_PROFILE_CFLAGS = /DUSE_INTERNAL_PROFILER
+PROJECT_LDFLAGS = /DEF:CvGameCoreDLL.def
+PRECOMPILE_DEPENDENCIES = 

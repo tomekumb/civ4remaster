@@ -13,6 +13,7 @@
 
 class FProfiler;
 class CvDLLUtilityIFaceBase;
+class ModName; // trs.modname
 class CvRandom;
 class CvGameAI;
 class CMessageControl;
@@ -153,8 +154,10 @@ public:
 	DllExport CvPortal& getPortal();
 	DllExport CvSetupData& getSetupData();
 	DllExport CvInitCore& getInitCore();
+	CvInitCore const& getInitCore() const { return *m_initCore; } // trs.modname
 	DllExport CvInitCore& getLoadedInitCore();
 	DllExport CvInitCore& getIniInitCore();
+	bool isCheatCodeEntered() const { return m_bChipotle; } // trs.lma
 	DllExport CvMessageCodeTranslator& getMessageCodes();
 	DllExport CvStatsReporter& getStatsReporter();
 	DllExport CvStatsReporter* getStatsReporterPtr();
@@ -165,8 +168,14 @@ public:
 	CvMap& getMapINLINE() { return *m_map; }				// inlined for perf reasons, do not use outside of dll
 	CvGameAI& getGameINLINE() { return *m_game; }			// inlined for perf reasons, do not use outside of dll
 #endif
-	DllExport CvMap& getMap();
-	DllExport CvGameAI& getGame();
+	/*	<trs.> The INLINE functions above are now deprecated.
+		The External functions are exported through the .def file
+		and should not be used DLL-internally. */
+	CvMap& getMapExternal();
+	CvMap& getMap() { return *m_map; }
+	CvGameAI& getGameExternal();
+	CvGameAI& getGame() { return *m_game; }
+	// </trs.>
 	DllExport CvGameAI *getGamePointer();
 	DllExport CvRandom& getASyncRand();
 	DllExport CMessageQueue& getMessageQueue();
@@ -186,11 +195,15 @@ public:
 	DllExport CvInterfaceModeInfo& getInterfaceModeInfo(InterfaceModeTypes e);
 
 	DllExport NiPoint3& getPt3CameraDir();
+	void updateDefaultCamDistance(); // trs.camdist (exposed to Python)
+	void updateCityCamDistance(); // trs.camcity
+	void updateCamScrollSpeed(); // trs.camspeed (exposed to Python)
 
 	DllExport bool& getLogging();
 	DllExport bool& getRandLogging();
 	DllExport bool& getSynchLogging();
 	DllExport bool& overwriteLogs();
+	bool isLogging() const { return m_bLogging; } // trs.cheats (const getter)
 
 	DllExport int* getPlotDirectionX();
 	DllExport int* getPlotDirectionY();
@@ -230,7 +243,7 @@ public:
 
 	DllExport int getNumColorInfos();
 	std::vector<CvColorInfo*>& getColorInfo();
-	DllExport CvColorInfo& getColorInfo(ColorTypes e);
+	DllExport CvColorInfo& getColorInfo(ColorTypes eColor);
 
 	DllExport int getNumPlayerColorInfos();
 	std::vector<CvPlayerColorInfo*>& getPlayerColorInfo();
@@ -679,14 +692,24 @@ public:
 
 	DllExport FVariableSystem* getDefinesVarSystem();
 	DllExport void cacheGlobals();
+	bool isCachingDone() const { return (m_iMAX_HIT_POINTS > 0); } // trs.modname
 
 	// ***** EXPOSED TO PYTHON *****
-	DllExport int getDefineINT( const char * szName ) const;
-	DllExport float getDefineFLOAT( const char * szName ) const;
-	DllExport const char * getDefineSTRING( const char * szName ) const;
-	DllExport void setDefineINT( const char * szName, int iValue );
-	DllExport void setDefineFLOAT( const char * szName, float fValue );
-	DllExport void setDefineSTRING( const char * szName, const char * szValue );
+	// trs.modname: (exported through .def file)
+	int getDefineINTExternal(const char* szName) const;
+	int getDefineINT(const char * szName) const;
+	DllExport float getDefineFLOAT(const char * szName) const;
+	DllExport const char * getDefineSTRING(const char * szName) const;
+	// <trs.opt> Make the cache update optional
+	void setDefineINT(const char * szName, int iValue, bool bUpdateCache = true);
+	void setDefineFLOAT(const char * szName, float fValue, bool bUpdateCache = true);
+	void setDefineSTRING(const char * szName, const char * szValue, bool bUpdateCache = true);
+	// </trs.opt>
+	// trs.
+	bool getDefineBOOL(char const* szName) const
+	{
+		return (getDefineINT(szName) > 0);
+	}
 
 	int getMOVE_DENOMINATOR();
 	int getNUM_UNIT_PREREQ_OR_BONUSES();
@@ -702,6 +725,7 @@ public:
 	DllExport int getUNIT_MULTISELECT_MAX();
 	int getPERCENT_ANGER_DIVISOR();
 	DllExport int getEVENT_MESSAGE_TIME();
+	int getEVENT_MESSAGE_STAGGER_TIME() const { return m_iEVENT_MESSAGE_STAGGER_TIME; } // trs.debug
 	int getROUTE_FEATURE_GROWTH_MODIFIER();
 	int getFEATURE_GROWTH_MODIFIER();
 	int getMIN_CITY_RANGE();
@@ -784,6 +808,10 @@ public:
 	CvDLLUtilityIFaceBase* getDLLIFace() { return m_pDLL; }		// inlined for perf reasons, do not use outside of dll
 #endif
 	DllExport CvDLLUtilityIFaceBase* getDLLIFaceNonInl();
+	// <trs.modname>
+	ModName& getModName() const { return *m_pModName; }
+	bool isModNameKnown() const { return (m_pModName != NULL); }
+	// </trs.modname>
 	DllExport void setDLLProfiler(FProfiler* prof);
 	FProfiler* getDLLProfiler();
 	DllExport void enableDLLProfiler(bool bEnable);
@@ -872,6 +900,29 @@ public:
 	DllExport int getNumGraphicLevels() const;
 	DllExport int getNumGlobeLayers() const;
 
+	void setHoFScreenUp(bool b); // trs.replayname
+// BUG - DLL Info - start
+	bool isBull() const;
+	int getBullApiVersion() const;
+
+	const wchar* getBullName() const;
+	const wchar* getBullVersion() const;
+// BUG - DLL Info - end
+
+// BUG - BUG Info - start
+	void setIsBug(bool bIsBug);
+// BUG - BUG Info - end
+
+// BUFFY - DLL Info - start
+#ifdef _BUFFY
+	bool isBuffy() const;
+	int getBuffyApiVersion() const;
+
+	const wchar* getBuffyName() const;
+	const wchar* getBuffyVersion() const;
+#endif
+// BUFFY - DLL Info - end
+
 	void deleteInfoArrays();
 
 protected:
@@ -882,6 +933,7 @@ protected:
 	bool m_bRandLogging;
 	bool m_bSynchLogging;
 	bool m_bOverwriteLogs;
+	bool m_bChipotle; // trs.lma
 	NiPoint3  m_pt3CameraDir;
 	int m_iNewPlayers;
 
@@ -890,6 +942,7 @@ protected:
 	bool m_bZoomOut;
 	bool m_bZoomIn;
 	bool m_bLoadGameFromFile;
+	bool m_bHoFScreenUp; // trs.replayname
 
 	FMPIManager * m_pFMPMgr;
 
@@ -1121,6 +1174,7 @@ protected:
 	int m_iUNIT_MULTISELECT_MAX;
 	int m_iPERCENT_ANGER_DIVISOR;
 	int m_iEVENT_MESSAGE_TIME;
+	int m_iEVENT_MESSAGE_STAGGER_TIME; // trs.debug
 	int m_iROUTE_FEATURE_GROWTH_MODIFIER;
 	int m_iFEATURE_GROWTH_MODIFIER;
 	int m_iMIN_CITY_RANGE;
@@ -1147,6 +1201,8 @@ protected:
 	float m_fCAMERA_FAR_CLIP_Z_HEIGHT;
 	float m_fCAMERA_MAX_TRAVEL_DISTANCE;
 	float m_fCAMERA_START_DISTANCE;
+	float m_fCAMERA_START_DISTANCE_Original; // trs.camdist
+	std::pair<float,float> m_ffCAMERA_SCROLL_SPEED_Original; // trs.camspeed
 	float m_fAIR_BOMB_HEIGHT;
 	float m_fPLOT_SIZE;
 	float m_fCAMERA_SPECIAL_PITCH;
@@ -1186,6 +1242,7 @@ protected:
 
 	// DLL interface
 	CvDLLUtilityIFaceBase* m_pDLL;
+	ModName* m_pModName; // trs.modname
 
 	FProfiler* m_Profiler;		// profiler
 	CvString m_szDllProfileText;

@@ -291,12 +291,23 @@ private:
 	//
 	void SetGlobalActionInfo();
 	void SetGlobalAnimationPathInfo(CvAnimationPathInfo** ppAnimationPathInfo, char* szTagName, int* iNumVals);
-	void SetGameText(const char* szTextGroup, const char* szTagName);
+	void SetGameText(const char* szTextGroup, const char* szTagName,
+			std::string const& kLanguageName); // trs.lang (K-Mod)
 
 	// create a keyboard string from a KB code, Delete would be returned for KB_DELETE
 	CvWString CreateKeyStringFromKBCode(const TCHAR* pszHotKey);
 
 	void orderHotkeyInfo(int** ppiSortedIndex, int* pHotkeyIndex, int iLength);
+	/*	<trs.xmlload> (Some BtS code said "XML Error", some "XML Load Error"
+		not sure if that's meaningful, but let's preserve that.)*/
+	enum XMLErrorTypes
+	{
+		GENERAL_XML_ERROR,
+		XML_LOAD_ERROR,
+	};
+	static void errorMessage(char const* szMessage,
+			XMLErrorTypes eErrType = GENERAL_XML_ERROR);
+	// </trs.xmlload>
 	void logMsg(char* format, ... );
 };
 

@@ -57,10 +57,10 @@ public:
 	const wchar* getStrategy() const;	
 
 	bool isMatchForLink(std::wstring szLink, bool bKeysOnly) const;
-
+#ifdef _XML_FILE_CACHE
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
-
+#endif
 	virtual bool read(CvXMLLoadUtility* pXML);
 	virtual bool readPass2(CvXMLLoadUtility* pXML) { pXML; FAssertMsg(false, "Override this"); return false; }
 	virtual bool readPass3() { FAssertMsg(false, "Override this"); return false; }
@@ -116,49 +116,49 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvHotkeyInfo : public CvInfoBase
 {
-public:
+public: // (trs. All DllExports removed. Were all unused.)
 	//constructor
-	DllExport CvHotkeyInfo();
+	CvHotkeyInfo();
 	//destructor
-	DllExport virtual ~CvHotkeyInfo();
+	virtual ~CvHotkeyInfo();
 
 	bool read(CvXMLLoadUtility* pXML);
+#ifdef _XML_FILE_CACHE
+	virtual void read(FDataStreamBase* pStream);
+	virtual void write(FDataStreamBase* pStream);
+#endif
+	int getActionInfoIndex() const;
+	void setActionInfoIndex(int i);
 
-	DllExport virtual void read(FDataStreamBase* pStream);
-	DllExport virtual void write(FDataStreamBase* pStream);
+	int getHotKeyVal() const;
+	void setHotKeyVal(int i);
+	int getHotKeyPriority() const;
+	void setHotKeyPriority(int i);
+	int getHotKeyValAlt() const;
+	void setHotKeyValAlt(int i);
+	int getHotKeyPriorityAlt() const;
+	void setHotKeyPriorityAlt(int i);
+	int getOrderPriority() const;
+	void setOrderPriority(int i);
 
-	DllExport int getActionInfoIndex() const;
-	DllExport void setActionInfoIndex(int i);
+	bool isAltDown() const;
+	void setAltDown(bool b);
+	bool isShiftDown() const;
+	void setShiftDown(bool b);
+	bool isCtrlDown() const;
+	void setCtrlDown(bool b);
+	bool isAltDownAlt() const;
+	void setAltDownAlt(bool b);
+	bool isShiftDownAlt() const;
+	void setShiftDownAlt(bool b);
+	bool isCtrlDownAlt() const;
+	void setCtrlDownAlt(bool b);
 
-	DllExport int getHotKeyVal() const;
-	DllExport void setHotKeyVal(int i);
-	DllExport int getHotKeyPriority() const;
-	DllExport void setHotKeyPriority(int i);
-	DllExport int getHotKeyValAlt() const;
-	DllExport void setHotKeyValAlt(int i);
-	DllExport int getHotKeyPriorityAlt() const;
-	DllExport void setHotKeyPriorityAlt(int i);
-	DllExport int getOrderPriority() const;
-	DllExport void setOrderPriority(int i);
+	const TCHAR* getHotKey() const;			// Exposed to Python
+	void setHotKey(const TCHAR* szVal);
 
-	DllExport bool isAltDown() const;
-	DllExport void setAltDown(bool b);
-	DllExport bool isShiftDown() const;
-	DllExport void setShiftDown(bool b);
-	DllExport bool isCtrlDown() const;
-	DllExport void setCtrlDown(bool b);
-	DllExport bool isAltDownAlt() const;
-	DllExport void setAltDownAlt(bool b);
-	DllExport bool isShiftDownAlt() const;
-	DllExport void setShiftDownAlt(bool b);
-	DllExport bool isCtrlDownAlt() const;
-	DllExport void setCtrlDownAlt(bool b);
-
-	DllExport const TCHAR* getHotKey() const;			// Exposed to Python
-	DllExport void setHotKey(const TCHAR* szVal);
-
-	DllExport std::wstring getHotKeyDescription() const;
-	DllExport void setHotKeyDescription(const wchar* szHotKeyDescKey, const wchar* szHotKeyAltDescKey, const wchar* szHotKeyString);
+	std::wstring getHotKeyDescription() const;
+	void setHotKeyDescription(const wchar* szHotKeyDescKey, const wchar* szHotKeyAltDescKey, const wchar* szHotKeyString);
 
 protected:
 
@@ -187,36 +187,37 @@ protected:
 class CvDiplomacyResponse
 {
 //---------------------------------------PUBLIC INTERFACE---------------------------------
-public:
+public: // (trs. All DllExports removed. Were all unused.)
 
-	DllExport CvDiplomacyResponse();
-	DllExport virtual ~CvDiplomacyResponse();
+	CvDiplomacyResponse();
+	virtual ~CvDiplomacyResponse();
 
-	DllExport int getNumDiplomacyText();
-	DllExport void setNumDiplomacyText(int i);
+	int getNumDiplomacyText();
+	void setNumDiplomacyText(int i);
 
-	DllExport bool getCivilizationTypes(int i);
-	DllExport bool* getCivilizationTypes() const;
-	DllExport void setCivilizationTypes(int i, bool bVal);
+	bool getCivilizationTypes(int i);
+	bool* getCivilizationTypes() const;
+	void setCivilizationTypes(int i, bool bVal);
 
-	DllExport bool getLeaderHeadTypes(int i);
-	DllExport bool* getLeaderHeadTypes() const;
-	DllExport void setLeaderHeadTypes(int i, bool bVal);
+	bool getLeaderHeadTypes(int i);
+	bool* getLeaderHeadTypes() const;
+	void setLeaderHeadTypes(int i, bool bVal);
 
-	DllExport bool getAttitudeTypes(int i) const;
-	DllExport bool* getAttitudeTypes() const;
-	DllExport void setAttitudeTypes(int i, bool bVal);
+	bool getAttitudeTypes(int i) const;
+	bool* getAttitudeTypes() const;
+	void setAttitudeTypes(int i, bool bVal);
 
-	DllExport bool getDiplomacyPowerTypes(int i);
-	DllExport bool* getDiplomacyPowerTypes() const;
-	DllExport void setDiplomacyPowerTypes(int i, bool bVal);
+	bool getDiplomacyPowerTypes(int i);
+	bool* getDiplomacyPowerTypes() const;
+	void setDiplomacyPowerTypes(int i, bool bVal);
 
-	DllExport const TCHAR* getDiplomacyText(int i) const;
-	DllExport const CvString* getDiplomacyText() const;
-	DllExport void setDiplomacyText(int i, CvString szText);
-
-	DllExport void read(FDataStreamBase* stream);
-	DllExport void write(FDataStreamBase* stream);
+	const TCHAR* getDiplomacyText(int i) const;
+	const CvString* getDiplomacyText() const;
+	void setDiplomacyText(int i, CvString szText);
+#ifdef _XML_FILE_CACHE
+	void read(FDataStreamBase* stream);
+	void write(FDataStreamBase* stream);
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
@@ -358,10 +359,10 @@ public:
 
 	bool isCommerceFlexible(int i) const;	// Exposed to Python
 	bool isTerrainTrade(int i) const;			// Exposed to Python
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* );
 	void write(FDataStreamBase* );
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 	bool readPass2(CvXMLLoadUtility* pXML);
 
@@ -506,10 +507,10 @@ public:
 	bool getTerrainDoubleMove(int i) const;				// Exposed to Python
 	bool getFeatureDoubleMove(int i) const;				// Exposed to Python
 	bool getUnitCombat(int i) const;				// Exposed to Python
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 	bool readPass2(CvXMLLoadUtility* pXML);
 
@@ -878,7 +879,11 @@ public:
 	int getNumUnitNames() const;							// Exposed to Python
 	int getCommandType() const;								// Exposed to Python
 	void setCommandType(int iNewType);
-
+	
+// BUG - Female Great People - start
+	bool isFemale() const;				// Exposed to Python
+	int getFemaleUnitType() const;
+// BUG - Female Great People - end
 	bool isAnimal() const;				// Exposed to Python
 	bool isFoodProduction() const;				// Exposed to Python
 	bool isNoBadGoodies() const;				// Exposed to Python
@@ -921,6 +926,10 @@ public:
 
 	float getUnitMaxSpeed() const;					// Exposed to Python
 	float getUnitPadTime() const;					// Exposed to Python
+	
+// BUG - Unit Experience - start
+	bool canAcquireExperience() const;				// Exposed to Python
+// BUG - Unit Experience - end
 
 	// Arrays
 
@@ -977,10 +986,10 @@ public:
 	void updateArtDefineButton();
 
 	const CvArtInfoUnit* getArtInfo(int i, EraTypes eEra, UnitArtStyleTypes eStyle) const;
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* );
 	void write(FDataStreamBase* );
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
@@ -1060,7 +1069,10 @@ protected:
 	int m_iNumUnitNames;
 	int m_iCommandType;
 	int m_iLeaderExperience;
-
+	
+// BUG - Female Great People - start
+	bool m_bFemale;
+// BUG - Female Great People - end
 	bool m_bAnimal;
 	bool m_bFoodProduction;
 	bool m_bNoBadGoodies;
@@ -1371,10 +1383,10 @@ public:
 	bool isSpecialistValid(int i) const;								// Exposed to Python
 
 	int getImprovementYieldChanges(int i, int j) const;				// Exposed to Python
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 //---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
@@ -1461,27 +1473,28 @@ class CvDiplomacyInfo :
 
 	friend class CvXMLLoadUtility;		// so it can access private vars to initialize the class
 	//---------------------------------------PUBLIC INTERFACE---------------------------------
-public:
+public:// (trs. All DllExports removed. Were all unused.)
 
-	DllExport CvDiplomacyInfo();
-	DllExport virtual ~CvDiplomacyInfo();
+	CvDiplomacyInfo();
+	virtual ~CvDiplomacyInfo();
 
-	DllExport void uninit();			
+	void uninit();			
 
-	DllExport const CvDiplomacyResponse& getResponse(int iNum) const;	// Exposed to Python
-	DllExport int getNumResponses() const;															// Exposed to Python
+	const CvDiplomacyResponse& getResponse(int iNum) const;	// Exposed to Python
+	int getNumResponses() const;															// Exposed to Python
 
-	DllExport bool getCivilizationTypes(int i, int j) const;						// Exposed to Python
-	DllExport bool getLeaderHeadTypes(int i, int j) const;							// Exposed to Python
-	DllExport bool getAttitudeTypes(int i, int j) const;								// Exposed to Python
-	DllExport bool getDiplomacyPowerTypes(int i, int j) const;					// Exposed to Python
+	bool getCivilizationTypes(int i, int j) const;						// Exposed to Python
+	bool getLeaderHeadTypes(int i, int j) const;							// Exposed to Python
+	bool getAttitudeTypes(int i, int j) const;								// Exposed to Python
+	bool getDiplomacyPowerTypes(int i, int j) const;					// Exposed to Python
 
-	DllExport int getNumDiplomacyText(int i) const;											// Exposed to Python
+	int getNumDiplomacyText(int i) const;											// Exposed to Python
 
-	DllExport const TCHAR* getDiplomacyText(int i, int j) const;				// Exposed to Python
-
-	DllExport void read(FDataStreamBase* stream);
-	DllExport void write(FDataStreamBase* stream);
+	const TCHAR* getDiplomacyText(int i, int j) const;				// Exposed to Python
+#ifdef _XML_FILE_CACHE
+	void read(FDataStreamBase* stream);
+	void write(FDataStreamBase* stream);
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 private:
@@ -1726,6 +1739,17 @@ public:
 	int getBonusYieldModifier(int i, int j) const;				// Exposed to Python
 	int* getBonusYieldModifierArray(int i) const;
 
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       06/27/10                    Afforess & jdog5000       */
+/*                                                                                              */
+/* Efficiency                                                                                   */
+/************************************************************************************************/
+	bool isAnySpecialistYieldChange() const;
+	bool isAnyBonusYieldModifier() const;
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                        END                                                  */
+/************************************************************************************************/
+
 	// Other
 
 	const CvArtInfoBuilding* getArtInfo() const;
@@ -1734,8 +1758,10 @@ public:
 	const TCHAR* getMovie() const;
 
 	// serialization
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase*);
 	void write(FDataStreamBase*);
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 	//---------------------------------------PUBLIC MEMBER VARIABLES---------------------------------
@@ -1900,7 +1926,16 @@ protected:
 
 	int** m_ppaiSpecialistYieldChange;
 	int** m_ppaiBonusYieldModifier;
-
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       06/27/10                    Afforess & jdog5000       */
+/*                                                                                              */
+/* Efficiency                                                                                   */
+/************************************************************************************************/
+	bool m_bAnySpecialistYieldChange;
+	bool m_bAnyBonusYieldModifier;
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                        END                                                  */
+/************************************************************************************************/
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2122,60 +2157,62 @@ class CvCivilizationInfo :
 	public CvInfoBase
 {
 	//---------------------------------------PUBLIC INTERFACE---------------------------------
-public:
+public: // (trs. Unused DllExports removed.)
 
-	DllExport CvCivilizationInfo();
-	DllExport virtual ~CvCivilizationInfo();
-	DllExport virtual void reset();
+	CvCivilizationInfo();
+	virtual ~CvCivilizationInfo();
+	virtual void reset();
 
 	DllExport int getDefaultPlayerColor() const;				// Expose to Python
-	DllExport int getArtStyleType() const;				// Expose to Python
-	DllExport int getUnitArtStyleType() const;         // Expose to Python
-	DllExport int getNumCityNames() const;				// Expose to Python
-	DllExport int getNumLeaders() const;				// Exposed to Python - the number of leaders the Civ has, this is needed so that random leaders can be generated easily
-	DllExport int getSelectionSoundScriptId() const;				// Expose to Python
-	DllExport int getActionSoundScriptId() const;				// Expose to Python
+	int getArtStyleType() const;				// Expose to Python
+	int getUnitArtStyleType() const;         // Expose to Python
+	int getNumCityNames() const;				// Expose to Python
+	int getNumLeaders() const;				// Exposed to Python - the number of leaders the Civ has, this is needed so that random leaders can be generated easily
+	int getSelectionSoundScriptId() const;				// Expose to Python
+	int getActionSoundScriptId() const;				// Expose to Python
 
 	DllExport bool isAIPlayable() const;				// Expose to Python
 	DllExport bool isPlayable() const;				// Expose to Python
 
 	std::wstring pyGetShortDescription(uint uiForm) { return getShortDescription(uiForm); }				// Exposed to Python
 	DllExport const wchar* getShortDescription(uint uiForm = 0);
-	DllExport const wchar* getShortDescriptionKey() const;				// Exposed to Python
+	const wchar* getShortDescriptionKey() const;				// Exposed to Python
 	std::wstring pyGetShortDescriptionKey() { return getShortDescriptionKey(); }				// Exposed to Python
 	
 	std::wstring pyGetAdjective(uint uiForm) { return getAdjective(uiForm);  }	// Exposed to Python
 	DllExport const wchar* getAdjective(uint uiForm = 0);				
-	DllExport const wchar* getAdjectiveKey() const;				// Exposed to Python
+	const wchar* getAdjectiveKey() const;				// Exposed to Python
 	std::wstring pyGetAdjectiveKey() { return getAdjectiveKey(); }				// Exposed to Python
 
 	DllExport const TCHAR* getFlagTexture() const;
-	DllExport const TCHAR* getArtDefineTag() const;
-	DllExport void setArtDefineTag(const TCHAR* szVal);
+	const TCHAR* getArtDefineTag() const;
+	void setArtDefineTag(const TCHAR* szVal);
 	// Arrays
 
-	DllExport int getCivilizationBuildings(int i) const;				// Exposed to Python
-	DllExport int getCivilizationUnits(int i) const;				// Exposed to Python
-	DllExport int getCivilizationFreeUnitsClass(int i) const;				// Exposed to Python
-	DllExport int getCivilizationInitialCivics(int i) const;				// Exposed to Python
+	int getCivilizationBuildings(int i) const;				// Exposed to Python
+	int getCivilizationUnits(int i) const;				// Exposed to Python
+	int getCivilizationFreeUnitsClass(int i) const;				// Exposed to Python
+	int getCivilizationInitialCivics(int i) const;				// Exposed to Python
 
 	DllExport bool isLeaders(int i) const;				// Exposed to Python
-	DllExport bool isCivilizationFreeBuildingClass(int i) const;				// Exposed to Python
-	DllExport bool isCivilizationFreeTechs(int i) const;				// Exposed to Python
-	DllExport bool isCivilizationDisableTechs(int i) const;				// Exposed to Python
+	bool isCivilizationFreeBuildingClass(int i) const;				// Exposed to Python
+	bool isCivilizationFreeTechs(int i) const;				// Exposed to Python
+	bool isCivilizationDisableTechs(int i) const;				// Exposed to Python
 
 	DllExport std::string getCityNames(int i) const;				// Exposed to Python
 
-	DllExport const CvArtInfoCivilization* getArtInfo() const;
-	DllExport const TCHAR* getButton() const;
+	const CvArtInfoCivilization* getArtInfo() const;
+	const TCHAR* getButton() const;
 
-	DllExport int getDerivativeCiv() const;																// Exposed to Python
+	int getDerivativeCiv() const;																// Exposed to Python
 	void setDerivativeCiv(int iCiv);
 
 	bool read(CvXMLLoadUtility* pXML);
-	DllExport bool readPass2(CvXMLLoadUtility* pXML);
-	DllExport void read(FDataStreamBase* stream);
-	DllExport void write(FDataStreamBase* stream);
+	bool readPass2(CvXMLLoadUtility* pXML);
+#ifdef _XML_FILE_CACHE
+	void read(FDataStreamBase* stream);
+	void write(FDataStreamBase* stream);
+#endif
 
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
 
@@ -2386,10 +2423,10 @@ public:
 	int getGoodies(int i) const;				// Exposed to Python
 	int isFreeTechs(int i) const;				// Exposed to Python
 	int isAIFreeTechs(int i) const;				// Exposed to Python
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
@@ -2774,10 +2811,10 @@ public:
 	int getYieldChange(int i) const;				// Exposed to Python
 	
 	// Serialize
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
-
+#endif
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
 protected:
 
@@ -2875,10 +2912,10 @@ public:
 
 	const TCHAR* getButton() const;
 	DllExport const CvArtInfoImprovement* getArtInfo() const;
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 	bool readPass2(CvXMLLoadUtility* pXML);
 
@@ -3035,10 +3072,10 @@ public:
 
 	const TCHAR* getButton() const; // Exposed to Python
 	DllExport const CvArtInfoBonus* getArtInfo() const; // Exposed to Python
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 	//---------------------------------------PUBLIC MEMBER VARIABLES---------------------------------
@@ -3115,6 +3152,11 @@ public:
 	int getDefenseModifier() const;						// Exposed to Python
 	int getAdvancedStartRemoveCost() const;						// Exposed to Python
 	int getTurnDamage() const;						// Exposed to Python
+// BUG - Global Warming Mod - start
+#ifdef _MOD_GWARM
+	int getWarmingDefense() const;						// Exposed to Python
+#endif
+// BUG - Global Warming Mod - end
 	
 	bool isNoCoast() const;						// Exposed to Python
 	bool isNoRiver() const;						// Exposed to Python
@@ -3127,6 +3169,9 @@ public:
 	bool isNoImprovement() const;			// Exposed to Python
 	bool isVisibleAlways() const;			// Exposed to Python
 	bool isNukeImmune() const;			// Exposed to Python
+// BUG - City Plot Status - start
+	bool isOnlyBad() const;				// Exposed to Python
+// BUG - City Plot Status - end
 	const TCHAR* getOnUnitChangeTo() const;
 
 	const TCHAR* getArtDefineTag() const;			
@@ -3166,6 +3211,11 @@ protected:
 	int m_iDefenseModifier;
 	int m_iAdvancedStartRemoveCost;
 	int m_iTurnDamage;
+// BUG - Global Warming Mod - start
+#ifdef _MOD_GWARM
+	int m_iWarmingDefense;
+#endif
+// BUG - Global Warming Mod - end
 	
 	bool m_bNoCoast;				
 	bool m_bNoRiver;					
@@ -3562,9 +3612,10 @@ public:
 	DllExport const CvArtInfoLeaderhead* getArtInfo() const;
 	const TCHAR* getLeaderHead() const;
 	const TCHAR* getButton() const;
-
+#ifdef _XML_FILE_CACHE
 	void write(FDataStreamBase* stream);
 	void read(FDataStreamBase* stream);
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
@@ -5391,7 +5442,9 @@ public:
 	DllExport int getNumLanguages() const; // not static for Python access
 	DllExport void setNumLanguages(int iNum); // not static for Python access
 
-	bool read(CvXMLLoadUtility* pXML);
+	bool read(CvXMLLoadUtility* pXML,
+			// <trs.lang> (K-Mod): Choose which language to load. NULL means default.
+			std::string const* pLanguageName = NULL);
 
 protected:
 
@@ -5432,10 +5485,10 @@ public:
 			SAFE_DELETE_ARRAY(m_pbDiplomacyPowerTypes);
 			SAFE_DELETE_ARRAY(m_paszDiplomacyText);
 		}
-		
+	#ifdef _XML_FILE_CACHE
 		void read(FDataStreamBase* stream);
 		void write(FDataStreamBase* stream);
-		
+	#endif
 		int m_iNumDiplomacyText;
 		bool* m_pbCivilizationTypes;
 		bool* m_pbLeaderHeadTypes;
@@ -5462,9 +5515,10 @@ public:
 	DllExport int getNumDiplomacyText(int i) const;											// Exposed to Python
 
 	DllExport const TCHAR* getDiplomacyText(int i, int j) const;				// Exposed to Python
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 private:
@@ -5700,12 +5754,16 @@ public:
 
 	DllExport bool getDefault() const;
 	DllExport bool getVisible() const;
+	// <trs.lma>
+	void setVisible(bool b);
+	bool getVisibleXML() const; // </trs.lma>
 
 	bool read(CvXMLLoadUtility* pXML);
 
 private:
 	bool m_bDefault;
 	bool m_bVisible;
+	bool m_bVisibleXML; // trs.lma
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -5872,6 +5930,9 @@ public:
 	const CvWString& getWorldNews(int i) const;
 	int getNumWorldNews() const;
 
+// BUG - Events with Images - start
+	const TCHAR* getEventArt() const;				// Exposed to Python
+// BUG - Events with Images - end
 	bool isSinglePlayer() const;				// Exposed to Python
 	bool isTeam() const;						// Exposed to Python
 	bool isRecurring() const;					// Exposed to Python
@@ -5899,10 +5960,10 @@ public:
 	const char* getPythonCanDo() const;
 	const char* getPythonCanDoCity() const;
 	const char* getPythonCanDoUnit() const;
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* );
 	void write(FDataStreamBase* );
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 
 private:
@@ -5952,6 +6013,9 @@ private:
 	std::vector<CvWString> m_aszText;
 	std::vector<CvWString> m_aszWorldNews;
 
+// BUG - Events with Images - start
+	CvString m_szEventArt;
+// BUG - Events with Images - end
 	bool m_bSinglePlayer;
 	bool m_bTeam;
 	bool m_bRecurring;
@@ -6080,10 +6144,10 @@ public:
 	const wchar* getQuestFailTextKey() const;
 	const wchar* getOtherPlayerPopup() const;
 	const wchar* getLocalInfoTextKey() const;
-
+#ifdef _XML_FILE_CACHE
 	void read(FDataStreamBase* );
 	void write(FDataStreamBase* );
-
+#endif
 	bool read(CvXMLLoadUtility* pXML);
 	bool readPass2(CvXMLLoadUtility* pXML);
 

@@ -23,7 +23,6 @@
 #include "CvMap.h"
 #include "CvMapGenerator.h"
 #include "FAStarNode.h"
-#include "CvInitCore.h"
 #include "CvInfos.h"
 #include "FProfiler.h"
 #include "CyArgsList.h"

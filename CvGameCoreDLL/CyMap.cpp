@@ -12,7 +12,6 @@
 #include "CyArea.h"
 #include "CvGlobals.h"
 #include "CvMapGenerator.h"
-#include "CvInitCore.h"
 
 CyMap::CyMap() : m_pMap(NULL)
 {

@@ -114,7 +114,7 @@ void CvFractal::fracInitInternal(int iNewXs, int iNewYs, int iGrain, CvRandom& r
 	int iHintsHeight = (1 << (m_iFracYExp - iSmooth)) + ((m_iFlags & FRAC_WRAP_Y) ? 0 : 1);
 	if (pbyHints != NULL)
 	{
-		FAssertMsg(iHintsLength == iHintsWidth*iHintsHeight, "pbyHints is the wrong size!")
+		FAssertMsg(iHintsLength == iHintsWidth*iHintsHeight, "pbyHints is the wrong size!");
 	}
 
 	for (iPass = iSmooth; iPass >= 0; iPass--)

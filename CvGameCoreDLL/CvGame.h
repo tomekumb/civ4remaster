@@ -13,6 +13,7 @@ class CvPlot;
 class CvCity;
 class CvReplayMessage;
 class CvReplayInfo;
+class CvHallOfFameInfo; // trs.clearhof
 
 typedef std::vector<const CvReplayMessage*> ReplayMessageList;
 
@@ -34,7 +35,19 @@ protected:
 public:
 
 	DllExport void setInitialItems();
-	DllExport void regenerateMap();
+
+// BUG - MapFinder - start
+	DllExport bool canRegenerateMap() const;								// Exposed to Python
+	DllExport void regenerateMap();											// Exposed to Python
+	DllExport bool takeJPEGScreenShot(std::string fileName) const;			// Exposed to Python
+// BUG - MapFinder - end
+
+// BUFFY - Security Checks - start
+#ifdef _BUFFY
+	int checkCRCs(std::string fileName_, std::string expectedModCRC_, std::string expectedDLLCRC_, std::string expectedShaderCRC_, std::string expectedPythonCRC_, std::string expectedXMLCRC_) const;		// Exposed to Python
+	int getWarningStatus() const;											// Exposed to Python
+#endif
+// BUFFY - Security Checks - end
 
 	DllExport void initDiplomacy();
 	DllExport void initFreeState();
@@ -56,7 +69,7 @@ public:
 
 	DllExport void updateSelectionList();
 	DllExport void updateTestEndTurn();
-
+	void autoSave(bool bInitial = false); // trs.savmsg
 	DllExport void testExtendedGame();
 
 	DllExport CvUnit* getPlotUnit(const CvPlot* pPlot, int iIndex) const;
@@ -108,6 +121,10 @@ public:
 	bool canHaveSecretaryGeneral(VoteSourceTypes eVoteSource) const;												// Exposed to Python
 	void clearSecretaryGeneral(VoteSourceTypes eVoteSource);
 	void updateSecretaryGeneral();
+	// <trs.1stcontact>
+	BuildingTypes getVoteSourceBuilding(VoteSourceTypes eVS) const;
+	CvCity* getVoteSourceCity(VoteSourceTypes eVS, TeamTypes eObserver, bool bDebug = false) const;
+	// </trs.1stcontact>
 
 	DllExport int countCivPlayersAlive() const;																		// Exposed to Python
 	DllExport int countCivPlayersEverAlive() const;																// Exposed to Python
@@ -257,6 +274,7 @@ public:
 	DllExport bool isDebugMode() const;																			// Exposed to Python
 	DllExport void toggleDebugMode();																				// Exposed to Python
 	DllExport void updateDebugModeCache();
+	bool isDebugToolsAllowed(bool bWB = false) const; // trs.cheats
 
 	DllExport int getPitbossTurnTime() const;																			// Exposed to Python
 	DllExport void setPitbossTurnTime(int iHours);																			// Exposed to Python
@@ -268,6 +286,12 @@ public:
 
 	DllExport bool isFinalInitialized() const;																		// Exposed to Python
 	DllExport void setFinalInitialized(bool bNewValue);
+	// <trs.balloon>
+	void setScreenDimensions(int iWidth, int iHeight); // (exposed to Python)
+	int getScreenWidth() const;
+	int getScreenHeight() const;
+	// </trs.balloon>
+	void onCityScreenChange(); // trs.camcity
 
 	bool getPbemTurnSent() const;
 	DllExport void setPbemTurnSent(bool bNewValue);
@@ -459,6 +483,9 @@ public:
 	CvReplayInfo* getReplayInfo() const;
 	DllExport void setReplayInfo(CvReplayInfo* pReplay);
 	void saveReplay(PlayerTypes ePlayer);
+	void setHallOfFame(CvHallOfFameInfo* pHallOfFame); // trs.clearhof
+
+	void exportSaveGame(); // trs.modname (Exposed to Python)
 
 	bool hasSkippedSaveChecksum() const;
 
@@ -534,6 +561,7 @@ public:
 	DllExport bool shouldCenterMinimap() const;
 	DllExport EndTurnButtonStates getEndTurnState() const;
 
+	void setCityBarWidth(bool bWide); // trs.wcitybars (exposed to Python)
 	DllExport void handleCityScreenPlotPicked(CvCity* pCity, CvPlot* pPlot, bool bAlt, bool bShift, bool bCtrl) const;
 	DllExport void handleCityScreenPlotDoublePicked(CvCity* pCity, CvPlot* pPlot, bool bAlt, bool bShift, bool bCtrl) const;
 	DllExport void handleCityScreenPlotRightPicked(CvCity* pCity, CvPlot* pPlot, bool bAlt, bool bShift, bool bCtrl) const;
@@ -565,6 +593,7 @@ protected:
 	int m_iInitTech;
 	int m_iInitWonders;
 	int m_iAIAutoPlay;
+	int m_iScreenWidth, m_iScreenHeight; // smcpoc
 
 	unsigned int m_uiInitialTime;
 
@@ -572,6 +601,8 @@ protected:
 	bool m_bCircumnavigated;
 	bool m_bDebugMode;
 	bool m_bDebugModeCache;
+	bool m_bFeignSP; // trs.cheats
+	bool m_bCityScreenUp; // trs.citycam
 	bool m_bFinalInitialized;
 	bool m_bPbemTurnSent;
 	bool m_bHotPbemBetweenTurns;
@@ -628,6 +659,7 @@ protected:
 
 	ReplayMessageList m_listReplayMessages; 
 	CvReplayInfo* m_pReplayInfo;
+	CvHallOfFameInfo* m_pHallOfFame; // trs.clearhof
 
 	int m_iNumSessions;
 

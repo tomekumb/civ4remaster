@@ -15,6 +15,24 @@
 // Firaxis Games, copyright 2005
 //
 
+// <trs.modname> Let's make this the place for string utility functions
+namespace cstring
+{
+	inline bool empty(char const* szString)
+	{
+		return (szString[0] == '\0');
+	}
+	// Uses a C function, so it kind of fits here.
+	inline std::string& tolower(std::string& s)
+	{
+		for (size_t i = 0; i < s.length(); i++)
+			s[i] = static_cast<char>(::tolower(s[i]));
+		return s;
+	}
+}
+#define STDSTR_STARTS_WITH(s, prefix) ((s).rfind((prefix), 0) == 0)
+// </trs.modname>
+
 // wide string
 class CvWString : public std::wstring
 {
@@ -34,18 +52,17 @@ public:
 	~CvWString() {}
 
 	void Copy(const char* s)
-	{ 
-		if (s)
+	{
+		// <trs.fix> (from C2C)
+		if (s == NULL || s[0] == '\0')
 		{
-			int iLen = strlen(s);
-			if (iLen)
-			{
-				wchar *w = new wchar[iLen+1];
-				swprintf(w, L"%S", s);	// convert
-				assign(w);
-				delete [] w;
-			}
-		}
+			clear();
+			return;
+		} // </trs.fix>
+		wchar *w = new wchar[strlen(s) + 1];
+		swprintf(w, L"%S", s);	// convert
+		assign(w);
+		delete [] w;
 	}
 
 	// FString compatibility
@@ -211,17 +228,16 @@ public:
 	void Convert(const std::wstring& w) { Copy(w.c_str());	}
 	void Copy(const wchar* w)
 	{
-		if (w)
+		// <trs.fix> (from C2C)
+		if (w == NULL || w[0] == '\0')
 		{
-			int iLen = wcslen(w);
-			if (iLen)
-			{
-				char *s = new char[iLen+1];
-				sprintf(s, "%S", w);	// convert
-				assign(s);
-				delete [] s;
-			}
-		}
+			clear();
+			return;
+		} // </trs.fix>
+		char *s = new char[wcslen(w) + 1];
+		sprintf(s, "%S", w);	// convert
+		assign(s);
+		delete [] s;
 	}
 
 	// implicit conversion
@@ -333,7 +349,7 @@ inline bool CvString::formatv(std::string & out, const char * fmt, va_list args)
 	if (success)
 		out = pbuf;
 	else
-		out = "";
+		out.clear(); // trs. (from C2C)
 
 	if (pbuf!=buf)
 		delete [] pbuf;
@@ -376,7 +392,7 @@ inline bool CvWString::formatv(std::wstring & out, const wchar * fmt, va_list ar
 	if (success)
 		out = pbuf;
 	else
-		out = L"";
+		out.clear(); // trs. (from C2C)
 
 	if (pbuf!=buf)
 		delete [] pbuf;

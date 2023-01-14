@@ -633,3 +633,15 @@ CvTurnTimerInfo* CyGlobalContext::getTurnTimerInfo(int i) const
 {
 	return &(GC.getTurnTimerInfo((TurnTimerTypes) i));
 }
+
+// trs.camdist:
+void CyGlobalContext::updateDefaultCamDistance()
+{
+	GC.updateDefaultCamDistance();
+}
+
+// trs.camspeed:
+void CyGlobalContext::updateCamScrollSpeed()
+{
+	GC.updateCamScrollSpeed();
+}

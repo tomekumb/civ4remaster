@@ -18,7 +18,18 @@
 #include "CvGameTextMgr.h"
 #include "FProfiler.h"
 #include "FVariableSystem.h"
-#include "CvInitCore.h"
+
+#include "BugMod.h" // BUG - DLL Info
+#include "CvBugOptions.h" // BUG - BUG Info
+// <trs.modname>
+#include "ModName.h"
+#include "SelfMod.h"
+// </trs.modname>
+// BUFFY - DLL Info - start
+#ifdef _BUFFY
+#include "Buffy.h"
+#endif
+// BUFFY - DLL Info - end
 
 #define COPY(dst, src, typeName) \
 	{ \
@@ -42,6 +53,7 @@ void deleteInfoArray(std::vector<T*>& array)
 template <class T>
 bool readInfoArray(FDataStreamBase* pStream, std::vector<T*>& array, const char* szClassName)
 {
+#ifdef _XML_FILE_CACHE
 	GC.addToInfosVectors(&array);
 
 	int iSize;
@@ -67,11 +79,16 @@ bool readInfoArray(FDataStreamBase* pStream, std::vector<T*>& array, const char*
 	}
 
 	return true;
+#else
+	FAssert(false);
+	return false;
+#endif
 }
 
 template <class T>
 bool writeInfoArray(FDataStreamBase* pStream,  std::vector<T*>& array)
 {
+#ifdef _XML_FILE_CACHE
 	int iSize = sizeof(T);
 	pStream->Write(iSize);
 	pStream->Write(array.size());
@@ -80,6 +97,10 @@ bool writeInfoArray(FDataStreamBase* pStream,  std::vector<T*>& array)
 		(*it)->write(pStream);
 	}
 	return true;
+#else
+	FAssert(false);
+	return false;
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +116,7 @@ m_bGraphicsInitialized(false),
 m_bLogging(false),
 m_bRandLogging(false),
 m_bOverwriteLogs(false),
+m_bChipotle(false), // trs.lma
 m_bSynchLogging(false),
 m_bDLLProfiler(false),
 m_pkMainMenu(NULL),
@@ -102,6 +124,7 @@ m_iNewPlayers(0),
 m_bZoomOut(false),
 m_bZoomIn(false),
 m_bLoadGameFromFile(false),
+m_bHoFScreenUp(false), // trs.replayname
 m_pFMPMgr(NULL),
 m_asyncRand(NULL),
 m_interface(NULL),
@@ -126,6 +149,7 @@ m_borderFinder(NULL),
 m_areaFinder(NULL),
 m_plotGroupFinder(NULL),
 m_pDLL(NULL),
+m_pModName(NULL), // trs.modname
 m_aiPlotDirectionX(NULL),
 m_aiPlotDirectionY(NULL),
 m_aiPlotCardinalDirectionX(NULL),
@@ -153,6 +177,7 @@ m_iMAX_PLOT_LIST_ROWS(0),
 m_iUNIT_MULTISELECT_MAX(0),
 m_iPERCENT_ANGER_DIVISOR(0),
 m_iEVENT_MESSAGE_TIME(0),
+m_iEVENT_MESSAGE_STAGGER_TIME(0), // trs.debug
 m_iROUTE_FEATURE_GROWTH_MODIFIER(0),
 m_iFEATURE_GROWTH_MODIFIER(0),
 m_iMIN_CITY_RANGE(0),
@@ -178,6 +203,7 @@ m_fCAMERA_MAX_YAW(0),
 m_fCAMERA_FAR_CLIP_Z_HEIGHT(0),
 m_fCAMERA_MAX_TRAVEL_DISTANCE(0),
 m_fCAMERA_START_DISTANCE(0),
+m_fCAMERA_START_DISTANCE_Original(0), // trs.camdist
 m_fAIR_BOMB_HEIGHT(0),
 m_fPLOT_SIZE(0),
 m_fCAMERA_SPECIAL_PITCH(0),
@@ -215,10 +241,13 @@ m_iUSE_ON_UNIT_LOST_CALLBACK(0),
 m_paHints(NULL),
 m_paMainMenus(NULL)
 {
+	// trs.camspeed:
+	m_ffCAMERA_SCROLL_SPEED_Original.first = m_ffCAMERA_SCROLL_SPEED_Original.second = 0;
 }
 
 CvGlobals::~CvGlobals()
 {
+	SAFE_DELETE(m_pModName); // trs.modname
 }
 
 //
@@ -578,6 +607,89 @@ NiPoint3& CvGlobals::getPt3CameraDir()
 	return m_pt3CameraDir;
 }
 
+// trs.camdist (based on AdvCiv):
+// (defined by WinDef.h)
+#undef FAR
+void CvGlobals::updateDefaultCamDistance()
+{
+	PlayerTypes const eActivePlayer = GC.getGame().getActivePlayer();
+	if (eActivePlayer == NO_PLAYER || !IsGraphicsInitialized())
+		return;
+	enum DefaultCamDistChoices { AUTO, CLOSE, MEDIUM, FAR, XML };
+	DefaultCamDistChoices eChoice = (DefaultCamDistChoices)
+			getBugOptionINT("Taurus__DefaultCamDistance");
+	/*	Unfortunately, BUG hasn't been loaded when the initial camera distance
+		in a new game is set (w/o having loaded or started a game previously). */
+	if (!isBug())
+		eChoice = CLOSE;
+	float fDist;	
+	switch (eChoice)
+	{
+	case AUTO:
+	{
+		fDist = std::max(7600 - 80 * getFIELD_OF_VIEW(), 1000.f);
+		if (eActivePlayer != NO_PLAYER)
+		{
+			switch((int)GET_PLAYER(eActivePlayer).getCurrentEra())
+			{
+			case 0: fDist *= 0.88f; break;
+			case 1: fDist *= 0.94f; break;
+			case 2: break;
+			case 3: fDist *= 1.05f; break;
+			default: fDist *= 1.075f;
+			}
+		}
+		break;
+	}
+	case CLOSE: fDist = 3000; break;
+	case MEDIUM: fDist = 4000; break;
+	case FAR: fDist = 5000; break;
+	default: fDist = m_fCAMERA_START_DISTANCE_Original;
+	}
+	setDefineFLOAT("CAMERA_START_DISTANCE", fDist, false);
+	m_fCAMERA_START_DISTANCE = fDist;
+}
+
+// trs.camcity (from AdvCiv):
+void CvGlobals::updateCityCamDistance()
+{
+	float fCityCamDist = getDefineFLOAT("CAMERA_BASE_CITY_DISTANCE");
+	/*	Exponentiate to let the player yet exert _some_ control (through the FoV)
+		over the city-screen camera distance. */
+	fCityCamDist *= std::pow(42.f / GC.getFIELD_OF_VIEW(), 0.85f);
+	float fDefaultAspectRatio = 8/5.f;
+	int const iW = getGame().getScreenWidth();
+	int const iH = getGame().getScreenHeight();
+	float fAspectRatio = (iH <= 0 ? fDefaultAspectRatio : iW / (float)iH);
+	float fScreenDimMult = fAspectRatio / fDefaultAspectRatio;
+	// On small screens, width can be the limiting dimension.
+	if (iW > 0 && iW < 1400)
+		fScreenDimMult *= std::pow(1280.f / getGame().getScreenWidth(), 0.85f);
+	fCityCamDist *= ::range(fScreenDimMult, 2/3.f, 1.5f);
+	setDefineFLOAT("CAMERA_CITY_ZOOM_IN_DISTANCE", fCityCamDist);
+}
+
+// trs.camspeed:
+void CvGlobals::updateCamScrollSpeed()
+{
+	enum CamScrollSpeedChoices { VERY_SLOW, SLOW, MEDIUM, FAST, VERY_FAST };
+	std::pair<float,float> ffSpeed;
+	switch ((CamScrollSpeedChoices)getBugOptionINT("Taurus__CamScrollSpeed"))
+	{
+	case VERY_SLOW:
+		ffSpeed = std::make_pair(100.f, 1000.f);
+		break;
+	case SLOW: ffSpeed = std::make_pair(200.f, 1400.f); break;
+	/*	Not increasing the min speed much b/c that'll make it difficult to
+		position the camera at a precise location */
+	case FAST: ffSpeed = std::make_pair(2800.f, 325.f); break;
+	case VERY_FAST: ffSpeed = std::make_pair(4000.f, 450.f); break;
+	default: ffSpeed = m_ffCAMERA_SCROLL_SPEED_Original;
+	}
+	setDefineFLOAT("CAMERA_MIN_SCROLL_SPEED", ffSpeed.first, false);
+	setDefineFLOAT("CAMERA_MAX_SCROLL_SPEED", ffSpeed.second, false);
+}
+
 bool& CvGlobals::getLogging()
 {
 	return m_bLogging;
@@ -779,11 +891,19 @@ std::vector<CvColorInfo*>& CvGlobals::getColorInfo()
 	return m_paColorInfo;
 }
 
-CvColorInfo& CvGlobals::getColorInfo(ColorTypes e)
+CvColorInfo& CvGlobals::getColorInfo(ColorTypes eColor)
 {
-	FAssert(e > -1);
-	FAssert(e < GC.getNumColorInfos());
-	return *(m_paColorInfo[e]);
+	FAssert(eColor >= 0);
+	//FAssert(eColor < GC.getNumColorInfos());
+	/*	<trs.replayname> (from AdvCiv) So that we can handle replays of mods
+		that have extra colors */
+	if (eColor >= getNumColorInfos())
+	{
+		FAssert(m_bHoFScreenUp || eColor < getNumColorInfos());
+		// +7: Skip colors from COLOR_CLEAR to COLOR_LIGHT_GREY
+		eColor = (ColorTypes)((eColor + 7) % getNumColorInfos());
+	} // </trs.replayname>
+	return *(m_paColorInfo[eColor]);
 }
 
 
@@ -2593,6 +2713,7 @@ void CvGlobals::cacheGlobals()
 	m_iUNIT_MULTISELECT_MAX = getDefineINT("UNIT_MULTISELECT_MAX");
 	m_iPERCENT_ANGER_DIVISOR = getDefineINT("PERCENT_ANGER_DIVISOR");
 	m_iEVENT_MESSAGE_TIME = getDefineINT("EVENT_MESSAGE_TIME");
+	m_iEVENT_MESSAGE_STAGGER_TIME = getDefineINT("EVENT_MESSAGE_STAGGER_TIME"); // trs.debug
 	m_iROUTE_FEATURE_GROWTH_MODIFIER = getDefineINT("ROUTE_FEATURE_GROWTH_MODIFIER");
 	m_iFEATURE_GROWTH_MODIFIER = getDefineINT("FEATURE_GROWTH_MODIFIER");
 	m_iMIN_CITY_RANGE = getDefineINT("MIN_CITY_RANGE");
@@ -2619,6 +2740,16 @@ void CvGlobals::cacheGlobals()
 	m_fCAMERA_FAR_CLIP_Z_HEIGHT = getDefineFLOAT("CAMERA_FAR_CLIP_Z_HEIGHT");
 	m_fCAMERA_MAX_TRAVEL_DISTANCE = getDefineFLOAT("CAMERA_MAX_TRAVEL_DISTANCE");
 	m_fCAMERA_START_DISTANCE = getDefineFLOAT("CAMERA_START_DISTANCE");
+	// <trs.camdist>
+	if (m_fCAMERA_START_DISTANCE_Original <= 0)
+		m_fCAMERA_START_DISTANCE_Original = std::max(500.f, m_fCAMERA_START_DISTANCE);
+	// </trs.camdist>
+	// <trs.camspeed>
+	if (m_ffCAMERA_SCROLL_SPEED_Original.first <= 0)
+	{
+		m_ffCAMERA_SCROLL_SPEED_Original.first = getDefineFLOAT("CAMERA_MIN_SCROLL_SPEED");
+		m_ffCAMERA_SCROLL_SPEED_Original.second = getDefineFLOAT("CAMERA_MAX_SCROLL_SPEED");
+	} // </trs.camspeed>
 	m_fAIR_BOMB_HEIGHT = getDefineFLOAT("AIR_BOMB_HEIGHT");
 	m_fPLOT_SIZE = getDefineFLOAT("PLOT_SIZE");
 	m_fCAMERA_SPECIAL_PITCH = getDefineFLOAT("CAMERA_SPECIAL_PITCH");
@@ -2626,7 +2757,16 @@ void CvGlobals::cacheGlobals()
 	m_fCAMERA_MIN_DISTANCE = getDefineFLOAT("CAMERA_MIN_DISTANCE");
 	m_fCAMERA_UPPER_PITCH = getDefineFLOAT("CAMERA_UPPER_PITCH");
 	m_fCAMERA_LOWER_PITCH = getDefineFLOAT("CAMERA_LOWER_PITCH");
-	m_fFIELD_OF_VIEW = getDefineFLOAT("FIELD_OF_VIEW");
+	{
+		float fOldFoV = m_fFIELD_OF_VIEW; // trs.camdist
+		m_fFIELD_OF_VIEW = getDefineFLOAT("FIELD_OF_VIEW");
+		// <trs.cam> Adjust camera distance
+		if (std::abs(fOldFoV - m_fFIELD_OF_VIEW) > 0.5f)
+		{
+			updateDefaultCamDistance(); // trs.camdist
+			updateCityCamDistance(); // trs.camcity
+		} // </trs.cam>
+	}
 	m_fSHADOW_SCALE = getDefineFLOAT("SHADOW_SCALE");
 	m_fUNIT_MULTISELECT_DISTANCE = getDefineFLOAT("UNIT_MULTISELECT_DISTANCE");
 
@@ -2655,45 +2795,75 @@ void CvGlobals::cacheGlobals()
 	m_iUSE_ON_UPDATE_CALLBACK = getDefineINT("USE_ON_UPDATE_CALLBACK");
 	m_iUSE_ON_UNIT_CREATED_CALLBACK = getDefineINT("USE_ON_UNIT_CREATED_CALLBACK");
 	m_iUSE_ON_UNIT_LOST_CALLBACK = getDefineINT("USE_ON_UNIT_LOST_CALLBACK");
+
+	/*	trs.lma: The EXE will set this to 0 when loading a savegame with
+		Locked Assets. At that point, we won't know whether the cheat code
+		has been entered - unless we store that info ourselves. */
+	m_bChipotle = (m_bChipotle || m_pDLL->getChtLvl() > 0);
 }
 
-int CvGlobals::getDefineINT( const char * szName ) const
+// trs.modname: Separate function for external calls
+int CvGlobals::getDefineINTExternal(char const* szName) const
+{
+	// <trs.debug> The EXE polls this while idle; harmless - but annoying.
+	if (szName == reinterpret_cast<char*>(0x00c9c868))
+		return getEVENT_MESSAGE_STAGGER_TIME(); // </trs.debug>
+	if (szName == reinterpret_cast<char*>(0x00c93dc4) && // "SAVE_VERSION"
+		isModNameKnown() &&
+		(GC.getInitCore().isLoadGameType() ||
+		(getInitCore().getActivePlayer() != NO_PLAYER && !getModName().isSaving())) &&
+		(getDefineBOOL("LOAD_BTS_SAVEGAMES") ||
+		!cstring::empty(getDefineSTRING("COMPATIBLE_MOD_NAME_PREFIXES")) ||
+		getModName().isNameCheckOverrideKey()))
+	{
+		smc::BtS_EXE.patchModNameCheck(&getModName());
+	}
+	return getDefineINT(szName);
+}
+
+int CvGlobals::getDefineINT(const char * szName) const
 {
 	int iReturn = 0;
-	GC.getDefinesVarSystem()->GetValue( szName, iReturn );
+	GC.getDefinesVarSystem()->GetValue(szName, iReturn);
 	return iReturn;
 }
 
-float CvGlobals::getDefineFLOAT( const char * szName ) const
+float CvGlobals::getDefineFLOAT(const char * szName) const
 {
 	float fReturn = 0;
-	GC.getDefinesVarSystem()->GetValue( szName, fReturn );
+	GC.getDefinesVarSystem()->GetValue(szName, fReturn);
 	return fReturn;
 }
 
-const char * CvGlobals::getDefineSTRING( const char * szName ) const
+const char * CvGlobals::getDefineSTRING(const char * szName) const
 {
 	const char * szReturn = NULL;
-	GC.getDefinesVarSystem()->GetValue( szName, szReturn );
+	GC.getDefinesVarSystem()->GetValue(szName, szReturn);
 	return szReturn;
 }
 
-void CvGlobals::setDefineINT( const char * szName, int iValue )
+void CvGlobals::setDefineINT(const char * szName, int iValue,
+	bool bUpdateCache) // trs.opt
 {
-	GC.getDefinesVarSystem()->SetValue( szName, iValue );
-	cacheGlobals();
+	GC.getDefinesVarSystem()->SetValue(szName, iValue);
+	if (bUpdateCache) // trs.opt
+		cacheGlobals();
 }
 
-void CvGlobals::setDefineFLOAT( const char * szName, float fValue )
+void CvGlobals::setDefineFLOAT(const char * szName, float fValue,
+	bool bUpdateCache) // trs.opt
 {
-	GC.getDefinesVarSystem()->SetValue( szName, fValue );
-	cacheGlobals();
+	GC.getDefinesVarSystem()->SetValue(szName, fValue);
+	if (bUpdateCache) // trs.opt
+		cacheGlobals();
 }
 
-void CvGlobals::setDefineSTRING( const char * szName, const char * szValue )
+void CvGlobals::setDefineSTRING(const char * szName, const char * szValue,
+	bool bUpdateCache) // trs.opt
 {
-	GC.getDefinesVarSystem()->SetValue( szName, szValue );
-	cacheGlobals();
+	GC.getDefinesVarSystem()->SetValue(szName, szValue);
+	if (bUpdateCache) // trs.opt
+		cacheGlobals();
 }
 
 int CvGlobals::getMOVE_DENOMINATOR()
@@ -3113,7 +3283,16 @@ int CvGlobals::getCITY_HOME_PLOT()
 
 void CvGlobals::setDLLIFace(CvDLLUtilityIFaceBase* pDll)
 {
+	bool bChanged = (pDll != m_pDLL && pDll != NULL); // trs.modname
 	m_pDLL = pDll;
+	// <trs.modname>
+	if (bChanged)
+	{
+		SAFE_DELETE(m_pModName);
+		m_pModName = new ModName(
+				pDll->getModName(true),
+				pDll->getModName(false));
+	} // </trs.modname>
 }
 
 void CvGlobals::setDLLProfiler(FProfiler* prof)
@@ -3503,7 +3682,9 @@ void CvGlobals::setInfoTypeFromString(const char* szType, int idx)
 #ifdef _DEBUG
 	InfosMap::const_iterator it = m_infosMap.find(szType);
 	int iExisting = (it!=m_infosMap.end()) ? it->second : -1;
-	FAssertMsg(iExisting==-1 || iExisting==idx || strcmp(szType, "ERROR")==0, CvString::format("xml info type entry %s already exists", szType).c_str());
+	CvString szError;
+	szError.Format("info type %s already exists, Current XML file is: %s", szType, GC.getCurrentXMLFile().GetCString());
+	FAssertMsg(iExisting==-1 || iExisting==idx || strcmp(szType, "ERROR")==0, szError.c_str());
 #endif
 	m_infosMap[szType] = idx;
 }
@@ -3547,10 +3728,10 @@ int CvGlobals::getNumGlobeLayers() const { return NUM_GLOBE_LAYER_TYPES; }
 
 
 //
-// non-inline versions
+// non-inline versions (trs. Renamed the first two.)
 //
-CvMap& CvGlobals::getMap() { return *m_map; }
-CvGameAI& CvGlobals::getGame() { return *m_game; }
+CvMap& CvGlobals::getMapExternal() { return *m_map; }
+CvGameAI& CvGlobals::getGameExternal() { return *m_game; }
 CvGameAI *CvGlobals::getGamePointer(){ return m_game; }
 
 int CvGlobals::getMaxCivPlayers() const
@@ -3559,7 +3740,16 @@ int CvGlobals::getMaxCivPlayers() const
 }
 
 bool CvGlobals::IsGraphicsInitialized() const { return m_bGraphicsInitialized;}
-void CvGlobals::SetGraphicsInitialized(bool bVal) { m_bGraphicsInitialized = bVal;}
+void CvGlobals::SetGraphicsInitialized(bool bVal)
+{
+	m_bGraphicsInitialized = bVal;
+	// <trs.>
+	if (IsGraphicsInitialized())
+	{	// trs.wcitybars:
+		getGame().setCityBarWidth(getBugOptionBOOL("Taurus__WideCityBars"));
+		updateDefaultCamDistance(); // trs.camdist
+	} // </trs.>
+}
 void CvGlobals::setInterface(CvInterface* pVal) { m_interface = pVal; }
 void CvGlobals::setDiplomacyScreen(CvDiplomacyScreen* pVal) { m_diplomacyScreen = pVal; }
 void CvGlobals::setMPDiplomacyScreen(CMPDiplomacyScreen* pVal) { m_mpDiplomacyScreen = pVal; }
@@ -3579,3 +3769,29 @@ void CvGlobals::setBorderFinder(FAStar* pVal) { m_borderFinder = pVal; }
 void CvGlobals::setAreaFinder(FAStar* pVal) { m_areaFinder = pVal; }
 void CvGlobals::setPlotGroupFinder(FAStar* pVal) { m_plotGroupFinder = pVal; }
 CvDLLUtilityIFaceBase* CvGlobals::getDLLIFaceNonInl() { return m_pDLL; }
+
+// trs.replayname:
+void CvGlobals::setHoFScreenUp(bool b)
+{
+	m_bHoFScreenUp = b;
+}
+
+// BUG - DLL Info - start
+bool CvGlobals::isBull() const { return true; }
+int CvGlobals::getBullApiVersion() const { return BUG_DLL_API_VERSION; }
+const wchar* CvGlobals::getBullName() const { return BUG_DLL_NAME; }
+const wchar* CvGlobals::getBullVersion() const { return BUG_DLL_VERSION; }
+// BUG - DLL Info - end
+
+// BUG - BUG Info - start
+void CvGlobals::setIsBug(bool bIsBug) { ::setIsBug(bIsBug); }
+// BUG - BUG Info - end
+
+// BUFFY - DLL Info - start
+#ifdef _BUFFY
+bool CvGlobals::isBuffy() const { return true; }
+int CvGlobals::getBuffyApiVersion() const { return BUFFY_DLL_API_VERSION; }
+const wchar* CvGlobals::getBuffyName() const { return BUFFY_DLL_NAME; }
+const wchar* CvGlobals::getBuffyVersion() const { return BUFFY_DLL_VERSION; }
+#endif
+// BUFFY - DLL Info - end

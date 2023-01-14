@@ -13,7 +13,6 @@
 #include "CyArgsList.h"
 #include "CvPopupReturn.h"
 #include "CvInfos.h"
-#include "CvInitCore.h"
 #include "CvGameTextMgr.h"
 #include "CvDLLPythonIFaceBase.h"
 #include "CvDLLInterfaceIFaceBase.h"
@@ -22,6 +21,12 @@
 #include "CvDLLEngineIFaceBase.h"
 #include "CvEventReporter.h"
 #include "CvMessageControl.h"
+
+// BUG - start
+#include "BugMod.h"
+#include "CvBugOptions.h"
+// BUG - end
+#include "ModName.h" // trs.modname
 
 // Public Functions...
 
@@ -81,9 +86,21 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			switch (info.getData1())
 			{
 			case 0:
+// BUG - Exit Save - start
+				if (GC.getGameINLINE().getVictory() == NO_VICTORY)
+				{
+					gDLL->getPythonIFace()->callFunction(PYBugModule, "gameExitSave");
+				}
+// BUG - Exit Save - end
 				gDLL->SetDone(true);
 				break;
 			case 1:
+// BUG - Exit Save - start
+				if (GC.getGameINLINE().getVictory() == NO_VICTORY)
+				{
+					gDLL->getPythonIFace()->callFunction(PYBugModule, "gameExitSave");
+				}
+// BUG - Exit Save - end
 				gDLL->getInterfaceIFace()->exitingToMainMenu();
 				break;
 			case 2:
@@ -336,6 +353,19 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 				CvEventReporter::getInstance().cityAcquiredAndKept(GC.getGameINLINE().getActivePlayer(), pCity);
 			}
 		}
+// BUG - Examine Culture Flip - start
+		else if (pPopupReturn->getButtonClicked() == 2)
+		{
+			CvCity* pCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(info.getData1());
+			if (NULL != pCity)
+			{
+				gDLL->getInterfaceIFace()->selectCity(pCity, false);
+			}
+
+			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_DISBANDCITY, info.getData1());
+			gDLL->getInterfaceIFace()->addPopup(pInfo, GC.getGameINLINE().getActivePlayer(), false, true);
+		}
+// BUG - Examine Culture Flip - end
 		break;
 
 	case BUTTONPOPUP_CHOOSEPRODUCTION:
@@ -720,6 +750,25 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 	case BUTTONPOPUP_FOUND_RELIGION:
 		CvMessageControl::getInstance().sendFoundReligion(GC.getGameINLINE().getActivePlayer(), (ReligionTypes)pPopupReturn->getButtonClicked(), (ReligionTypes)info.getData1());
 		break;
+	// <trs.modname>
+	case BUTTONPOPUP_EXPORT_SAVE:
+		if (pPopupReturn->getButtonClicked() > 0)
+		{
+			CvWString swModName(pPopupReturn->getEditBoxString());
+			gDLL->stripSpecialCharacters(swModName);
+			CvString sModName(swModName);
+			/*	Important to trigger the save dialog before setting
+				ModName to exporting state */
+			GC.getGame().doControl(CONTROL_SAVE_NORMAL);
+			GC.getModName().setExtModName(sModName.c_str(), true);
+		}
+		/*	Cancel button - We haven't changed the external mod name, so
+			there is nothing to do. But what if the player cancels the
+			SAVE_NORMAL dialog? Really difficult to learn about that in the DLL.
+			I've put exportDone calls in CvDLLWidgetData::parseHelp and
+			CvGame::doControl. That should be pretty reliable. */
+		//else {}
+		break; // </trs.modname>
 
 	default:
 		FAssert(false);
@@ -934,6 +983,10 @@ bool CvDLLButtonPopup::launchButtonPopup(CvPopup* pPopup, CvPopupInfo &info)
 	case BUTTONPOPUP_FOUND_RELIGION:
 		bLaunched = launchFoundReligionPopup(pPopup, info);
 		break;
+	// <trs.modname>
+	case BUTTONPOPUP_EXPORT_SAVE:
+		bLaunched = launchExportSavePopup(pPopup, info);
+		break; // </trs.modname>
 	default:
 		FAssert(false);
 		break;
@@ -1055,7 +1108,17 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 		iExamineCityID = std::max(iExamineCityID, GC.getNumProjectInfos());
 		iExamineCityID = std::max(iExamineCityID, GC.getNumProcessInfos());
 
-		gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_EXAMINE_CITY").c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), iExamineCityID, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+// BUG - Zoom City Details - start
+		if (getBugOptionBOOL("MiscHover__CDAZoomCityDetails", true, "BUG_CDA_ZOOM_CITY_DETAILS"))
+		{
+			gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_EXAMINE_CITY").c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), iExamineCityID, WIDGET_ZOOM_CITY, GC.getGameINLINE().getActivePlayer(), info.getData1(), true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+		}
+		else
+		{
+			// unchanged
+			gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_EXAMINE_CITY").c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), iExamineCityID, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+		}
+// BUG - Zoom City Details - end
 	}
 
 	UnitTypes eProductionUnit = pCity->getProductionUnit();
@@ -1425,6 +1488,9 @@ bool CvDLLButtonPopup::launchDisbandCityPopup(CvPopup* pPopup, CvPopupInfo &info
 	gDLL->getInterfaceIFace()->popupSetBodyString(pPopup, szBuffer);
 	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_KEEP_FLIPPED_CITY").c_str(), NULL, 0, WIDGET_GENERAL);
 	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_DISBAND_FLIPPED_CITY").c_str(), NULL, 1, WIDGET_GENERAL);
+// BUG - Examine Culture Flip - start
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_CITY_WARNING_ANSWER3").c_str(), NULL, 2, WIDGET_GENERAL, -1, -1);
+// BUG - Examine Culture Flip - end
 	gDLL->getInterfaceIFace()->popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
 
 	gDLL->getInterfaceIFace()->playGeneralSound("AS2D_CULTUREFLIP");
@@ -2206,7 +2272,9 @@ bool CvDLLButtonPopup::launchAdminPopup(CvPopup* pPopup, CvPopupInfo &info)
 	{
 		gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 1, 2);
 		gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 0, gDLL->getText("TXT_KEY_POPUP_ADMIN_ALLOW_CHEATS"), 2);
-		gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, gDLL->getChtLvl() > 0, 2);
+		gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, //gDLL->getChtLvl() > 0,
+				GC.getGame().isDebugToolsAllowed(), // trs.cheats
+				2);
 	}
 
 	gDLL->getInterfaceIFace()->popupLaunch(pPopup, true, POPUPSTATE_IMMEDIATE);
@@ -2393,6 +2461,13 @@ bool CvDLLButtonPopup::launchEventPopup(CvPopup* pPopup, CvPopupInfo &info)
 
 	CvEventTriggerInfo& kTrigger = GC.getEventTriggerInfo(pTriggeredData->m_eTrigger);
 	
+// BUG - Events with Images - start
+	if (kTrigger.getEventArt())
+	{
+		gDLL->getInterfaceIFace()->popupAddDDS(pPopup, kTrigger.getEventArt());
+	}
+// BUG - Events with Images - end
+
 	gDLL->getInterfaceIFace()->popupSetBodyString(pPopup, pTriggeredData->m_szText);
 
 	bool bEventAvailable = false;
@@ -2481,12 +2556,33 @@ bool CvDLLButtonPopup::launchFreeColonyPopup(CvPopup* pPopup, CvPopupInfo &info)
 
 	for (CvCity* pLoopCity = GET_PLAYER(ePlayer).firstCity(&iLoop); pLoopCity != NULL; pLoopCity = GET_PLAYER(ePlayer).nextCity(&iLoop))
 	{
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       08/04/09                                jdog5000      */
+/*                                                                                              */
+/* Bugfix                                                                                       */
+/************************************************************************************************/
+/* original bts code
 		PlayerTypes ePlayer = pLoopCity->getLiberationPlayer(false);
 		if (NO_PLAYER != ePlayer)
 		{
 			CvWString szCity = gDLL->getText("TXT_KEY_CITY_LIBERATE", pLoopCity->getNameKey(), GET_PLAYER(ePlayer).getNameKey());
 			gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szCity, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), -pLoopCity->getID(), WIDGET_GENERAL);
 		}
+*/
+		// Avoid potential variable name conflict
+		PlayerTypes eLibPlayer = pLoopCity->getLiberationPlayer(false);
+		if (NO_PLAYER != eLibPlayer)
+		{
+			// Don't offer liberation during war
+			if( !(GET_TEAM(GET_PLAYER(ePlayer).getTeam()).isAtWar(GET_PLAYER(eLibPlayer).getTeam())) )
+			{
+				CvWString szCity = gDLL->getText("TXT_KEY_CITY_LIBERATE", pLoopCity->getNameKey(), GET_PLAYER(eLibPlayer).getNameKey());
+				gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szCity, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), -pLoopCity->getID(), WIDGET_GENERAL);
+			}
+		}
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                        END                                                  */
+/************************************************************************************************/
 	}
 
 	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_NEVER_MIND"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL")->getPath(), 0, WIDGET_GENERAL);
@@ -2559,5 +2655,26 @@ bool CvDLLButtonPopup::launchFoundReligionPopup(CvPopup* pPopup, CvPopupInfo &in
 
 	gDLL->getInterfaceIFace()->popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
 
+	return true;
+}
+
+// trs.modname: (based on launchDetailsPopup)
+bool CvDLLButtonPopup::launchExportSavePopup(CvPopup* pPopup, CvPopupInfo &info)
+{
+	CvDLLInterfaceIFaceBase& kUI = *gDLL->getInterfaceIFace();
+	kUI.popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_POPUP_EXPORT_SAVE_TITLE"));
+	kUI.popupSetBodyString(pPopup, gDLL->getText("TXT_KEY_MENU_ENTER_MOD_NAME"));
+	char const* szDefault = GC.getDefineSTRING("REPLACEMENT_MOD_NAME");
+	/*	Leaving the field empty will work too (export for BtS), but I'd rather
+		show an example of an actual mod name. */
+	if (cstring::empty(szDefault))
+		szDefault = GC.getModName().getName();
+	kUI.popupCreateEditBox(pPopup, szDefault, WIDGET_GENERAL, "",
+			0, POPUP_LAYOUT_STRETCH, 0,
+			// This limit is important; we can't write longer strings into the EXE.
+			GC.getModName().getExtNameLengthLimit());
+	kUI.popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_MAIN_MENU_OK"), NULL, 1);
+	kUI.popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_SCREEN_CANCEL"), NULL, 0);
+	kUI.popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
 	return true;
 }

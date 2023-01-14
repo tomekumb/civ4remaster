@@ -5,6 +5,7 @@
 #include "CvGlobals.h"
 #include "CvGameAI.h"
 #include "CvPlayerAI.h"
+#include "ModName.h" // trs.bat
 
 CvGameRecord::CvGameRecord()
 {
@@ -282,8 +283,38 @@ void CvPlayerRecord::read(FDataStreamBase* pStream)
 	pStream->Read((int*)&m_eLeader);
 
 	pStream->Read(GC.getNumUnitInfos(), m_piNumUnitsBuilt);
+	// <trs.bat>
+	if (GC.getModName().isBATImport())
+	{
+		int iBuilt;
+		for (int i = 0; i < ModName::getBATExtraUnits(); i++)
+		{
+			pStream->Read(&iBuilt);
+			m_piNumUnitsBuilt[ModName::replBATUnit(i)] += iBuilt;
+		}
+	} // </trs.bat>
 	pStream->Read(GC.getNumUnitInfos(), m_piNumUnitsKilled);
+	// <trs.bat>
+	if (GC.getModName().isBATImport())
+	{
+		int iKilled;
+		for (int i = 0; i < ModName::getBATExtraUnits(); i++)
+		{
+			pStream->Read(&iKilled);
+			m_piNumUnitsKilled[ModName::replBATUnit(i)] += iKilled;
+		}
+	} // </trs.bat>
 	pStream->Read(GC.getNumUnitInfos(), m_piNumUnitsWasKilled);
+	// <trs.bat>
+	if (GC.getModName().isBATImport())
+	{
+		int iWasKilled;
+		for (int i = 0; i < ModName::getBATExtraUnits(); i++)
+		{
+			pStream->Read(&iWasKilled);
+			m_piNumUnitsWasKilled[ModName::replBATUnit(i)] += iWasKilled;
+		}
+	} // </trs.bat>
 	pStream->Read(GC.getNumBuildingInfos(), m_piNumBuildingsBuilt);
 	pStream->Read(GC.getNumReligionInfos(), m_pbReligionFounded);
 
@@ -304,8 +335,14 @@ void CvPlayerRecord::write(FDataStreamBase* pStream)
 	pStream->Write(m_eLeader);
 
 	pStream->Write(GC.getNumUnitInfos(), m_piNumUnitsBuilt);
+	// <trs.bat>
+	int const iExtraUnits = GC.getModName().getNumExtraUnits();
+	for (int i = 0; i < iExtraUnits; i++)
+		pStream->Write(0); // </trs.bat>
 	pStream->Write(GC.getNumUnitInfos(), m_piNumUnitsKilled);
+	for (int i = 0; i < iExtraUnits; i++) pStream->Write(0); // trs.bat
 	pStream->Write(GC.getNumUnitInfos(), m_piNumUnitsWasKilled);
+	for (int i = 0; i < iExtraUnits; i++) pStream->Write(0); // trs.bat
 	pStream->Write(GC.getNumBuildingInfos(), m_piNumBuildingsBuilt);
 	pStream->Write(GC.getNumReligionInfos(), m_pbReligionFounded);
 

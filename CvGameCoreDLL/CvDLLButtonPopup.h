@@ -66,6 +66,7 @@ private:
 	bool launchFreeColonyPopup(CvPopup* pPopup, CvPopupInfo &info);
 	bool launchLaunchPopup(CvPopup* pPopup, CvPopupInfo &info);
 	bool launchFoundReligionPopup(CvPopup* pPopup, CvPopupInfo &info);
+	bool launchExportSavePopup(CvPopup* pPopup, CvPopupInfo &info); // trs.modname
 };
 
 #endif

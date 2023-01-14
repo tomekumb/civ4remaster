@@ -41,7 +41,8 @@ public:
 	DllExport void declareWar(TeamTypes eTeam, bool bNewDiplo, WarPlanTypes eWarPlan);										// Exposed to Python
 	DllExport void makePeace(TeamTypes eTeam, bool bBumpUnits = true);																		// Exposed to Python
 	bool canContact(TeamTypes eTeam) const;																							// Exposed to Python
-	void meet(TeamTypes eTeam, bool bNewDiplo);																		// Exposed to Python
+	void meet(TeamTypes eTeam, bool bNewDiplo,																		// Exposed to Python
+			FirstContactData* pData = NULL); // trs.1stcontact
 	void signOpenBorders(TeamTypes eTeam);																				// Exposed to Python
 	void signDefensivePact(TeamTypes eTeam);																			// Exposed to Python
 	bool canSignDefensivePact(TeamTypes eTeam);
@@ -209,7 +210,8 @@ public:
 	void changeExtraMoves(DomainTypes eIndex, int iChange);							// Exposed to Python
 
 	bool isHasMet(TeamTypes eIndex) const;																		// Exposed to Python
-	void makeHasMet(TeamTypes eIndex, bool bNewDiplo);
+	void makeHasMet(TeamTypes eIndex, bool bNewDiplo,
+			FirstContactData* pData = NULL); // trs.1stcontact
 
 	DllExport bool isAtWar(TeamTypes eIndex) const;																			// Exposed to Python
 	DllExport void setAtWar(TeamTypes eIndex, bool bNewValue);
@@ -447,6 +449,7 @@ protected:
 
 	void cancelDefensivePacts();
 	void announceTechToPlayers(TechTypes eIndex, bool bPartial = false);
+	void addFirstContactMessage(FirstContactData const& fcData, TeamTypes eOther); // trs.1stcontact
 
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);

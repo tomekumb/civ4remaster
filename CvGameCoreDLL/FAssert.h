@@ -36,6 +36,29 @@ bool FAssertDlg( const char*, const char*, const char*, unsigned int, bool& );
 } \
 }
 
+/*  <trs.debug> sprintf doesn't handle buffer overflows well, so I'd like to use
+	snprintf instead (as K-Mod does). I guess that has been replaced by _snprintf_s
+	in more recent versions of MSVC. To avoid red underlines in the code editor: */
+#ifdef _CODE_EDITOR
+	#define snprintf _snprintf_s
+#endif
+
+// Moved from CvInitCore.h, params ordered more intuitively.
+#define FAssertBounds(lower, index, upper) \
+	if (index < lower) \
+	{ \
+		char acOut[256]; \
+		snprintf(acOut, 256, "Index expected to be >= %d. (value: %d)", lower, index); \
+		FAssertMsg(index >= lower, acOut); \
+	} \
+	else if (index >= upper) \
+	{ \
+		char acOut[256]; \
+		snprintf(acOut, 256, "Index expected to be < %d. (value: %d)", upper, index); \
+		FAssertMsg(index < upper, acOut); \
+	}
+// </trs.debug>
+
 #else
 // Non Win32 platforms--just use built-in FAssert
 #define FAssert( expr )	FAssert( expr )
@@ -45,9 +68,16 @@ bool FAssertDlg( const char*, const char*, const char*, unsigned int, bool& );
 
 #else
 // FASSERT_ENABLE not defined
-#define FAssert( expr )
-#define FAssertMsg( expr, msg )
+/*	<trs.debug> void(0) added to allow FAssert in otherwise empty branches
+	and to force semicolon. */
+#define FAssert( expr ) (void)0
+#define FAssertMsg( expr, msg ) (void)0
+#define FAssertBounds(lower, index, upper) (void)0
+// </trs.debug>
 
 #endif
+
+// trs.debug:
+#define FErrorMsg(msg) FAssertMsg(false, msg)
 
 #endif // FASSERT_H

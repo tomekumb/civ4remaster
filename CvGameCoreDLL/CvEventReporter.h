@@ -21,6 +21,8 @@ class CvSelectionGroup;
 class CvEventReporter
 {
 	friend class CyStatistics;
+	// trs.savmsg:
+	CvEventReporter() : m_bAutoSaving(false), m_bQuickSaving(false) {}
 public:
 	DllExport static CvEventReporter& getInstance();		// singleton accessor
 	DllExport void resetStatistics();
@@ -49,6 +51,12 @@ public:
 
 	void firstContact(TeamTypes eTeamID1, TeamTypes eTeamID2);						
 	void combatResult(CvUnit* pWinner, CvUnit* pLoser);					
+// BUG - Combat Events - start
+	void combatRetreat(CvUnit* pAttacker, CvUnit* pDefender);
+	void combatWithdrawal(CvUnit* pAttacker, CvUnit* pDefender);
+	void combatLogCollateral(CvUnit* pAttacker, CvUnit* pDefender, int iDamage);
+	void combatLogFlanking(CvUnit* pAttacker, CvUnit* pDefender, int iDamage);
+// BUG - Combat Events - start
 	void improvementBuilt(int iImprovementType, int iX, int iY);	
 	void improvementDestroyed(int iImprovementType, int iPlayer, int iX, int iY);	
 	void routeBuilt(int iRouteType, int iX, int iY);	
@@ -69,6 +77,12 @@ public:
 	void cityDoTurn(CvCity *pCity, PlayerTypes ePlayer);
 	void cityBuildingUnit(CvCity* pCity, UnitTypes eUnitType);
 	void cityBuildingBuilding(CvCity* pCity, BuildingTypes eBuildingType);
+// BUG - Project Started Event - start
+	void cityBuildingProject(CvCity* pCity, ProjectTypes eProjectType);
+// BUG - Project Started Event - end
+// BUG - Process Started Event - start
+	void cityBuildingProcess(CvCity* pCity, ProcessTypes eProcessType);
+// BUG - Process Started Event - end
 	void cityRename(CvCity* pCity);
 	void cityHurry(CvCity* pCity, HurryTypes eHurry);
 
@@ -79,8 +93,14 @@ public:
 	void unitCreated(CvUnit *pUnit);
 	void unitBuilt(CvCity *pCity, CvUnit *pUnit);
 	void unitKilled(CvUnit *pUnit, PlayerTypes eAttacker);
+// BUG - Unit Captured Event - start
+	void unitCaptured(PlayerTypes eFromPlayer, UnitTypes eUnitType, CvUnit* pNewUnit);
+// BUG - Unit Captured Event - end
 	void unitLost(CvUnit *pUnit);
 	void unitPromoted(CvUnit *pUnit, PromotionTypes ePromotion);
+// BUG - Upgrade Unit Event - start
+	void unitUpgraded(CvUnit *pOldUnit, CvUnit *pNewUnit, int iPrice);
+// BUG - Upgrade Unit Event - end
 	DllExport void unitSelected(CvUnit *pUnit);
 	void unitRename(CvUnit* pUnit);
 	void unitPillage(CvUnit* pUnit, ImprovementTypes eImprovement, RouteTypes eRoute, PlayerTypes ePlayer);
@@ -114,6 +134,10 @@ public:
 	void playerChangeStateReligion(PlayerTypes ePlayerID, ReligionTypes eNewReligion, ReligionTypes eOldReligion);
 	void playerGoldTrade(PlayerTypes eFromPlayer, PlayerTypes eToPlayer, int iAmount);
 
+// BUG - Revolution Event - start
+	void playerRevolution(PlayerTypes ePlayerID, int iAnarchyLength, CivicTypes* paeOldCivics, CivicTypes* paeNewCivics);
+// BUG - Revolution Event - end
+
 	DllExport void chat(CvWString szString);		
 
 	void victory(TeamTypes eWinner, VictoryTypes eVictory);
@@ -121,6 +145,10 @@ public:
 	void vassalState(TeamTypes eMaster, TeamTypes eVassal, bool bVassal);
 
 	DllExport void preSave();
+	// <trs.savmsg>
+	void setAutoSaving(bool b = true) { m_bAutoSaving = b; }
+	void setQuickSaving(bool b = true) { m_bQuickSaving = b; }
+	// </trs.savmsg>
 
 	DllExport void getGameStatistics(std::vector<CvStatBase*>& aStats);
 	DllExport void getPlayerStatistics(PlayerTypes ePlayer, std::vector<CvStatBase*>& aStats);
@@ -130,6 +158,7 @@ public:
 private:
 	CvDllPythonEvents m_kPythonEventMgr;
 	CvStatistics m_kStatistics;
+	bool m_bAutoSaving, m_bQuickSaving; // trs.savmsg
 };
 
 // helper

@@ -1,5 +1,3 @@
-// game.cpp
-
 #include "CvGameCoreDLL.h"
 #include "CvInitCore.h"
 #include "CvDLLPythonIFaceBase.h"
@@ -9,6 +7,31 @@
 #include "CvDLLUtilityIFaceBase.h"
 #include "CvGameAI.h"
 #include "CvGameCoreUtils.h"
+#include "CvDLLInterfaceIFaceBase.h" // trs. (for setting Score_DIRTY_BIT)
+
+// BUG - Save Format - start
+#include "BugMod.h"
+// BUG - Save Format - end
+// <trs.modname>
+#include "ModName.h"
+#include "CvBugOptions.h"
+// </trs.modname>
+
+// BUG - EXE/DLL Paths - start
+#include "moduleobject.h"
+#include "CvDLLIniParserIFaceBase.h"
+#include <shlobj.h>
+
+CvString CvInitCore::dllPath;
+CvString CvInitCore::dllName;
+CvString CvInitCore::exePath;
+CvString CvInitCore::exeName;
+bool CvInitCore::bPathsSet;
+// BUG - EXE/DLL Paths - end
+
+/*	trs.debug: Replace this with a similar macro added to the FAssert header.
+	Discard fnString - FILE and LINE is enough. */
+#define FASSERT_BOUNDS(lower, upper, index, fnString) FAssertBounds(lower, index, upper)
 
 // Public Functions...
 
@@ -53,6 +76,10 @@ CvInitCore::CvInitCore()
 
 	m_aeCustomMapOptions = NULL;
 	m_abVictories = NULL;
+
+// BUG - EXE/DLL Paths - start
+	bPathsSet = false;
+// BUG - EXE/DLL Paths - end
 
 	reset(NO_GAMEMODE);
 }
@@ -100,7 +127,8 @@ void CvInitCore::init(GameMode eMode)
 void CvInitCore::uninit()
 {
 	clearCustomMapOptions();
-	clearVictories();
+	SAFE_DELETE_ARRAY(m_abVictories);
+	m_iNumVictories = 0;
 }
 
 
@@ -221,6 +249,20 @@ bool CvInitCore::getSavedGame() const
 	default:
 		return false;
 	}
+}
+
+// trs.lma: from Civ4Col
+bool CvInitCore::getScenario() const
+{
+	switch(m_eType)
+	{
+	case GAME_SP_SCENARIO:
+	case GAME_MP_SCENARIO:
+	case GAME_HOTSEAT_SCENARIO:
+	case GAME_PBEM_SCENARIO:
+		return true;
+	}
+	return false;
 }
 
 bool CvInitCore::getPitboss() const
@@ -474,7 +516,7 @@ void CvInitCore::reopenInactiveSlots()
 	}
 }
 
-void CvInitCore::resetGame()
+void CvInitCore::resetGame(/* trs.fix-load: */ bool bBeforeRead)
 {
 	// Descriptive strings about game and map
 	m_eType = GAME_NONE;
@@ -484,22 +526,36 @@ void CvInitCore::resetGame()
 	m_szMapScriptName.clear();
 
 	m_bWBMapNoPlayers = false;
-
-	// Standard game parameters
-	m_eWorldSize = NO_WORLDSIZE;											// STANDARD_ option?
-	m_eClimate = (ClimateTypes)GC.getDefineINT("STANDARD_CLIMATE");			// NO_ option?
-	m_eSeaLevel = (SeaLevelTypes)GC.getDefineINT("STANDARD_SEALEVEL");		// NO_ option?
-	m_eEra = (EraTypes)GC.getDefineINT("STANDARD_ERA");						// NO_ option?
-	m_eGameSpeed = (GameSpeedTypes)GC.getDefineINT("STANDARD_GAMESPEED");	// NO_ option?
-	m_eTurnTimer = (TurnTimerTypes)GC.getDefineINT("STANDARD_TURNTIMER");	// NO_ option?
-	m_eCalendar = (CalendarTypes)GC.getDefineINT("STANDARD_CALENDAR");		// NO_ option?
-
+	if (!bBeforeRead) // trs.fix-load (but doesn't really matter)
+	{	// Standard game parameters
+		m_eWorldSize = NO_WORLDSIZE;											// STANDARD_ option?
+		m_eClimate = (ClimateTypes)GC.getDefineINT("STANDARD_CLIMATE");			// NO_ option?
+		m_eSeaLevel = (SeaLevelTypes)GC.getDefineINT("STANDARD_SEALEVEL");		// NO_ option?
+		m_eEra = (EraTypes)GC.getDefineINT("STANDARD_ERA");						// NO_ option?
+		m_eGameSpeed = (GameSpeedTypes)GC.getDefineINT("STANDARD_GAMESPEED");	// NO_ option?
+		m_eTurnTimer = (TurnTimerTypes)GC.getDefineINT("STANDARD_TURNTIMER");	// NO_ option?
+		m_eCalendar = (CalendarTypes)GC.getDefineINT("STANDARD_CALENDAR");		// NO_ option?
+	}
 	// Map-specific custom parameters
 	clearCustomMapOptions();
+	m_iNumHiddenCustomMapOptions = 0; // trs.safety
 
 	// Data-defined victory conditions
-	refreshVictories();
-
+	SAFE_DELETE_ARRAY(m_abVictories);
+	if (!bBeforeRead) // trs.fix-load
+	{
+		//refreshVictories();
+		// trs.safety: Easier to get trs.fix-load right w/o this function
+		m_iNumVictories = GC.getNumVictoryInfos();
+		if (m_iNumVictories > 0)
+		{
+			m_abVictories = new bool[m_iNumVictories];
+			for (int i = 0; i < m_iNumVictories; ++i)
+			{
+				m_abVictories[i] = true;
+			}
+		}
+	}
 
 	// Standard game options
 	int i;
@@ -511,6 +567,9 @@ void CvInitCore::resetGame()
 	{
 		m_abMPOptions[i] = false;
 	}
+	// <trs.fix-load>
+	if (bBeforeRead)
+		return; // </trs.fix-load>
 	m_bStatReporting = false;
 
 	for (i = 0; i < NUM_FORCECONTROL_TYPES; ++i)
@@ -575,16 +634,26 @@ void CvInitCore::resetGame(CvInitCore * pSource, bool bClear, bool bSaveGameType
 		// Map-specific custom parameters
 		setCustomMapOptions(pSource->getNumCustomMapOptions(), pSource->getCustomMapOptions());
 		m_iNumHiddenCustomMapOptions = pSource->getNumHiddenCustomMapOptions();
-		setVictories(pSource->getNumVictories(), pSource->getVictories());
+		//setVictories(pSource->getNumVictories(), pSource->getVictories());
+		// <trs.safety> Avoid calling that obscure setVictories function unnecessarily
+		for (int i = 0; i < GC.getNumVictoryInfos(); i++)
+		{
+			setVictory((VictoryTypes)i, pSource->getVictory((VictoryTypes)i));
+		} // </trs.safety>
 
 		// Standard game options
-		int i;
-		for (i = 0; i < NUM_GAMEOPTION_TYPES; ++i)
+		for (int i = 0; i < NUM_GAMEOPTION_TYPES; ++i)
 		{
-			setOption((GameOptionTypes)i, pSource->getOption((GameOptionTypes)i));
+			GameOptionTypes eLoopGameOption = (GameOptionTypes)i;
+			bool b = pSource->getOption(eLoopGameOption);
+			// <trs.safety> (from Kek-Mod)
+			CvGameOptionInfo const& kLoopGameOption = GC.getGameOptionInfo(eLoopGameOption);
+			if (!kLoopGameOption.getVisible())
+				b = kLoopGameOption.getDefault(); // </trs.safety>
+			setOption(eLoopGameOption, b);
 		}
 
-		for (i = 0; i < NUM_MPOPTION_TYPES; ++i)
+		for (int i = 0; i < NUM_MPOPTION_TYPES; ++i)
 		{
 			setMPOption((MultiplayerOptionTypes)i, pSource->getMPOption((MultiplayerOptionTypes)i));
 		}
@@ -606,11 +675,11 @@ void CvInitCore::resetGame(CvInitCore * pSource, bool bClear, bool bSaveGameType
 	}
 }
 
-void CvInitCore::resetPlayers()
+void CvInitCore::resetPlayers(/* trs.fix-load: */ bool bBeforeRead)
 {
 	for (int i = 0; i < MAX_PLAYERS; ++i)
 	{
-		resetPlayer((PlayerTypes)i);
+		resetPlayer((PlayerTypes)i, /* trs.fix-load: */ bBeforeRead);
 	}
 }
 
@@ -622,7 +691,8 @@ void CvInitCore::resetPlayers(CvInitCore * pSource, bool bClear, bool bSaveSlotI
 	}
 }
 
-void CvInitCore::resetPlayer(PlayerTypes eID)
+void CvInitCore::resetPlayer(PlayerTypes eID,
+	bool bBeforeRead) // trs.fix-load
 {
 	FASSERT_BOUNDS(0, MAX_PLAYERS, eID, "CvInitCore::resetPlayer");
 
@@ -657,6 +727,13 @@ void CvInitCore::resetPlayer(PlayerTypes eID)
 		// Civ flags
 		m_abPlayableCiv[eID] = false;
 		m_abMinorNationCiv[eID] = false;
+		// <trs.fix-load> (from AdvCiv)
+		if (bBeforeRead)
+		{	// Avoid crash when loading from within a game
+			if (GET_PLAYER(eID).isEverAlive())
+				GET_PLAYER(eID).reset(eID);
+			return;
+		} // </trs.fix-load>
 
 		// Unsaved player data
 		m_aiNetID[eID] = -1;
@@ -716,6 +793,10 @@ void CvInitCore::resetPlayer(PlayerTypes eID, CvInitCore * pSource, bool bClear,
 				setLeaderName(eID, pSource->getLeaderName(eID));
 				setSlotStatus(eID, pSource->getSlotStatus(eID));
 				setSlotClaim(eID, pSource->getSlotClaim(eID));
+				/*	<trs.load-fix> (from AdvCiv) Reset players while loading
+					from within a game to avoid crash */
+				if (pSource->getSavedGame() && GET_PLAYER(eID).isEverAlive())
+					GET_PLAYER(eID).reset(eID); // </trs.load-fix>
 			}
 		}
 	}
@@ -973,28 +1054,6 @@ void CvInitCore::refreshCustomMapOptions()
 	}
 }
 
-
-void CvInitCore::clearVictories()
-{
-	SAFE_DELETE_ARRAY(m_abVictories);
-	m_iNumVictories = 0;
-}
-
-void CvInitCore::refreshVictories()
-{
-	clearVictories();
-
-	m_iNumVictories = GC.getNumVictoryInfos();
-	if (m_iNumVictories > 0)
-	{
-		m_abVictories = new bool[m_iNumVictories];
-		for (int i = 0; i < m_iNumVictories; ++i)
-		{
-			m_abVictories[i] = true;
-		}
-	}
-}
-
 void CvInitCore::setCustomMapOptions(int iNumCustomMapOptions, const CustomMapOptionTypes * aeCustomMapOptions)
 {
 	clearCustomMapOptions();
@@ -1036,7 +1095,8 @@ void CvInitCore::setCustomMapOption(int iOptionID, CustomMapOptionTypes eCustomM
 
 void CvInitCore::setVictories(int iNumVictories, const bool * abVictories)
 {
-	clearVictories();
+	SAFE_DELETE_ARRAY(m_abVictories);
+	m_iNumVictories = 0;
 	if (iNumVictories)
 	{
 		FAssertMsg(abVictories, "Victory Num/Pointer mismatch in CvInitCore::setVictories");
@@ -1153,18 +1213,38 @@ void CvInitCore::setActivePlayer(PlayerTypes eActivePlayer)
 
 void CvInitCore::setType(GameType eType)
 {
-	if (getType() != eType)
+	if (getType() == eType)
+		return;
+	m_eType = eType;
+	/*	<trs.lma> (from AdvCiv) Hide Locked Assets from Staging Room screen.
+		And also hide some other game options that don't actually work for
+		every game type. */
+	CvGameOptionInfo& kPermWarPeace = GC.getGameOptionInfo(
+			GAMEOPTION_NO_CHANGING_WAR_PEACE);
+	if (!getScenario())
+		kPermWarPeace.setVisible(false);
+	else kPermWarPeace.setVisible(kPermWarPeace.getVisibleXML());
+	GameOptionTypes aeHideMP[] = {
+		GAMEOPTION_LOCK_MODS,
+		GAMEOPTION_NEW_RANDOM_SEED,
+	};
+	for (int i = 0; i < ARRAYSIZE(aeHideMP); i++)
 	{
-		m_eType = eType;
-
-		if(CvPlayerAI::areStaticsInitialized())
+		CvGameOptionInfo& kOption = GC.getGameOptionInfo(aeHideMP[i]);
+		if (getGameMultiplayer())
+			kOption.setVisible(false);
+		else kOption.setVisible(kOption.getVisibleXML());
+	} // </trs.lma>
+	if (CvPlayerAI::areStaticsInitialized())
+	{
+		for (int i = 0; i < MAX_PLAYERS; ++i)
 		{
-			for (int i = 0; i < MAX_PLAYERS; ++i)
-			{
-				GET_PLAYER((PlayerTypes)i).updateHuman();
-			}
+			GET_PLAYER((PlayerTypes)i).updateHuman();
 		}
 	}
+	// <trs.bat> Cleaner to reset this in a new game
+	if (GC.isModNameKnown())
+		GC.getModName().setBATImport(false); // </trs.bat>
 }
 
 void CvInitCore::setType(const CvWString & szType)
@@ -1182,6 +1262,20 @@ void CvInitCore::setType(const CvWString & szType)
 		//FAssertMsg(false, "Invalid game type in ini file!");
 		setType(GAME_NONE);
 	}
+}
+
+// trs.modname:
+bool CvInitCore::isLoadGameType() const
+{
+	switch(getType())
+	{
+	case GAME_SP_LOAD:
+	case GAME_MP_LOAD:
+	case GAME_HOTSEAT_LOAD:
+	case GAME_PBEM_LOAD:
+	return true;
+	}
+	return false;
 }
 
 void CvInitCore::setMode(GameMode eMode)
@@ -1225,6 +1319,8 @@ void CvInitCore::setLeaderName(PlayerTypes eID, const CvWString & szLeaderName)
 		gDLL->stripSpecialCharacters(szName);
 
 		m_aszLeaderName[eID] = szName;
+		// trs.fix (from AdvCiv):
+		gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
 	}
 }
 
@@ -1266,6 +1362,8 @@ void CvInitCore::setCivDescription(PlayerTypes eID, const CvWString & szCivDescr
 		CvWString szName = szCivDescription;
 		gDLL->stripSpecialCharacters(szName);
 		m_aszCivDescription[eID] = szName;
+		// trs.fix:
+		gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
 	}
 }
 
@@ -1308,6 +1406,8 @@ void CvInitCore::setCivShortDesc(PlayerTypes eID, const CvWString & szCivShortDe
 		CvWString szName = szCivShortDesc;
 		gDLL->stripSpecialCharacters(szName);
 		m_aszCivShortDesc[eID] = szName;
+		// trs.fix:
+		gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
 	}
 }
 
@@ -1876,8 +1976,27 @@ void CvInitCore::resetAdvancedStartPoints()
 
 void CvInitCore::read(FDataStreamBase* pStream)
 {
+	/*	<trs.fix-load> (from AdvCiv) The EXE doesn't reset this class before
+		calling read. Need to free all dynamic memory and clear everything that
+		doesn't get fully replaced with data from pStream. */
+	resetGame(true);
+	resetPlayers(true);
+	// </trs.fix-load>
 	uint uiSaveFlag=0;
 	pStream->Read(&uiSaveFlag);		// flags for expansion (see SaveBits)
+	// <trs.modname>
+	if (uiSaveFlag == 0xE0000041)
+	{
+		FErrorMsg("Attempting to load encrypted BUFFY save");
+		// Going to crash no matter what we do
+		exit(-7);
+	}
+	bool const bTaurusSave = uiSaveFlag & TAURUS_SAVE_FORMAT;
+	uiSaveFlag &= ~TAURUS_SAVE_FORMAT; // </trs.modname>
+// BUG - Save Format - start
+	bool bReadNumGameOptions = uiSaveFlag & BUG_DLL_SAVE_FORMAT;
+	uiSaveFlag &= ~BUG_DLL_SAVE_FORMAT;
+// BUG - Save Format - end
 
 	// GAME DATA
 	pStream->Read((int*)&m_eType);
@@ -1896,7 +2015,7 @@ void CvInitCore::read(FDataStreamBase* pStream)
 	pStream->Read((int*)&m_eTurnTimer);
 	pStream->Read((int*)&m_eCalendar);
 
-	SAFE_DELETE_ARRAY(m_aeCustomMapOptions);
+	//SAFE_DELETE_ARRAY(m_aeCustomMapOptions); // trs.fix-load: Now handled by resetGame
 	pStream->Read(&m_iNumCustomMapOptions);
 	pStream->Read(&m_iNumHiddenCustomMapOptions);
 	if (m_iNumCustomMapOptions > 0)
@@ -1905,7 +2024,7 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		pStream->Read(m_iNumCustomMapOptions, (int*)m_aeCustomMapOptions);
 	}
 
-	SAFE_DELETE_ARRAY(m_abVictories);
+	//SAFE_DELETE_ARRAY(m_abVictories); // trs.fix-load: Now handled by resetGame
 	pStream->Read(&m_iNumVictories);
 	if (m_iNumVictories > 0)
 	{
@@ -1913,16 +2032,47 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		pStream->Read(m_iNumVictories, m_abVictories);
 	}
 
+// BUG - Save Format - start
+	// read and ignore number of game options as it's only for external tools
+	/*	trs.modname: To import saves, we need to read the bools for their
+		game options too (and then ignore those). */
+	int iNumGameOptions = 0;
+	if (bReadNumGameOptions)
+		pStream->Read(&iNumGameOptions);
+	/*	trs.bat: BAT is the only major BUG-based mod with 2 extra options.
+		This method of detection, as opposed to ModName::isCompatible, should
+		also work for BAT in CustomAssets. */
+	GC.getModName().setBATImport(bReadNumGameOptions && iNumGameOptions == 26);
+// BUG - Save Format - end
 
 	if (uiSaveFlag > 0)
 	{
 		pStream->Read(NUM_GAMEOPTION_TYPES, m_abOptions);
 	}
-	else
+	else // trs.note: The else branch is for pre-BtS_3.17 saves
 	{
 		pStream->Read(NUM_GAMEOPTION_TYPES-1, m_abOptions);
 		m_abOptions[NUM_GAMEOPTION_TYPES-1] = false;
 	}
+	// <trs.modname>
+	for (int i = NUM_GAMEOPTION_TYPES; i < iNumGameOptions; i++)
+	{
+		bool bEnabled;
+		pStream->Read(&bEnabled); // discard
+	} // </trs.modname>
+	/*	<trs.lma> (RESPECT_LOCKED_ASSETS mainly affects the check in the EXE,
+		but, at least for RESPECT_LOCKED_ASSETS=1 (i.e. the EXE applies the
+		check only to Taurus saves), we don't want the option to be carried
+		over when we save a previously imported save.) */
+	if (!bTaurusSave && getOption(GAMEOPTION_LOCK_MODS) &&
+		GC.getDefineINT("RESPECT_LOCKED_ASSETS") < 2)
+	{
+		FAssert(!getGameMultiplayer()); // Locked Assets shouldn't be possible in MP
+		/*	(We also want to clear the admin pw, but doing so at this point causes
+			a crash in the EXE; we'll do it in CvGame::updateTestEndTurn, when
+			initialization is complete.) */
+		setOption(GAMEOPTION_LOCK_MODS, false);
+	} // </trs.lma>
 	pStream->Read(NUM_MPOPTION_TYPES, m_abMPOptions);
 
 	pStream->Read(&m_bStatReporting);
@@ -1983,14 +2133,51 @@ void CvInitCore::read(FDataStreamBase* pStream)
 
 void CvInitCore::write(FDataStreamBase* pStream)
 {
-	uint uiSaveFlag=1;
-	pStream->Write(uiSaveFlag);		// flag for expansion, see SaveBits)
+	uint uiSaveFlag=1;		// flag for expansion, see SaveBits)
+	// BUG - Save Format: (trs.modname: Mostly moved into BugMod.h)
+	uiSaveFlag |= BULL_MOD_SAVE_MASK;
+	// <trs.modname>
+	if (GC.getModName().getNumExtraGameOptions() > 0)
+		uiSaveFlag |= BUG_DLL_SAVE_FORMAT;
+	if (!GC.getModName().isExporting())
+		uiSaveFlag |= TAURUS_SAVE_FORMAT;
+	// </trs.modname>
+	pStream->Write(uiSaveFlag);
 
 	// GAME DATA
-	pStream->Write(m_eType);
+	//pStream->Write(m_eType);
+	/*	<trs.load-fix> (from AdvCiv) Make sure that resetPlayer will be able to
+		tell that a game is being loaded when reloading this savegame. */
+	GameType eWriteGameType = m_eType;
+	switch (eWriteGameType)
+	{
+	case GAME_SP_NEW:
+	case GAME_SP_SCENARIO:
+		eWriteGameType = GAME_SP_LOAD;
+		break;
+	case GAME_MP_NEW:
+	case GAME_MP_SCENARIO:
+		eWriteGameType = GAME_MP_LOAD;
+		break;
+	case GAME_HOTSEAT_NEW:
+	case GAME_HOTSEAT_SCENARIO:
+		eWriteGameType = GAME_HOTSEAT_LOAD;
+		break;
+	case GAME_PBEM_NEW:
+	case GAME_PBEM_SCENARIO:
+		eWriteGameType = GAME_PBEM_LOAD;
+	}
+	pStream->Write(eWriteGameType); // </trs.fix-load>
 	pStream->WriteString(m_szGameName);
 	pStream->WriteString(m_szGamePassword);
-	pStream->WriteString(m_szAdminPassword);
+	// <trs.lma> Don't export pw generated for locking assets
+	if (GC.getModName().isExporting() && getOption(GAMEOPTION_LOCK_MODS))
+	{
+		CvWString szEmpty;
+		pStream->WriteString(szEmpty);
+	}
+	else // </trs.lma>
+		pStream->WriteString(m_szAdminPassword);
 	pStream->WriteString(m_szMapScriptName);
 
 	pStream->Write(m_bWBMapNoPlayers);
@@ -2009,8 +2196,34 @@ void CvInitCore::write(FDataStreamBase* pStream)
 
 	pStream->Write(m_iNumVictories);
 	pStream->Write(m_iNumVictories, m_abVictories);
-
-	pStream->Write(NUM_GAMEOPTION_TYPES, m_abOptions);
+	// <trs.modname>
+	int const iGameOptions = NUM_GAMEOPTION_TYPES +
+			GC.getModName().getNumExtraGameOptions();
+	if (iGameOptions > /* BtS game option count */ 24)
+	{
+		// BUG - Save Format:
+		// If any optional mod alters the number of game options,
+		// write out the number of game options for the external parser tool
+		pStream->Write(iGameOptions);
+	}
+	if (GC.getModName().isExporting())
+	{
+		for (int i = 0; i < iGameOptions; i++)
+		{	// <trs.lma> Exporting locked saves wouldn't make much sense
+			if (i == GAMEOPTION_LOCK_MODS)
+				pStream->Write(false); // </trs.lma>
+			// Importing mod will expect these game options data
+			else if (i >= NUM_GAMEOPTION_TYPES)
+				pStream->Write(false);
+			else pStream->Write(m_abOptions[i]);
+		}
+	}
+	else
+	{
+		FAssertMsg(iGameOptions == NUM_GAMEOPTION_TYPES, "Is this an export or not?");
+		// </trs.modname>
+		pStream->Write(NUM_GAMEOPTION_TYPES, m_abOptions);
+	}
 	pStream->Write(NUM_MPOPTION_TYPES, m_abMPOptions);
 
 	pStream->Write(m_bStatReporting);
@@ -2048,3 +2261,73 @@ void CvInitCore::write(FDataStreamBase* pStream)
 	pStream->Write(MAX_PLAYERS, m_abPlayableCiv);
 	pStream->Write(MAX_PLAYERS, m_abMinorNationCiv);
 }
+
+
+// BUG - EXE/DLL Paths - start
+CvString CvInitCore::getDLLPath() const
+{
+	setPathNames();
+	return dllPath;
+}
+
+CvString CvInitCore::getDLLName() const
+{
+	setPathNames();
+	return dllName;
+}
+
+CvString CvInitCore::getExePath() const
+{
+	setPathNames();
+	return exePath;
+}
+
+CvString CvInitCore::getExeName() const
+{
+	setPathNames();
+	return exeName;
+}
+
+extern HANDLE dllModule;
+void CvInitCore::setPathNames()
+{
+	if (bPathsSet)
+	{
+		return;
+	}
+
+	TCHAR pathBuffer[4096];
+	DWORD result;
+	TCHAR* pos;
+	
+	result = GetModuleFileName(NULL, pathBuffer, sizeof(pathBuffer));
+	pos = strchr(pathBuffer, '\\');
+	while (pos != NULL && *pos != NULL)
+	{
+		TCHAR* next = strchr(pos + 1, '\\');
+		if (!next)
+		{
+			*pos = 0;
+			exePath = pathBuffer;
+			exeName = pos + 1;
+		}
+		pos = next;
+	}
+
+	result = GetModuleFileName((HMODULE)dllModule, pathBuffer, sizeof(pathBuffer));
+	pos = strchr(pathBuffer, '\\');
+	while (pos != NULL && *pos != NULL)
+	{
+		TCHAR* next = strchr(pos + 1, '\\');
+		if (!next)
+		{
+			*pos = 0;
+			dllPath = pathBuffer;
+			dllName = pos + 1;
+		}
+		pos = next;
+	}
+
+	bPathsSet = true;
+}
+// BUG - EXE/DLL Paths - end

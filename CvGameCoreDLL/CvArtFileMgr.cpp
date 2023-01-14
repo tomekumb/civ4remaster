@@ -181,3 +181,33 @@ ART_INFO_DEFN(Terrain);
 ART_INFO_DEFN(Feature);
 ART_INFO_DEFN(Movie);
 ART_INFO_DEFN(Interface);
+
+/*	trs.wcitybars (from AdvCiv):
+	Hack for getting the EXE to switch between wide and narrow city bars */
+void CvArtFileMgr::swapCityBarPaths()
+{
+	m_bCityBarPathsSwapped = !m_bCityBarPathsSwapped;
+	char const* aaszCityBarTags[][2] =
+	{
+		{ "INTERFACE_CITY_BAR_MODEL", "INTERFACE_WIDE_CITY_BAR_MODEL" },
+		{ "INTERFACE_CITY_BAR_REGULAR_GLOW", "INTERFACE_WIDE_CITY_BAR_REGULAR_GLOW" },
+		{ "INTERFACE_CITY_BAR_CAPITAL_GLOW", "INTERFACE_WIDE_CITY_BAR_CAPITAL_GLOW" }
+	};
+	int const iCityBarTags = ARRAYSIZE(aaszCityBarTags);
+	CvArtInfoInterface* aapCityBarArtInfos[iCityBarTags][2];
+	for (int i = 0; i < iCityBarTags; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			aapCityBarArtInfos[i][j] = getInterfaceArtInfo(aaszCityBarTags[i][j]);
+			if (aapCityBarArtInfos[i][j] == NULL)
+				return; // Art file manager not ready (or tags missing in XML)
+		}
+	}
+	for (int i = 0; i < iCityBarTags; i++)
+	{
+		CvString sTmp(aapCityBarArtInfos[i][0]->getPath());
+		aapCityBarArtInfos[i][0]->setPath(aapCityBarArtInfos[i][1]->getPath());
+		aapCityBarArtInfos[i][1]->setPath(sTmp);
+	}
+}

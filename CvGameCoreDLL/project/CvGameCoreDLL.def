@@ -1,0 +1,6 @@
+EXPORTS
+?getMap@CvGlobals@@QAEAAVCvMap@@XZ=?getMapExternal@CvGlobals@@QAEAAVCvMap@@XZ
+?getGame@CvGlobals@@QAEAAVCvGameAI@@XZ=?getGameExternal@CvGlobals@@QAEAAVCvGameAI@@XZ
+?getDefineINT@CvGlobals@@QBEHPBD@Z=?getDefineINTExternal@CvGlobals@@QBEHPBD@Z
+?getX@CvPlot@@QBEHXZ=?getXExternal@CvPlot@@QBEHXZ
+?getY@CvPlot@@QBEHXZ=?getYExternal@CvPlot@@QBEHXZ

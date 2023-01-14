@@ -68,7 +68,9 @@ public:
 	// singleton accessor
 	DllExport static CvArtFileMgr& GetInstance();
 
-	DllExport CvArtFileMgr() {};
+	DllExport CvArtFileMgr()
+	:	m_bCityBarPathsSwapped(false) // trs.wcitybars
+	{};
 	DllExport virtual ~CvArtFileMgr() {};
 
 	DllExport void Init();
@@ -82,6 +84,11 @@ public:
 
 	// Adds an Art File List
 	void addArtInfoItem(CvArtFileMgr::ArtInfoItem* item) { m_artInfoItems.push_back(item);	}
+
+	// <trs.wcitybars>
+	bool isCityBarPathsSwapped() const { return m_bCityBarPathsSwapped; }
+	void swapCityBarPaths();
+	// </trs.wcitybars>
 private:
 	struct ltstr
 	{
@@ -105,6 +112,8 @@ private:
 	ART_INFO_DECL(Interface);
 
 	std::vector<ArtInfoItem*> m_artInfoItems;
+
+	bool m_bCityBarPathsSwapped; // trs.wcitybars
 };
 
 // Singleton Accessor

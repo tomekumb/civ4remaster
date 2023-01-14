@@ -20,7 +20,12 @@ public:
 	void uninit();
 	void reset(int iID = 0, PlayerTypes eFirstPlayer = NO_PLAYER, PlayerTypes eSecondPlayer = NO_PLAYER);
 
-	DllExport void kill(bool bKillTeam = true);
+	DllExport void kill(bool bKillTeam = true)
+	// <trs.sound-once>
+	{
+		kill(bKillTeam, true);
+	}
+	void kill(bool bKillTeam, bool bPlaySound); // </trs.sound-once>
 
 	void addTrades(CLinkList<TradeData>* pFirstList, CLinkList<TradeData>* pSecondList, bool bCheckAllowed);
 

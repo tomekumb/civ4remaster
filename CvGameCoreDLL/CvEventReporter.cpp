@@ -1,7 +1,12 @@
 #include "CvGameCoreDLL.h"
 #include "CvEventReporter.h"
 #include "CvDllPythonEvents.h"
-#include "CvInitCore.h"
+// <trs.modname>
+#include "ModName.h"
+#include "BugMod.h"
+#include "CvBugOptions.h"
+// </trs.modname>
+#include "CvDLLInterfaceIFaceBase.h" // trs.savmsg
 
 //
 // static, singleton accessor
@@ -119,6 +124,28 @@ void CvEventReporter::combatResult(CvUnit* pWinner, CvUnit* pLoser)
 	m_kPythonEventMgr.reportCombatResult(pWinner, pLoser);
 }
 
+// BUG - Combat Events - start
+void CvEventReporter::combatRetreat(CvUnit* pAttacker, CvUnit* pDefender)
+{
+	m_kPythonEventMgr.reportCombatRetreat(pAttacker, pDefender);
+}
+
+void CvEventReporter::combatWithdrawal(CvUnit* pAttacker, CvUnit* pDefender)
+{
+	m_kPythonEventMgr.reportCombatWithdrawal(pAttacker, pDefender);
+}
+
+void CvEventReporter::combatLogCollateral(CvUnit* pAttacker, CvUnit* pDefender, int iDamage)
+{
+	m_kPythonEventMgr.reportCombatLogCollateral(pAttacker, pDefender, iDamage);
+}
+
+void CvEventReporter::combatLogFlanking(CvUnit* pAttacker, CvUnit* pDefender, int iDamage)
+{
+	m_kPythonEventMgr.reportCombatLogFlanking(pAttacker, pDefender, iDamage);
+}
+// BUG - Combat Events - end
+
 void CvEventReporter::improvementBuilt(int iImprovementType, int iX, int iY)
 {
 	m_kPythonEventMgr.reportImprovementBuilt(iImprovementType, iX, iY);
@@ -211,6 +238,20 @@ void CvEventReporter::cityBuildingBuilding(CvCity* pCity, BuildingTypes eBuildin
 	m_kPythonEventMgr.reportCityBuildingBuilding(pCity, eBuildingType);
 }
 
+// BUG - Project Started Event - start
+void CvEventReporter::cityBuildingProject(CvCity* pCity, ProjectTypes eProjectType)
+{
+	m_kPythonEventMgr.reportCityBuildingProject(pCity, eProjectType);
+}
+// BUG - Project Started Event - end
+
+// BUG - Process Started Event - start
+void CvEventReporter::cityBuildingProcess(CvCity* pCity, ProcessTypes eProcessType)
+{
+	m_kPythonEventMgr.reportCityBuildingProcess(pCity, eProcessType);
+}
+// BUG - Process Started Event - end
+
 void CvEventReporter::cityRename(CvCity* pCity)
 {
 	m_kPythonEventMgr.reportCityRename(pCity);
@@ -253,6 +294,13 @@ void CvEventReporter::unitKilled(CvUnit *pUnit, PlayerTypes eAttacker )
 	m_kStatistics.unitKilled(pUnit, eAttacker);
 }
 
+// BUG - Unit Captured Event - start
+void CvEventReporter::unitCaptured(PlayerTypes eFromPlayer, UnitTypes eUnitType, CvUnit* pNewUnit)
+{
+	m_kPythonEventMgr.reportUnitCaptured(eFromPlayer, eUnitType, pNewUnit);
+}
+// BUG - Unit Captured Event - end
+
 void CvEventReporter::unitLost(CvUnit *pUnit)
 {
 	m_kPythonEventMgr.reportUnitLost(pUnit);
@@ -262,6 +310,13 @@ void CvEventReporter::unitPromoted(CvUnit *pUnit, PromotionTypes ePromotion)
 {
 	m_kPythonEventMgr.reportUnitPromoted(pUnit, ePromotion);
 }
+
+// BUG - Upgrade Unit Event - start
+void CvEventReporter::unitUpgraded(CvUnit *pOldUnit, CvUnit *pNewUnit, int iPrice)
+{
+	m_kPythonEventMgr.reportUnitUpgraded(pOldUnit, pNewUnit, iPrice);
+}
+// BUG - Upgrade Unit Event - end
 
 void CvEventReporter::unitSelected( CvUnit *pUnit)
 {
@@ -387,6 +442,13 @@ void CvEventReporter::playerGoldTrade(PlayerTypes eFromPlayer, PlayerTypes eToPl
 	m_kPythonEventMgr.reportPlayerGoldTrade(eFromPlayer, eToPlayer, iAmount);
 }
 
+// BUG - Revolution Event - start
+void CvEventReporter::playerRevolution(PlayerTypes ePlayerID, int iAnarchyLength, CivicTypes* paeOldCivics, CivicTypes* paeNewCivics)
+{
+	m_kPythonEventMgr.reportPlayerRevolution(ePlayerID, iAnarchyLength, paeOldCivics, paeNewCivics);
+}
+// BUG - Revolution Event - end
+
 void CvEventReporter::chat(CvWString szString)
 {
 	m_kPythonEventMgr.reportChat(szString);
@@ -417,7 +479,43 @@ void CvEventReporter::vassalState(TeamTypes eMaster, TeamTypes eVassal, bool bVa
 
 void CvEventReporter::preSave()
 {
+	// <trs.modname>
+	if (!getBugOptionBOOL("Taurus__SaveModName"))
+	{
+		GC.getModName().setExtModName(GC.getDefineSTRING("REPLACEMENT_MOD_NAME"));
+	#if BULL_MOD_SAVE_MASK
+		FAssertMsg(gDLL->getModName() != NULL,
+				"Shouldn't claim that no mod loaded when saves not compatible with BtS");
+	#endif
+	}
+	GC.getModName().setSaving(true);
+	// </trs.modname>
 	m_kPythonEventMgr.preSave();
+	/*	<trs.savmsg> (based on AdvCiv) The original autosaving and quicksaving
+		messages are disabled through XML. Show replacement messages here. */
+	if (!m_bAutoSaving && !m_bQuickSaving)
+		return;
+	bool bAutoSave = m_bAutoSaving;
+	bool bQuickSave = m_bQuickSaving;
+	FAssert(!bAutoSave || !bQuickSave);
+	m_bAutoSaving = m_bQuickSaving = false;
+	enum SavingMsgChoices { DISABLED, BRIEF, NORMAL };
+	int iMsgLength = 0;
+	switch ((SavingMsgChoices)getBugOptionINT(bAutoSave ?
+		"Taurus__AutoSaveMsg" : "Taurus__QuickSaveMsg"))
+	{
+	case DISABLED: break;
+	case BRIEF: iMsgLength = 4; break;
+	case NORMAL: iMsgLength = GC.getEVENT_MESSAGE_TIME(); break;
+	default: FErrorMsg("Unrecognized choice for savmsg length");
+	}
+	if (iMsgLength <= 0)
+		return;
+	CvWString sTxtKey(bAutoSave ?
+			L"TXT_KEY_AUTOSAVING2" : L"TXT_KEY_QUICK_SAVING2");
+	gDLL->getInterfaceIFace()->addMessage(GC.getGame().getActivePlayer(), true,
+			iMsgLength, gDLL->getText(sTxtKey), NULL, MESSAGE_TYPE_DISPLAY_ONLY);
+	// </trs.savmsg>
 }
 
 void CvEventReporter::windowActivation(bool bActive)
@@ -490,5 +588,9 @@ void CvEventReporter::readStatistics(FDataStreamBase* pStream)
 void CvEventReporter::writeStatistics(FDataStreamBase* pStream)
 {
 	m_kStatistics.write(pStream);
+	// <trs.modname>
+	GC.getModName().setSaving(false);
+	GC.getModName().resetExt();
+	// </trs.modname>
 }
 

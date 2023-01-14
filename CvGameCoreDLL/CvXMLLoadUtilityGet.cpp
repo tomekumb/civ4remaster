@@ -837,13 +837,14 @@ bool CvXMLLoadUtility::GetChildXmlValByName(wchar* pszVal, const TCHAR* szName, 
 	{
 		wcscpy(pszVal, L"");
 	}
-
-#if 0
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+	/*	trs.xmlcomments (from AdvCiv): This was already partially disabled
+		and gets in the way of tloerating comments. I think FXML already
+		detects duplicate tags when enforcing the XML schema. */
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag name than expected, should only be 1.");
-#endif
 	// we only continue if there are one and only one children with this tag name
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{
@@ -899,12 +900,11 @@ bool CvXMLLoadUtility::GetChildXmlValByName(char* pszVal, const TCHAR* szName, c
 		strcpy(pszVal, "");
 	}
 
-#if 0
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag name than expected, should only be 1.");
-#endif
 	// we only continue if there are one and only one children with this tag name
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments (AdvCiv)
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{
@@ -961,12 +961,11 @@ bool CvXMLLoadUtility::GetChildXmlValByName(std::string& pszVal, const TCHAR* sz
 		pszVal.clear();
 	}
 
-#if 0
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag name than expected, should only be 1.");
-#endif
 	// we only continue if there are one and only one children with this tag name
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments (AdvCiv)
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{
@@ -1015,12 +1014,11 @@ bool CvXMLLoadUtility::GetChildXmlValByName(std::wstring& pszVal, const TCHAR* s
 		pszVal.clear();
 	}
 
-#if 0
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag name than expected, should only be 1.");
-#endif
 	// we only continue if there are one and only one children with this tag name
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments (AdvCiv)
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{
@@ -1069,12 +1067,11 @@ bool CvXMLLoadUtility::GetChildXmlValByName(int* piVal, const TCHAR* szName, int
 	// set the value to the default
 	*piVal = iDefault;
 
-#if 0	// def _DEBUG
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag name than expected, should only be 1.");
 	// we only continue if there are one and only one children with this tag name
-#endif
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments (AdvCiv)
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{
@@ -1123,12 +1120,12 @@ bool CvXMLLoadUtility::GetChildXmlValByName(float* pfVal, const TCHAR* szName, f
 
 	// set the value to the default
 	*pfVal = fDefault;
-#if 0
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag5 name than expected, should only be 1.");
-#endif
 	// we only continue if there are one and only one children with this tag name
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments (AdvCiv)
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{
@@ -1178,12 +1175,11 @@ bool CvXMLLoadUtility::GetChildXmlValByName(bool* pbVal, const TCHAR* szName, bo
 	// set the boolean value to it's default value
 	*pbVal = bDefault;
 
-#if 0
-	iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
+	/*iNumChildrenByTagName = gDLL->getXMLIFace()->NumOfChildrenByTagName(m_pFXml,szName);
 	FAssertMsg((iNumChildrenByTagName < 2),"More children with tag name than expected, should only be 1.");
-#endif
 	// we only continue if there are one and only one children with this tag name
-	if (iNumChildrenByTagName == 1)
+	if (iNumChildrenByTagName == 1)*/
+	if (SkipToNextVal()) // trs.xmlcomments (AdvCiv)
 	{
 		if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szName))
 		{

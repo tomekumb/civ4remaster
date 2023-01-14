@@ -64,7 +64,8 @@ void CvDeal::reset(int iID, PlayerTypes eFirstPlayer, PlayerTypes eSecondPlayer)
 }
 
 
-void CvDeal::kill(bool bKillTeam)
+void CvDeal::kill(bool bKillTeam,
+	bool bPlaySound) // trs.sound-once
 {
 	if ((getLengthFirstTrades() > 0) || (getLengthSecondTrades() > 0))
 	{
@@ -77,7 +78,10 @@ void CvDeal::kill(bool bKillTeam)
 			szDealString.clear();
 			GAMETEXT.getDealString(szDealString, *this, getFirstPlayer());
 			szString.Format(L"%s: %s", szCancelString.GetCString(), szDealString.getCString());
-			gDLL->getInterfaceIFace()->addMessage((PlayerTypes)getFirstPlayer(), true, GC.getEVENT_MESSAGE_TIME(), szString, "AS2D_DEAL_CANCELLED");
+			gDLL->getInterfaceIFace()->addMessage((PlayerTypes)getFirstPlayer(), true, GC.getEVENT_MESSAGE_TIME(), szString,
+					//"AS2D_DEAL_CANCELLED"
+					bPlaySound ? "AS2D_DEAL_CANCELLED" : NULL // trs.sound-once
+					);
 		}
 
 		if (GET_TEAM(GET_PLAYER(getSecondPlayer()).getTeam()).isHasMet(GET_PLAYER(getFirstPlayer()).getTeam()))
@@ -85,7 +89,10 @@ void CvDeal::kill(bool bKillTeam)
 			szDealString.clear();
 			GAMETEXT.getDealString(szDealString, *this, getSecondPlayer());
 			szString.Format(L"%s: %s", szCancelString.GetCString(), szDealString.getCString());
-			gDLL->getInterfaceIFace()->addMessage((PlayerTypes)getSecondPlayer(), true, GC.getEVENT_MESSAGE_TIME(), szString, "AS2D_DEAL_CANCELLED");
+			gDLL->getInterfaceIFace()->addMessage((PlayerTypes)getSecondPlayer(), true, GC.getEVENT_MESSAGE_TIME(), szString,
+					//"AS2D_DEAL_CANCELLED"
+					bPlaySound ? "AS2D_DEAL_CANCELLED" : NULL // trs.sound-once
+					);
 		}
 	}
 

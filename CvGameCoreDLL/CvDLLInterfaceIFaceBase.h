@@ -78,9 +78,17 @@ public:
 	virtual CLLNode<IDInfo>* nextSelectedCitiesNode(CLLNode<IDInfo>* pNode) = 0;
 	virtual CLLNode<IDInfo>* headSelectedCitiesNode() = 0;
 
-	virtual void addMessage(PlayerTypes ePlayer, bool bForce, int iLength, CvWString szString, LPCTSTR pszSound = NULL,
-		InterfaceMessageTypes eType = MESSAGE_TYPE_INFO, LPCSTR pszIcon = NULL, ColorTypes eFlashColor = NO_COLOR,
-		int iFlashX = -1, int iFlashY = -1, bool bShowOffScreenArrows = false, bool bShowOnScreenArrows = false) = 0;
+	// trs.autoplay: Wrapper around the pure virtual function below
+	void addMessage(PlayerTypes ePlayer, bool bForce, int iLength, CvWString sString,
+			char const* szSound = NULL, InterfaceMessageTypes eType = MESSAGE_TYPE_INFO,
+			char const* szIcon = NULL, ColorTypes eFlashColor = NO_COLOR,
+			int iFlashX = -1, int iFlashY = -1,
+			bool bShowOffScreenArrows = false, bool bShowOnScreenArrows = false);
+	/*	trs.autoplay: Renamed from "addMessage". Note that renaming a function or
+		its parameters - or removing default args - doesn't break external calls
+		through the vtable. */
+	virtual void addMessageExternal(PlayerTypes, bool, int, CvWString, LPCTSTR,
+			InterfaceMessageTypes, LPCSTR, ColorTypes, int, int, bool, bool) = 0;
 	virtual void addCombatMessage(PlayerTypes ePlayer, CvWString szString) = 0;
 	virtual void addQuestMessage(PlayerTypes ePlayer, CvWString szString, int iQuestId) = 0;
 	virtual void showMessage(CvTalkingHeadMessage& msg) = 0;

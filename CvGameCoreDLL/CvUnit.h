@@ -90,6 +90,7 @@ public:
 	void updateAirStrike(CvPlot* pPlot, bool bQuick, bool bFinish);
 
 	bool isActionRecommended(int iAction);
+	void updateFoundingBorder(bool bForceClear = false) const; // trs.found-border
 
 	bool isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker) const;						// Exposed to Python 
 
@@ -296,7 +297,10 @@ public:
 	bool canBuildRoute() const;																						// Exposed to Python
 	DllExport BuildTypes getBuildType() const;														// Exposed to Python
 	int workRate(bool bMax) const;															// Exposed to Python
-
+	
+// BUG - Female Great People - start
+	bool isFemale() const;																	// Exposed to Python
+// BUG - Female Great People - end
 	bool isAnimal() const;																								// Exposed to Python
 	bool isNoBadGoodies() const;																					// Exposed to Python
 	bool isOnlyDefensive() const;																					// Exposed to Python
@@ -330,6 +334,7 @@ public:
 	DllExport float currCombatStrFloat(const CvPlot* pPlot, const CvUnit* pAttacker) const;																	// Exposed to Python
 
 	DllExport bool canFight() const;																									// Exposed to Python
+	bool canCombat() const; // trs.
 	bool canAttack() const;																														// Exposed to Python
 	bool canAttack(const CvUnit& defender) const;
 	bool canDefend(const CvPlot* pPlot = NULL) const;																	// Exposed to Python
@@ -668,6 +673,9 @@ public:
 	void changeExtraDomainModifier(DomainTypes eIndex, int iChange);
 
 	DllExport const CvWString getName(uint uiForm = 0) const;																// Exposed to Python
+// BUG - Unit Name - start
+	bool isDescInName() const;
+// BUG - Unit Name - end
 	DllExport const wchar* getNameKey() const;																							// Exposed to Python
 	const CvWString& getNameNoDesc() const;																				// Exposed to Python
 	void setName(const CvWString szNewValue);																			// Exposed to Python

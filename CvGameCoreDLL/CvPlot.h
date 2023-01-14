@@ -118,7 +118,10 @@ public:
 
 	bool canBuild(BuildTypes eBuild, PlayerTypes ePlayer = NO_PLAYER, bool bTestVisible = false) const;														// Exposed to Python
 	int getBuildTime(BuildTypes eBuild) const;																																										// Exposed to Python
-	int getBuildTurnsLeft(BuildTypes eBuild, int iNowExtra, int iThenExtra) const;																			// Exposed to Python
+// BUG - Partial Builds - start
+	int getBuildTurnsLeft(BuildTypes eBuild, PlayerTypes ePlayer) const;
+	int getBuildTurnsLeft(BuildTypes eBuild, int iNowExtra, int iThenExtra, bool bIncludeUnits = true) const;																			// Exposed to Python
+// BUG - Partial Builds - end
 	int getFeatureProduction(BuildTypes eBuild, TeamTypes eTeam, CvCity** ppCity) const;																// Exposed to Python
 
 	DllExport CvUnit* getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer = NO_PLAYER, const CvUnit* pAttacker = NULL, bool bTestAtWar = false, bool bTestPotentialEnemy = false, bool bTestCanMove = false) const;		// Exposed to Python
@@ -194,21 +197,30 @@ public:
 	bool isValidDomainForAction(const CvUnit& unit) const;																						// Exposed to Python
 	bool isImpassable() const;																															// Exposed to Python
 
-	DllExport int getX() const;																																				// Exposed to Python
+	int getXExternal() const; // trs. Renamed from "getX", exported through .def file.
 #ifdef _USRDLL
 	inline int getX_INLINE() const
 	{
 		return m_iX;
 	}
 #endif
-	DllExport int getY() const;																																				// Exposed to Python
+	int getYExternal() const; // trs. Renamed from "getY", exported through .def file.
 #ifdef _USRDLL
 	inline int getY_INLINE() const
 	{
 		return m_iY;
 	}
 #endif
+	// <trs.> Replacing the INLINE functions above, which are now deprecated.
+	int getX() const { return m_iX; } // (exposed to Python)
+	int getY() const { return m_iY; } // (exposed to Python)
+	// </trs.>
 	bool at(int iX, int iY) const;																																		// Exposed to Python
+// BUG - Lat/Long Coordinates - start
+	int calculateMinutes(int iPlotIndex, int iPlotCount, bool bWrap, int iDegreeMin, int iDegreeMax) const;
+	int getLongitudeMinutes() const;																																		// Exposed to Python
+	int getLatitudeMinutes() const;																																		// Exposed to Python
+// BUG - Lat/Long Coordinates - end
 	int getLatitude() const;																																					// Exposed to Python  
 	int getFOWIndex() const;
 
@@ -371,7 +383,8 @@ public:
 	void updatePlotGroup(PlayerTypes ePlayer, bool bRecalculate = true);
 
 	int getVisibilityCount(TeamTypes eTeam) const;																											// Exposed to Python
-	void changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes eSeeInvisible, bool bUpdatePlotGroups);							// Exposed to Python
+	void changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes eSeeInvisible, bool bUpdatePlotGroups,							// Exposed to Python
+			CvUnit const* pUnit = NULL); // trs.1stcontact
 
 	int getStolenVisibilityCount(TeamTypes eTeam) const;																								// Exposed to Python
 	void changeStolenVisibilityCount(TeamTypes eTeam, int iChange);
@@ -401,6 +414,10 @@ public:
 
 	int getBuildProgress(BuildTypes eBuild) const;																											// Exposed to Python  
 	bool changeBuildProgress(BuildTypes eBuild, int iChange, TeamTypes eTeam = NO_TEAM);								// Exposed to Python 
+
+// BUG - Partial Builds - start
+	bool hasAnyBuildProgress() const;
+// BUG - Partial Builds - end
 
 	void updateFeatureSymbolVisibility(); 
 	void updateFeatureSymbol(bool bForce = false);

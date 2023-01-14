@@ -21,7 +21,7 @@ class CvDLLFeatureIFaceBase;
 class CvDLLRouteIFaceBase;
 class CvDLLRiverIFaceBase;
 class CvDLLFAStarIFaceBase;
-class CvDLLEventReporterIFaceBase;
+//class CvDLLEventReporterIFaceBase; // trs.build: Removed; unused.
 class CvDLLXmlIFaceBase;
 class CvDLLFlagEntityIFaceBase;
 class CvDLLPythonIFaceBase;

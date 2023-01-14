@@ -485,5 +485,15 @@ struct DllExport CvWBData
 	CvString m_strButton;
 };
 
+// trs.1stcontact (from AdvCiv):
+struct FirstContactData
+{
+	FirstContactData(CvPlot const* pAt1, CvPlot const* pAt2 = NULL,
+			CvUnit const* pUnit1 = NULL, CvUnit const* pUnit2 = NULL);
+	FirstContactData() : u1(), u2(), x1(-1), x2(-1), y1(-1), y2(-1) {}
+	IDInfo u1, u2;
+	int x1, y1, x2, y2;
+};
+
 
 #endif	// CVSTRUCTS_H

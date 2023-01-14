@@ -10,6 +10,7 @@ class CvHallOfFameInfo
 public:
 	CvHallOfFameInfo();
 	virtual ~CvHallOfFameInfo();
+	void uninit(); // trs.clearhof
 
 	void loadReplays();
 	int getNumGames() const;

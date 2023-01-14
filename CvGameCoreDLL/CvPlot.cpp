@@ -25,6 +25,7 @@
 #include "CyArgsList.h"
 #include "CvDLLPythonIFaceBase.h"
 #include "CvEventReporter.h"
+#include "UnofficialPatch.h" // trs.modname
 
 #define STANDARD_MINIMAP_ALPHA		(0.6f)
 
@@ -428,10 +429,29 @@ void CvPlot::doImprovement()
 			{
 				if (GET_TEAM(getTeam()).isHasTech((TechTypes)(GC.getBonusInfo((BonusTypes) iI).getTechReveal())))
 				{
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       03/04/10                                jdog5000      */
+/*                                                                                              */
+/* Gamespeed scaling                                                                            */
+/************************************************************************************************/
+/* original bts code
 					if (GC.getImprovementInfo(getImprovementType()).getImprovementBonusDiscoverRand(iI) > 0)
 					{
 						if (GC.getGameINLINE().getSorenRandNum(GC.getImprovementInfo(getImprovementType()).getImprovementBonusDiscoverRand(iI), "Bonus Discovery") == 0)
 						{
+*/
+					int iOdds = GC.getImprovementInfo(getImprovementType()).getImprovementBonusDiscoverRand(iI);
+
+					if( iOdds > 0 )
+					{
+						iOdds *= GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getVictoryDelayPercent();
+						iOdds /= 100;
+
+						if( GC.getGameINLINE().getSorenRandNum(iOdds, "Bonus Discovery") == 0)
+						{
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                        END                                                  */
+/************************************************************************************************/
 							setBonusType((BonusTypes)iI);
 
 							pCity = GC.getMapINLINE().findCity(getX_INLINE(), getY_INLINE(), getOwnerINLINE(), NO_TEAM, false);
@@ -1666,7 +1686,8 @@ void CvPlot::changeAdjacentSight(TeamTypes eTeam, int iRange, bool bIncrement, C
 						CvPlot* pPlot = plotXY(getX_INLINE(), getY_INLINE(), dx, dy);
 						if (NULL != pPlot)
 						{
-							pPlot->changeVisibilityCount(eTeam, ((bIncrement) ? 1 : -1), aSeeInvisibleTypes[i], bUpdatePlotGroups);
+							pPlot->changeVisibilityCount(eTeam, ((bIncrement) ? 1 : -1), aSeeInvisibleTypes[i], bUpdatePlotGroups,
+									pUnit); // trs.1stcontact
 						}
 					}
 				}
@@ -1678,8 +1699,10 @@ void CvPlot::changeAdjacentSight(TeamTypes eTeam, int iRange, bool bIncrement, C
 						CvPlot* pPlot = plotXY(getX_INLINE(), getY_INLINE(), dx, dy);
 						if (NULL != pPlot)
 						{
-							pPlot->changeVisibilityCount(eTeam, 1, aSeeInvisibleTypes[i], bUpdatePlotGroups);
-							pPlot->changeVisibilityCount(eTeam, -1, aSeeInvisibleTypes[i], bUpdatePlotGroups);
+							pPlot->changeVisibilityCount(eTeam, 1, aSeeInvisibleTypes[i], bUpdatePlotGroups,
+									pUnit); // trs.1stcontact
+							pPlot->changeVisibilityCount(eTeam, -1, aSeeInvisibleTypes[i], bUpdatePlotGroups,
+									pUnit); // trs.1stcontact
 						}
 					}
 				}
@@ -2364,7 +2387,24 @@ int CvPlot::getBuildTime(BuildTypes eBuild) const
 }
 
 
-int CvPlot::getBuildTurnsLeft(BuildTypes eBuild, int iNowExtra, int iThenExtra) const
+// BUG - Partial Builds - start
+int CvPlot::getBuildTurnsLeft(BuildTypes eBuild, PlayerTypes ePlayer) const
+{
+	int iWorkRate = GET_PLAYER(ePlayer).getWorkRate(eBuild);
+	if (iWorkRate > 0)
+	{
+		return getBuildTurnsLeft(eBuild, iWorkRate, iWorkRate, false);
+	}
+	else
+	{
+		return MAX_INT;
+	}
+}
+// BUG - Partial Builds - end
+
+// BUG - Partial Builds - start
+int CvPlot::getBuildTurnsLeft(BuildTypes eBuild, int iNowExtra, int iThenExtra, bool bIncludeUnits) const
+// BUG - Partial Builds - end
 {
 	CLLNode<IDInfo>* pUnitNode;
 	CvUnit* pLoopUnit;
@@ -2376,22 +2416,29 @@ int CvPlot::getBuildTurnsLeft(BuildTypes eBuild, int iNowExtra, int iThenExtra) 
 	iNowBuildRate = iNowExtra;
 	iThenBuildRate = iThenExtra;
 
-	pUnitNode = headUnitNode();
-
-	while (pUnitNode != NULL)
+// BUG - Partial Builds - start
+	if (bIncludeUnits)
 	{
-		pLoopUnit = ::getUnit(pUnitNode->m_data);
-		pUnitNode = nextUnitNode(pUnitNode);
+// BUG - Partial Builds - end
+		pUnitNode = headUnitNode();
 
-		if (pLoopUnit->getBuildType() == eBuild)
+		while (pUnitNode != NULL)
 		{
-			if (pLoopUnit->canMove())
+			pLoopUnit = ::getUnit(pUnitNode->m_data);
+			pUnitNode = nextUnitNode(pUnitNode);
+
+			if (pLoopUnit->getBuildType() == eBuild)
 			{
-				iNowBuildRate += pLoopUnit->workRate(false);
+				if (pLoopUnit->canMove())
+				{
+					iNowBuildRate += pLoopUnit->workRate(false);
+				}
+				iThenBuildRate += pLoopUnit->workRate(true);
 			}
-			iThenBuildRate += pLoopUnit->workRate(true);
 		}
+// BUG - Partial Builds - start
 	}
+// BUG - Partial Builds - end
 
 	if (iThenBuildRate == 0)
 	{
@@ -3715,13 +3762,13 @@ bool CvPlot::isImpassable() const
 }
 
 
-int CvPlot::getX() const
+int CvPlot::getXExternal() const // trs. Renamed from "getX".
 {
 	return m_iX;
 }
 
 
-int CvPlot::getY() const
+int CvPlot::getYExternal() const // trs. Renamed from "getY".
 {
 	return m_iY;
 }
@@ -3733,23 +3780,63 @@ bool CvPlot::at(int iX, int iY) const
 }
 
 
-int CvPlot::getLatitude() const
-{
-	int iLatitude;
+// BUG - Lat/Long Coordinates - start
+#define MINUTES_PER_DEGREE	60
+#define MIN_LONGITUDE		-180
+#define MAX_LONGITUDE		180
 
-	if (GC.getMapINLINE().isWrapXINLINE() || !(GC.getMapINLINE().isWrapYINLINE()))
+int CvPlot::calculateMinutes(int iPlotIndex, int iPlotCount, bool bWrap, int iDegreeMin, int iDegreeMax) const
+{
+	if (!bWrap)
 	{
-		iLatitude = ((getY_INLINE() * 100) / GC.getMapINLINE().getGridHeightINLINE());
+		iPlotCount--;
+	}
+	return iPlotIndex * (iDegreeMax - iDegreeMin) * MINUTES_PER_DEGREE / iPlotCount + iDegreeMin * MINUTES_PER_DEGREE;
+}
+
+int CvPlot::getLongitudeMinutes() const
+{
+	if (GC.getMapINLINE().isWrapXINLINE())
+	{
+		// normal and toroidal
+		return calculateMinutes(getX_INLINE(), GC.getMapINLINE().getGridWidthINLINE(), true, MIN_LONGITUDE, MAX_LONGITUDE);
+	}
+	else if (!GC.getMapINLINE().isWrapYINLINE())
+	{
+		// flat
+		return calculateMinutes(getX_INLINE(), GC.getMapINLINE().getGridWidthINLINE(), false, MIN_LONGITUDE, MAX_LONGITUDE);
 	}
 	else
 	{
-		iLatitude = ((getX_INLINE() * 100) / GC.getMapINLINE().getGridWidthINLINE());
+		// tilted axis
+		return calculateMinutes(getY_INLINE(), GC.getMapINLINE().getGridHeightINLINE(), true, MIN_LONGITUDE, MAX_LONGITUDE);
 	}
-
-	iLatitude = ((iLatitude * (GC.getMapINLINE().getTopLatitude() - GC.getMapINLINE().getBottomLatitude())) / 100);
-
-	return abs(iLatitude + GC.getMapINLINE().getBottomLatitude());
 }
+
+int CvPlot::getLatitudeMinutes() const
+{
+	if (GC.getMapINLINE().isWrapXINLINE())
+	{
+		// normal and toroidal
+		return calculateMinutes(getY_INLINE(), GC.getMapINLINE().getGridHeightINLINE(), GC.getMapINLINE().isWrapYINLINE(), GC.getMapINLINE().getBottomLatitude(), GC.getMapINLINE().getTopLatitude());
+	}
+	else if (!GC.getMapINLINE().isWrapYINLINE())
+	{
+		// flat
+		return calculateMinutes(getY_INLINE(), GC.getMapINLINE().getGridHeightINLINE(), false, GC.getMapINLINE().getBottomLatitude(), GC.getMapINLINE().getTopLatitude());
+	}
+	else
+	{
+		// tilted axis
+		return calculateMinutes(getX_INLINE(), GC.getMapINLINE().getGridWidthINLINE(), false, GC.getMapINLINE().getBottomLatitude(), GC.getMapINLINE().getTopLatitude());
+	}
+}
+
+int CvPlot::getLatitude() const
+{
+	return abs(getLatitudeMinutes() / MINUTES_PER_DEGREE);
+}
+// BUG - Lat/Long Coordinates - end
 
 
 int CvPlot::getFOWIndex() const
@@ -4669,7 +4756,9 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 					{
 						if (isVisible((TeamTypes)iI, false))
 						{
-							GET_TEAM((TeamTypes)iI).meet(getTeam(), true);
+							FirstContactData fcData(this); // trs.1stcontact
+							GET_TEAM((TeamTypes)iI).meet(getTeam(), true,
+									&fcData); // trs.1stcontact
 						}
 					}
 				}
@@ -5615,7 +5704,11 @@ void CvPlot::updateWorkingCity()
 		{
 			if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_RADIUS))
 			{
-				if (gDLL->getInterfaceIFace()->canSelectionListFound())
+				//if (gDLL->getInterfaceIFace()->canSelectionListFound())
+				// <trs.found-border> Only show borders when head of selection can found
+				CvUnit* pHeadSelectedUnit = gDLL->getInterfaceIFace()->getHeadSelectedUnit();
+				if (pHeadSelectedUnit != NULL && pHeadSelectedUnit->isFound())
+					// </trs.found-border>
 				{
 					gDLL->getInterfaceIFace()->setDirty(ColoredPlots_DIRTY_BIT, true);
 				}
@@ -5860,7 +5953,20 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 		}
 	}
 
-	return iYield;
+/*************************************************************************************************/
+/* UNOFFICIAL_PATCH                       06/02/10                     Afforess & jdog5000       */
+/*                                                                                               */
+/* Bugfix                                                                                        */
+/*************************************************************************************************/
+	if (!isEnableUP16()) // trs.modname
+		return iYield; // original bts code
+	// Improvement cannot actually produce negative yield
+	int iCurrYield = calculateNatureYield(eYield, (ePlayer == NO_PLAYER) ? NO_TEAM : GET_PLAYER(ePlayer).getTeam(), bOptimal);
+
+	return std::max( -iCurrYield, iYield );
+/*************************************************************************************************/
+/* UNOFFICIAL_PATCH                         END                                                  */
+/*************************************************************************************************/
 }
 
 
@@ -6580,7 +6686,8 @@ int CvPlot::getVisibilityCount(TeamTypes eTeam) const
 }
 
 
-void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes eSeeInvisible, bool bUpdatePlotGroups)
+void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes eSeeInvisible, bool bUpdatePlotGroups,
+	CvUnit const* pUnit) // trs.1stcontact
 {
 	CvCity* pCity;
 	CvPlot* pAdjacentPlot;
@@ -6629,8 +6736,31 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes 
 
 				if (getTeam() != NO_TEAM)
 				{
-					GET_TEAM(getTeam()).meet(eTeam, true);
+					//GET_TEAM(getTeam()).meet(eTeam, true);
+					// trs.1stcontact:
+					FirstContactData fcData(this, pUnit == NULL ? NULL : pUnit->plot(), pUnit);
+					GET_TEAM(getTeam()).meet(eTeam, true, &fcData);
 				}
+				if (!isBULL12Rules()) // To be on the safe side
+				{
+					// from K-Mod: Meet the owner of any units you can see
+					for (CLLNode<IDInfo>* pNode = headUnitNode(); pNode != NULL;
+						pNode = nextUnitNode(pNode))
+					{
+						CvUnit const* pLoopUnit = ::getUnit(pNode->m_data);
+						if (GET_TEAM(eTeam).isHasMet(
+							GET_PLAYER(pLoopUnit->getOwner()).getTeam()))
+						{
+							continue; // save time
+						}
+						FirstContactData fcData(this,
+								pUnit == NULL ? NULL : pUnit->plot(),
+								pUnit, pLoopUnit);
+						GET_TEAM(eTeam).meet(
+								GET_PLAYER(pLoopUnit->getVisualOwner(eTeam)).getTeam(),
+								true, &fcData);
+					}
+				} // <trs.1stcontact
 			}
 
 			pCity = getPlotCity();
@@ -6756,7 +6886,7 @@ void CvPlot::changeBlockadedCount(TeamTypes eTeam, int iChange)
 
 		m_aiBlockadedCount[eTeam] += iChange;
 		FAssert(getBlockadedCount(eTeam) >= 0);
-		FAssert(getBlockadedCount(eTeam) == 0 || isWater())
+		FAssert(getBlockadedCount(eTeam) == 0 || isWater());
 
 		CvCity* pWorkingCity = getWorkingCity();
 		if (NULL != pWorkingCity)
@@ -7407,6 +7537,19 @@ bool CvPlot::changeBuildProgress(BuildTypes eBuild, int iChange, TeamTypes eTeam
 
 	return bFinished;
 }
+
+
+// BUG - Partial Builds - start
+/*
+ * Returns true if the build progress array has been created; false otherwise.
+ * A false return value implies that every build has zero progress.
+ * A true return value DOES NOT imply that any build has a non-zero progress--just the possibility.
+ */
+bool CvPlot::hasAnyBuildProgress() const
+{
+	return NULL != m_paiBuildProgress;
+}
+// BUG - Partial Builds - end
 
 
 void CvPlot::updateFeatureSymbolVisibility()
@@ -8108,7 +8251,19 @@ void CvPlot::doFeature()
 
 		if (iProbability > 0)
 		{
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       03/04/10                                jdog5000      */
+/*                                                                                              */
+/* Gamespeed scaling                                                                            */
+/************************************************************************************************/
+/* original bts code
 			if (GC.getGameINLINE().getSorenRandNum(10000, "Feature Disappearance") < iProbability)
+*/
+			int iOdds = (10000*GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getVictoryDelayPercent())/100;
+			if (GC.getGameINLINE().getSorenRandNum(iOdds, "Feature Disappearance") < iProbability)
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                        END                                                  */
+/************************************************************************************************/
 			{
 				setFeatureType(NO_FEATURE);
 			}
@@ -8159,17 +8314,32 @@ void CvPlot::doFeature()
 
 							if (iProbability > 0)
 							{
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       03/04/10                                jdog5000      */
+/*                                                                                              */
+/* Gamespeed scaling                                                                            */
+/************************************************************************************************/
+/* original bts code
 								if (GC.getGameINLINE().getSorenRandNum(10000, "Feature Growth") < iProbability)
+*/
+								int iOdds = (10000*GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getVictoryDelayPercent())/100;
+								if( GC.getGameINLINE().getSorenRandNum(iOdds, "Feature Growth") < iProbability )
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                        END                                                  */
+/************************************************************************************************/
 								{
 									setFeatureType((FeatureTypes)iI);
 
 									pCity = GC.getMapINLINE().findCity(getX_INLINE(), getY_INLINE(), getOwnerINLINE(), NO_TEAM, false);
 
-									if (pCity != NULL)
+									if (pCity != NULL
+										&& isRevealed(pCity->getTeam(), false)) // trs.fix
 									{
 										// Tell the owner of this city.
 										szBuffer = gDLL->getText("TXT_KEY_MISC_FEATURE_GROWN_NEAR_CITY", GC.getFeatureInfo((FeatureTypes) iI).getTextKeyWide(), pCity->getNameKey());
-										gDLL->getInterfaceIFace()->addMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_FEATUREGROWTH", MESSAGE_TYPE_INFO, GC.getFeatureInfo((FeatureTypes) iI).getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), getX_INLINE(), getY_INLINE(), true, true);
+										gDLL->getInterfaceIFace()->addMessage(
+												/*getOwner()*/ pCity->getOwner(), // trs.fix (from K-Mod)
+												false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_FEATUREGROWTH", MESSAGE_TYPE_INFO, GC.getFeatureInfo((FeatureTypes) iI).getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), getX_INLINE(), getY_INLINE(), true, true);
 									}
 
 									break;
