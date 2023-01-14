@@ -33,6 +33,7 @@ struct VS_INPUT
 	float3 f3Position   : POSITION;
 	float2 f2BaseTex    : TEXCOORD0;	// base 
 	float2 fDetailTex   : TEXCOORD1;	// decal 
+	float4 color : COLOR;
 };
 
 struct VS_OUTPUT_11
@@ -76,22 +77,6 @@ VS_OUTPUT_11 VSTerrain_Tile_11( VS_INPUT vIn )
 	return vOut;
 }
 
-VS_OUTPUT_14 VSTerrain_Tile_14( VS_INPUT vIn )
-{
-	VS_OUTPUT_14 vOut = (VS_OUTPUT_14)0;			
-	
-	//Transform position
-	vOut.f4Position  = mul(float4(vIn.f3Position, 1), mtxWorldViewProj);	
-    float3 P = mul(float4(vIn.f3Position, 1), (float4x3)mtxWorld);			//todotw: if we're only going to need this for Fog combine the 2 and remove the transform
-	// Copy over the texture coordinates
-	vOut.f2BaseTex     = vIn.f2BaseTex;
-	vOut.f2FOWTex      = mul(float4(P,1),mtxFOW);				// fog of war
-	vOut.f2LightMapTex = mul(float4(P,1),mtxLightmap);			// Lightmap 
-	vOut.f2Detail      = vIn.fDetailTex * fDetailTexScaling;	// Detail 
-		
-	return vOut;
-}
-
 //------------------------------------------------------------------------------------------------
 //                          PIXEL SHADER
 //------------------------------------------------------------------------------------------------
@@ -114,6 +99,29 @@ sampler TerrainLightmap= sampler_state{ Texture = (TerrainLightmapTexture); Addr
 sampler TerrainDetail = sampler_state { Texture = (TerrainDetailTexture  );  AddressU = Wrap; AddressV = Wrap; MagFilter = Linear; MipFilter = Linear; MinFilter = Linear; };
 sampler TerrainPlotFog = sampler_state  { Texture = (TerrainPlotFogTexture);  AddressU = Clamp; AddressV = Clamp; MagFilter = Point; MipFilter = None; MinFilter = Point; };
 sampler TerrainClouds = sampler_state { Texture = (TerrainDetailTexture  );  AddressU = Wrap; AddressV = Wrap; MagFilter = Linear; MipFilter = Linear; MinFilter = Linear; };
+
+VS_OUTPUT_14 VSTerrain_Tile_14( VS_INPUT vIn )
+{
+	VS_OUTPUT_14 vOut = (VS_OUTPUT_14)0;			
+	
+	//Transform position
+	vOut.f4Position  = mul(float4(vIn.f3Position, 1), mtxWorldViewProj);	
+    
+	float3 P = mul(float4(vIn.f3Position, 1), (float4x3)mtxWorld);			//todotw: if we're only going to need this for Fog combine the 2 and remove the transform
+	// Copy over the texture coordinates
+	vOut.f2BaseTex     = vIn.f2BaseTex;
+	vOut.f2FOWTex      = mul(float4(P,1),mtxFOW);				// fog of war
+	// vOut.f2LightMapTex = mul(float4(P,1),mtxLightmap);			// Lightmap 
+	vOut.f2Detail      = vIn.fDetailTex * fDetailTexScaling;	// Detail 
+		
+	float4 fowColor = tex2Dlod(TerrainFOWar, float4(vOut.f2FOWTex,0.5f,0.5f));
+	if (fowColor.r < 0.5f) 
+	{
+		vOut.f4Position.z = 0;
+	}
+
+	return vOut;
+}
 
 //------------------------------------------------------------------------------------------------ 
 //      PSTerrain_Blender - Blends a 4 Base and an 3 Alpha textures 
@@ -262,7 +270,7 @@ technique TerrainShader< string shadername= "TerrainShader"; int implementation=
 		TextureTransformFlags[3] = 0;	
 
 		// Set vertex and pixel shaders
-		VertexShader = compile vs_1_1 VSTerrain_Tile_14();
+		VertexShader = compile vs_3_0 VSTerrain_Tile_14();
 		PixelShader	 = (PSArray20[iTrilinearTextureIndex]);
 	}
 }
@@ -302,7 +310,7 @@ technique TerrainShader14< string shadername= "TerrainShader"; int implementatio
 		TextureTransformFlags[3] = 0;
 
 		// Set vertex and pixel shaders
-		VertexShader = compile vs_1_1 VSTerrain_Tile_14();
+		VertexShader = compile vs_3_0 VSTerrain_Tile_14();
 		PixelShader	 = (PSArray14[iTrilinearTextureIndex]);
 	}
 }
@@ -508,7 +516,7 @@ technique TerrainAlphaShader< string shadername= "TerrainAlphaShader"; int imple
 		TextureTransformFlags[3] = 0;	
 
 		// Set vertex and pixel shaders
-		VertexShader = compile vs_1_1 VSTerrain_Tile_14();
+		VertexShader = compile vs_3_0 VSTerrain_Tile_14();
 		PixelShader	 = (PSAlphaArray20[iTrilinearTextureIndex]);
 	}
 }
@@ -548,7 +556,7 @@ technique TerrainAlphaShader14< string shadername= "TerrainAlphaShader"; int imp
 		TextureTransformFlags[3] = 0;
 
 		// Set vertex and pixel shaders
-		VertexShader = compile vs_1_1 VSTerrain_Tile_14();
+		VertexShader = compile vs_3_0 VSTerrain_Tile_14();
 		PixelShader	 = (PSAlphaArray14[iTrilinearTextureIndex]);
 	}
 }
