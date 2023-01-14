@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- trs. Config for all options added by the Taurus mod.
+	 (Can still split this up later if it becomes cluttered.) -->
+<mod id="Taurus"
+	 name="Taurus" author="f1rpo" version="1.0" date="19/05/2022">
+ 
+	<options id="Taurus" file="Taurus.ini">
+
+		<section id="MainScreen">
+
+			<!-- trs.noflash: start -->
+			<option id="EndTurnFlash" key="No End Turn Flash"
+					type="boolean" default="False"
+					get="isShowEndTurnFlash"/>
+			<option id="ExitCityFlash" key="No Exit City Flash"
+					type="boolean" default="False"
+					get="isShowExitCityFlash"/>
+			<!-- trs.noflash: end -->
+
+			<!-- trs.promoleads -->
+			<option id="PromotionLeadsTo" key="Promotion Leads To"
+					type="boolean" default="True"/>
+
+		</section>
+		<section id="Saves">
+
+			<!-- trs.modname -->
+			<option id="SaveModName" key="Save Mod Name"
+					type="boolean" default="True"/>
+			<!-- trs.replayname -->
+			<option id="ModNameInReplays" key="Mod Name In Replays"
+					type="boolean" default="True"/>
+			<!-- trs.savmsg: start -->
+			<list	id="AutoSaveMsg" key="Auto Save Msg"
+					type="int" default="0" listType="string">
+				<choice id="Disable"/>
+				<choice id="Brief"/>
+				<choice id="Normal"/>
+			</list>
+			<list	id="QuickSaveMsg" key="Quick Save Msg"
+					type="int" default="1" listType="string">
+				<choice id="Disable"/>
+				<choice id="Brief"/>
+				<choice id="Normal"/>
+			</list>
+			<!-- trs.savmsg: end -->
+
+		</section>
+		<section id="Map">
+
+			<!-- trs.balloon: start -->
+			<!-- (Caveat: The DLL doesn't have access to these ID strings;
+				 the behavior is only based only on the order of the choices.) -->
+			<list	id="PlotIndicatorSize" key="Plot Indicator Size"
+					type="int" default="0" listType="string"
+					dirtyBit="GlobeLayer">
+				<change module="Taurus" function="updatePlotIndicatorSize"/>
+				<choice id="Auto"/> <choice id="BtS"/>
+				<choice id="25"/> <choice id="30"/> <choice id="35"/>
+				<choice id="40"/> <choice id="45"/> <choice id="50"/> <choice id="55"/>
+				<choice id="60"/> <choice id="65"/>
+			</list>
+			<list   id="OffScreenUnitSizeMult" key="Off Screen Unit Size Mult"
+					type="int" default="3" listType="string">
+				<change module="Taurus" function="updatePlotIndicatorSize"/>
+				<choice id="0.8"/> <choice id="1.0"/> <choice id="1.2"/> <choice id="1.4"/>
+				<choice id="1.6"/> <choice id="1.8"/> <choice id="2.0"/> <choice id="2.2"/>
+				<choice id="Disable"/>
+			</list>
+			<!-- trs.balloon: end -->
+			<!-- trs.start-with-resources -->
+			<option id="StartWithResourceDisplay" key="Start With Resource Display" 
+					type="boolean" default="True" />
+			<!-- trs.wcitybars -->
+			<option id="WideCityBars" key="Wide City Bars"
+					type="boolean" default="True">
+				<change module="Taurus" function="updateCityBarWidth"/>
+			</option>
+			<!-- trs.found-yield -->
+			<option id="FoundingYields" key="Founding Yields" 
+					type="boolean" default="True"/>
+			<!-- trs.found-border -->
+			<!-- NB: The DLL relies on this order of the choices -->
+			<list   id="FoundingBorder" key="Founding Border" 
+					type="int" default="2" listType="string" 
+					values="None|Adjacent|City Cross" dirtyBit="ColoredPlots">
+				<choice id="None"/>
+				<choice id="Adjacent"/>
+				<choice id="CityCross"/>
+			</list>
+			<!-- trs.camdist -->
+			<list   id="DefaultCamDistance" key="Default Cam Distance" 
+					type="int" default="1" listType="string" 
+					values="Automatic|Close|Medium|Far|XML">
+				<change module="Taurus" function="updateDefaultCamDistance"/>
+				<choice id="Automatic"/>
+				<choice id="Close"/>
+				<choice id="Medium"/>
+				<choice id="Far"/>
+				<choice id="XML"/>
+			</list>
+			<!-- trs.camspeed -->
+			<list   id="CamScrollSpeed" key="Cam Scroll Speed" 
+					type="int" default="2" listType="string" 
+					values="Very Slow|Slow|Medium|Fast|Very Fast">
+				<change module="Taurus" function="updateCamScrollSpeed"/>
+				<choice id="VerySlow"/>
+				<choice id="Slow"/>
+				<choice id="Medium"/>
+				<choice id="Fast"/>
+				<choice id="VeryFast"/>
+			</list>
+
+		</section>
+		<section id="Alerts">
+
+			<!-- trs.1stcontact -->
+			<list   id="OnFirstContact" key="On First Contact" 
+					type="int" default="2" listType="string" 
+					values="Message|Diplo Popup|Both">
+				<choice id="Message"/>
+				<choice id="Diplo"/>
+				<choice id="Both"/>
+			</list>
+
+		</section>
+
+	</options>
+
+	<!-- trs.modname (Ctrl-Alt is taken by Group Save) -->
+	<shortcut key="Ctrl Shift S" module="Taurus" function="exportSaveGame"/>
+
+	<!-- trs.cheats -->
+	<shortcut key="Ctrl Z" module="Taurus" function="toggleDebugMode"/>
+
+</mod>

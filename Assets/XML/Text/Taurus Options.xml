@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- trs.doc: Game text for Taurus additions to Mod Options screen -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+
+	<!-- trs.promoleads: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__PROMOTIONLEADSTO_TEXT</Tag>
+		<English>Promotion Leads-To Help</English>
+		<German>Beförderungs-Voraussetzungen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__PROMOTIONLEADSTO_HOVER</Tag>
+		<English>When checked, the hover text for a promotion button lists the promotions enabled by that promotion.</English>
+		<German>Listet im Hilfe-Text zu einer Beförderung jene andere Beförderungen auf, die durch die erste Beförderung freigeschaltet werden.</German>
+	</TEXT>
+
+	<!-- trs.promoleads: end -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__ENDTURNFLASH_TEXT</Tag>
+		<English>End Turn</English>
+		<German>Zug beenden</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__ENDTURNFLASH_HOVER</Tag>
+		<English>When checked, the hint "Press ENTER to end the turn" is shown flashing on the main screen once all units have orders (as in BtS). Otherwise, no such hint is shown (but the End Turn button still turns red and pulses).</English>
+		<German>Zeigt den blinkenden Hinweistext "Runde beenden mit EINGABETASTE" auf dem Hauptbildschirm, wenn allen Einheiten Befehle erteilt worden sind (wie in BtS). Ist diese Option deaktiviert, wird kein solcher Hinweis angezeigt - aber die Runde-Beenden-Schaltfläche wird weiterhin rot und pulsiert.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__EXITCITYFLASH_TEXT</Tag>
+		<English>Exit City Screen</English>
+		<German>Stadt-Bildschirm schließen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__EXITCITYFLASH_HOVER</Tag>
+		<English>When checked, the hint "Press ESC to return" is shown flashing while the city screen is up (as in BtS).</English>
+		<German>Zeigt den blinkenden Hinweistext "Zurück mit ESC" an während der Stadt-Bildschirm geöffnet ist.</German>
+	</TEXT>
+	<!-- trs.noflash: start -->
+	
+	<!-- trs.noflash: end -->
+
+	<!-- trs.modname: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__SAVEMODNAME_TEXT</Tag>
+		<English>Save Mod Name</English>
+		<German>Mod-Namen speichern</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__SAVEMODNAME_HOVER</Tag>
+		<English>When checked, the name of the mod's folder (e.g. "Taurus") is written into your savegames. This is what mods normally do, and prevents other mods and BtS without mods from loading your savegames. Unchecking this option means that your savegames look just like unmodified savegames, so BtS (also with custom assets) will be able to load them. A downside is that double-clicking a savegame in Windows Explorer will no longer launch this mod. Hint: Regardless of this option, the key combination Shift+Ctrl+S can be used to "export" a savegame to BtS or to another mod.</English>
+		<German>Speichert den Ordner-Namen des Mods (z.B. "Taurus") in Spielständen. Das geschieht bei praktisch allen Mods und hat den Effekt, dass andere Mods sowie BtS ohne Mods diese Spielstände als inkompatibel zurückweisen. Ist die Option deaktiviert, dann wird kein Odner-Name gespeichert und BtS (ggf. auch mit installierten [COLOR_BUILDING_TEXT]CustomAssets[COLOR_REVERT]) akzeptiert unsere Spielstände. Allerdings lässt sich die Mod dann nicht mehr per Doppelklick auf eine Spielstands-Datei starten.</German>
+	</TEXT>
+	<!-- trs.modname: end -->
+
+	<!-- trs.replayname: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__MODNAMEINREPLAYS_TEXT</Tag>
+		<English>Mod Name in Replays</English>
+		<German>Mod-Name in Replays</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__MODNAMEINREPLAYS_HOVER</Tag>
+		<English>When checked, the name of the mod's folder (e.g. "Taurus") is written into your replay files, which excludes them from the Hall of Fame screen when BtS is run without mods. (As for showing replays created by BtS or other mods on the Taurus Hall of Fame screen, see [COLOR_BUILDING_TEXT]HOF_LIST_OTHER_REPLAYS[COLOR_REVERT] in [COLOR_BUILDING_TEXT]Assets\XML\GlobalDefinesAlt.xml[COLOR_REVERT].)</English>
+		<German>Speichert den Ordner-Namen des Mods (z.B. "Taurus") in [COLOR_BUILDING_TEXT]Civ4BeyondSwordReplay[COLOR_REVERT]-Dateien (Wiederholungen). Dies verhindert, dass die BtS-Ruhmeshalle Taurus-Replays aufführt, wenn kein Mod geladen ist. (Was die Anzeige von BtS-Replays und Replays anderer Mods in der Taurus-Ruhmeshalle angeht, siehe [COLOR_BUILDING_TEXT]HOF_LIST_OTHER_REPLAYS[COLOR_REVERT] in [COLOR_BUILDING_TEXT]Assets\XML\GlobalDefinesAlt.xml[COLOR_REVERT].)</German>
+	</TEXT>
+	<!-- trs.replayname: end -->
+
+	<!-- trs.savmsg: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__AUTOSAVEMSG_TEXT</Tag>
+		<English>AutoSave Message</English>
+		<German>AutoSave-Nachricht</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__AUTOSAVEMSG_LIST</Tag>
+		<English>Disabled|Brief|Normal</English>
+		<German>Deaktiviert|Kurz|Normal</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__AUTOSAVEMSG_HOVER</Tag>
+		<English>Whether to show an on-screen message when writing an AutoSave and for how long the message should be displayed; [COLOR_HIGHLIGHT_TEXT]Normal[COLOR_REVERT] means for 10 seconds, as in BtS.</English>
+		<German>Ob beim automatischen Speichern eine Nachricht auf dem Hauptbildschirm angezeigt werden soll - und für wie lange. [COLOR_HIGHLIGHT_TEXT]Normal[COLOR_REVERT] bedeutet 10 Sekunden, wie in BtS.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__QUICKSAVEMSG_TEXT</Tag>
+		<English>QuickSave Message</English>
+		<German>QuickSave-Nachricht</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__QUICKSAVEMSG_LIST</Tag>
+		<English>Disabled|Brief|Normal</English>
+		<German>Deaktiviert|Kurz|Normal</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__QUICKSAVEMSG_HOVER</Tag>
+		<English>Whether to show an on-screen message when writing a QuickSave (Shift+F5) and for how long the message should be displayed; [COLOR_HIGHLIGHT_TEXT]Normal[COLOR_REVERT] means for 10 seconds, as in BtS.</English>
+		<German>Ob beim Schnellspeichern (Umschalt+F5) eine Nachricht auf dem Hauptbildschirm angezeigt werden soll - und für wie lange. [COLOR_HIGHLIGHT_TEXT]Normal[COLOR_REVERT] bedeutet 10 Sekunden, wie in BtS.</German>
+	</TEXT>
+	<!-- trs.savmsg: end -->
+
+	<!-- trs.balloon: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__PLOTINDICATORSIZE_TEXT</Tag>
+		<English>Balloon Size</English>
+		<German>Ballon-Größe</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__PLOTINDICATORSIZE_LIST</Tag>
+		<English>Auto|BtS|25|30|35|40|45|50|55|60|65</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__PLOTINDICATORSIZE_HOVER</Tag>
+		<English>The size of the balloon icons that the game uses for the Resource and Unit Display and for indicating tiles where some event has occurred. [COLOR_HIGHLIGHT_TEXT]Auto[COLOR_REVERT] sets the size based on the camera's [COLOR_HIGHLIGHT_TEXT]Field of View[COLOR_REVERT] value, [COLOR_HIGHLIGHT_TEXT]BtS[COLOR_REVERT] sets it based on the screen resolution. The other choices aim at (approximately) a specific diameter in pixels.</English>
+		<German>Die Größe der "Sprechblasen" in denen Ressourcen-, Einheiten- und Ereignis-Symbole angezeigt werden. [COLOR_HIGHLIGHT_TEXT]Auto[COLOR_REVERT] bedeutet, dass die Größe abhängig von der [COLOR_HIGHLIGHT_TEXT]Sichtfeld[COLOR_REVERT]-Größe gewählt wird, [COLOR_HIGHLIGHT_TEXT]BtS[COLOR_REVERT], dass sie von der Bildauflösung abhängt. Es kann auch ein bestimmter Durchmesser in Pixeln (ungefähr) eingestellt werden.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__OFFSCREENUNITSIZEMULT_TEXT</Tag>
+		<English>Off-Screen Balloon Size</English>
+		<German>Bildrand-Ballons</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__OFFSCREENUNITSIZEMULT_LIST</Tag>
+		<English>0.8|1.0|1.2|1.4|1.6|1.8|2.0|Disable</English>
+		<German>0.8|1.0|1.2|1.4|1.6|1.8|2.0|Keine</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__OFFSCREENUNITSIZEMULT_HOVER</Tag>
+		<English>Multiplier for the [COLOR_HIGHLIGHT_TEXT]Balloon Size[COLOR_REVERT] when the currently selected unit is off-screen. (Off-screen indicators shown for certain events are not affected by this multiplier.) [COLOR_HIGHLIGHT_TEXT]1.4[COLOR_REVERT] is the Taurus default, [COLOR_HIGHLIGHT_TEXT]1.6[COLOR_REVERT] is closest to the original behavior. [COLOR_HIGHLIGHT_TEXT]Disable[COLOR_REVERT] means that no balloon is shown for off-screen units. Changes won't take effect until a different unit is selected.</English>
+		<German>Faktor, mit dem die [COLOR_HIGHLIGHT_TEXT]Ballon-Größe[COLOR_REVERT] multipliziert wird, wenn die derzeit ausgewählte Einheit nicht im Bild ist. Standard in Taurus ist [COLOR_HIGHLIGHT_TEXT]1.4[COLOR_REVERT], in BtS betrug der Faktor ca. [COLOR_HIGHLIGHT_TEXT]1.6[COLOR_REVERT]. Die Einheiten-Ballons am Bildrand können auch ganz deaktiviert werden ([COLOR_HIGHLIGHT_TEXT]Keine[COLOR_REVERT]). Änderungen werden erst nach Auswahl einer anderen Einheit wirksam. (Ein Ballon am Bildrand wird auch bei manchen Ereignis-Meldungen angezeigt; diese Option hier betrifft aber nur Einheiten.)</German>
+	</TEXT>
+	<!-- trs.balloon: end -->
+
+	<!-- trs.start-with-resources: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__STARTWITHRESOURCEDISPLAY_TEXT</Tag>
+		<English>Start with Resource Display</English>
+		<French>Symboles de ressources au début du jeu</French>
+		<German>Ressourcenanzeige bei Spielstart</German>
+		<Italian>Mostra risorse all'inizio del gioco</Italian>
+		<Spanish>Muestra recursos al inicio del juego</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__STARTWITHRESOURCEDISPLAY_HOVER</Tag>
+		<English>When checked, the Resource Display (balloon icons) is enabled at the start of every new game.</English>
+		<French>Active l'affichage des ressources au début du jeu.</French>
+		<German>Aktiviert die Ressourcenanzeige zu Spielbeginn.</German>
+		<Italian>Abilita la segnalazione delle risorse all'inizio del gioco.</Italian>
+		<Spanish>Activa las marcas de recursos al inicio del juego.</Spanish>
+	</TEXT>
+	<!-- trs.start-with-resources: end -->
+
+	<!-- trs.found-yield: start (from AdvCiv) -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__FOUNDINGYIELDS_TEXT</Tag>
+		<English>Founding Yields</English>
+		<German>Siedler-Ertragsanzeige</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__FOUNDINGYIELDS_HOVER</Tag>
+		<English>When checked, yield icons are shown on the map whenever a Settler unit is selected (like in BtS). Otherwise, yield icons are only shown when the Yield Display (above the mini map) is enabled.[NEWLINE]This option should not be toggled while a Settler unit is selected.</English>
+		<German>Zeigt (wie in BtS) Geländeerträge auf der Hauptkarte an, wenn eine Siedlereinheit ausgewählt ist. Wenn diese Option nicht angekreuzt ist, werden Geländeerträge nur dann angezeigt, wenn die Ertragsanzeige (oberhalb der Übersichtskarte) aktiviert wurde.[NEWLINE]Beim Ändern dieser Option sollte kein Siedler ausgewählt sein.</German>
+	</TEXT>
+	<!-- trs.found-yield: end -->
+
+	<!-- trs.found-border: start (from AdvCiv) -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__FOUNDINGBORDER_TEXT</Tag>
+		<English>Founding Border</English>
+		<German>Siedler-Grenzen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__FOUNDINGBORDER_HOVER</Tag>
+		<English>Whether to show borders around a selected Settler unit and, if yes, whether to show them only around [COLOR_HIGHLIGHT_TEXT]adjacent[COLOR_REVERT] tiles (inner ring, as in BtS) or around the full city radius ("big fat" [COLOR_HIGHLIGHT_TEXT]city cross[COLOR_REVERT]).</English>
+		<German>Ob um eine ausgewählte Siedlereinheit Stadtgrenzen eingeblendet werden sollen und, wenn ja, ob die Grenzen (wie in BtS) nur benachbarte Felder ([COLOR_HIGHLIGHT_TEXT]innerer Ring[COLOR_REVERT]) einschließen sollen oder den gesamten Stadtradius ([COLOR_HIGHLIGHT_TEXT]Stadtkreuz[COLOR_REVERT]).</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__FOUNDINGBORDER_LIST</Tag>
+		<English>None|Adjacent|City Cross</English>
+		<German>Keine|Innerer Ring|Stadtkreuz</German>
+	</TEXT>
+	<!-- trs.found-border: end -->
+
+	<!-- trs.camdist: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__DEFAULTCAMDISTANCE_TEXT</Tag>
+		<English>Default Dist.</English>
+		<German>Standard-Abstand</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__DEFAULTCAMDISTANCE_HOVER</Tag>
+		<English>The camera distance at the start of a new game and after loading a savegame. [BOLD]Also affects the volume of music and sound effects.[\BOLD][NEWLINE][COLOR_HIGHLIGHT_TEXT]Automatic[COLOR_REVERT] sets the default distance based on the Field-of-View value. The greater the field of view, the smaller the default distance.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Close[COLOR_REVERT] is not quite as close as in BtS. This choice always applies when starting a new game right after having launched Civ - because the BUG options system isn't yet available at that point.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Far[COLOR_REVERT] is near the Globe view boundary.[NEWLINE][COLOR_HIGHLIGHT_TEXT]XML[COLOR_REVERT] means that the [COLOR_BUILDING_TEXT]CAMERA_START_DISTANCE[COLOR_REVERT] loaded from XML is used. That's the same (very close) distance as in BtS unless you change the value through [COLOR_BUILDING_TEXT]GlobalDefinesAlt.xml[COLOR_REVERT].</English>
+		<German>Der Kameraabstand nach dem Erstellen oder Laden eines Spiels. [BOLD]Wirkt sich auch auf die Lautstärke von Musik und Effekten aus.[\BOLD][NEWLINE][NEWLINE][COLOR_HIGHLIGHT_TEXT]Auto[COLOR_REVERT] setzt den Abstand entsprechend dem Sichtfeld-Wert: Je größer das Sichtfeld, desto kleiner der Standardabstand.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Nah[COLOR_REVERT] ist nicht ganz so nah wie in BtS. Diese Auswahl wird zwangsläufig getroffen, wenn die BUG-Einstellungen noch nicht geladen wurden, d.h. wenn direkt nach dem Starten von Civ ein neues Spiel begonnen wird.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Fern[COLOR_REVERT] ist am Übergang zur Weltansicht.[NEWLINE][COLOR_HIGHLIGHT_TEXT]XML[COLOR_REVERT] heißt, dass der XML-Wert [COLOR_BUILDING_TEXT]CAMERA_START_DISTANCE[COLOR_REVERT] verwendet wird, also derselbe (ziemlich geringe) Kameraabstand wie in BtS, falls Sie den Wert nicht in [COLOR_BUILDING_TEXT]GlobalDefinesAlt.xml[COLOR_REVERT] geändert haben.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__DEFAULTCAMDISTANCE_LIST</Tag>
+		<English>Automatic|Close|Medium|Far|XML</English>
+		<German>Auto|Nah|Mittel|Weit|XML</German>
+	</TEXT>
+	<!-- trs.camdist: end -->
+
+	<!-- trs.camspeed: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__CAMSCROLLSPEED_TEXT</Tag>
+		<English>Scroll Speed</English>
+		<German>Scroll-Tempo</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__CAMSCROLLSPEED_HOVER</Tag>
+		<English>Speed of camera movement when moving the cursor to an edge of the screen or pressing an arrow key. [COLOR_HIGHLIGHT_TEXT]Medium[COLOR_REVERT] is the same speed as in BtS unless you've changed the variables [COLOR_BUILDING_TEXT]CAMERA_MIN_SCROLL_SPEED[COLOR_REVERT] or [COLOR_BUILDING_TEXT]CAMERA_MAX_SCROLL_SPEED[COLOR_REVERT] in [COLOR_BUILDING_TEXT]GlobalDefinesAlt.xml[COLOR_REVERT].</English>
+		<German>Geschwindigkeit, mit der sich die Kamera in eine Himmelsrichtungen bewegt, wenn der Mauszeiger sich am Bildschirmrand befindet oder eine Pfeil-Taste gedrückt wird. [COLOR_HIGHLIGHT_TEXT]Mittel[COLOR_REVERT] bedeutet, dass die Variablen [COLOR_BUILDING_TEXT]CAMERA_MIN_SCROLL_SPEED[COLOR_REVERT] und [COLOR_BUILDING_TEXT]CAMERA_MAX_SCROLL_SPEED[COLOR_REVERT] aus [COLOR_BUILDING_TEXT]GlobalDefinesAlt.xml[COLOR_REVERT] geladen werden. Normalerweise stehen dort die mittel-schnellen BtS-Werte.</German>
+	</TEXT>
+	<!-- (No room for German "Langsam") -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__CAMSCROLLSPEED_LIST</Tag>
+		<English>Very Slow|Slow|Medium|Fast|Very Fast</English>
+		<German>1|2|3 (Mittel)|4|5</German>
+	</TEXT>
+	<!-- trs.camspeed: end -->
+
+	<!-- trs.wcitybars: start -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__WIDECITYBARS_TEXT</Tag>
+		<English>Wide City Bars</English>
+		<German>Verbreitern</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__WIDECITYBARS_HOVER</Tag>
+		<English>When checked, the main map displays wider city bars. Known issue: the right half of the bar can't be moused over.</English>
+		<German>Zeigt extra-breite Fortschritts-Balken auf der Hauptkarte an. (Die rechten Hälften dieser Balken lassen sich nicht anklicken - bekanntes Problem.)</German>
+	</TEXT>
+	<!-- trs.wcitybars: end -->
+
+	<!-- trs.1stcontact: start (from AdvCiv) -->
+	<!-- (Italian, Spanish based on TXT_KEY_BUG_OPT_REMINDER__DISPLAYMETHOD_LIST) -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__ONFIRSTCONTACT_LIST</Tag>
+		<English>Message|Diplo Popup|Message+Popup</English>
+		<French>Message|Popup|Message+Popup</French>
+		<German>Meldung|Kontakt|Beides</German>
+		<Italian>Messaggio|Popup|Entrambe</Italian>
+		<Spanish>Mensaje|Popup|Mensaje+Popup</Spanish>
+	</TEXT>
+	<!-- Use a label instead so that the dropdown menu goes on a separate line -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__ONFIRSTCONTACT_TEXT</Tag>
+		<English>[SPACE]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_TAURUS__ONFIRSTCONTACT_HOVER</Tag>
+		<English>On the first meeting with a rival:[NEWLINE][COLOR_HIGHLIGHT_TEXT]Message[COLOR_REVERT] - Show an on-screen message that indicates where the rival was encountered.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Diplo Popup[COLOR_REVERT] - Allow the rival to introduce him-/herself (as in BtS).[NEWLINE][COLOR_HIGHLIGHT_TEXT]Both[COLOR_REVERT] - Show the on-screen message and let the rival contact you.</English>
+		<German>Bei der ersten Begegnung mit einem Gegner:[NEWLINE][COLOR_HIGHLIGHT_TEXT]Meldung[COLOR_REVERT] - Nachricht auf dem Hauptbildschirm, die auch anzeigt, wo die Begegnung stattgefunden hat.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Kontakt[COLOR_REVERT] - Der Gegner kontaktiert Sie und stellt sich vor (wie in BtS).[NEWLINE][COLOR_HIGHLIGHT_TEXT]Beides[COLOR_REVERT] - Anzeige auf dem Hauptbildschirm und Kontaktaufnahme.</German>
+	</TEXT>
+	<!-- trs.1stcontact: end -->
+
+</Civ4GameText>

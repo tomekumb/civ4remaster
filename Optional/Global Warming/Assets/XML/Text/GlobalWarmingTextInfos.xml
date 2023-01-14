@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Game Text Infos -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<!-- Global Warming -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_NUCLEAR_WINTER_NEAR_CITY</Tag>
+		<English>Radioactive dust fills the skies near %s1_CityName!</English>
+		<French>*Hiver nucléaire* Alerte ! R&#233;chauffement plan&#233;taire pr&#232;s de %s1_CityName !</French>
+		<German>Radioaktiver Niederschlag geht nahe der Stadt %s1_CityName nieder!</German>
+		<Italian>*Inverno nucleare* Gli effetti del riscaldamento globale colpiscono %s1_CityName!</Italian>
+		<Spanish>*Invierno nuclear* El calentamiento global causa efecto cerca de %s1_CityName.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GAME_OPTION_RISING_SEAS</Tag>
+		<English>Rising Seas</English>
+		<French>Mers Er Hausse</French>
+		<German>Steigender Meeresspiegel</German>
+		<Italian>Mari Aumentanti</Italian>
+		<Spanish>Mares De Levantamiento</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GAME_OPTION_RISING_SEAS_HELP</Tag>
+		<English>Global warming can raise sea level.</English>
+		<French>Le rechauffement global peut soulever le niveau de la mer.</French>
+		<German>Die globale Erwärmung kann den Meeresspiegel anheben</German>
+		<Italian>Il riscaldamento globale puo sollevare il livello del mare.</Italian>
+		<Spanish>El calentamiento del planeta puede levantar nivel del mar.</Spanish>
+	</TEXT>
+</Civ4GameText>

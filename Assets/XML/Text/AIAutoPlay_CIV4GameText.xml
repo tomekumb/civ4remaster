@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- trs.autoplay: Game text for stripped-down version of AI Auto Play mod -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+
+	<TEXT>
+		<Tag>TXT_KEY_AIAUTOPLAY_TURN_ON</Tag>
+		<English>Turn on AI Auto Play?</English>
+		<French>Basculer en mode Jeu Automatique ?</French>
+		<German>Auto Play einschalten?</German>
+		<Italian>Accenda il controllo dell'automobile di AI?</Italian>
+		<Spanish>¿Activar el Auto Play de la IA?</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_AIAUTOPLAY_TURNS</Tag>
+		<English>How many turns would you like the AI to control?</English>
+		<French>Combien de tours souhaitez-vous que l'ordinateur joue en mode Jeu Automatique ?</French>
+		<German>Wieviele Runden m&#246;chten Sie die AI kontrollieren lassen?</German>
+		<Italian>Quanti turni vuole lasciare all'IA?</Italian>
+		<Spanish>¿Cuántos turnos quieres que coja el control la IA?</Spanish>
+	</TEXT>
+
+</Civ4GameText>

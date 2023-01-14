@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- trs.autoplay: BUG integration -->
+<mod id="AIAutoPlay"
+	 name="AIAutoPlay"
+	 module="AIAutoPlay"
+	 author="f1rpo (based on work, mainly, by jdog5000)"
+	 version="2.0 (AdvCiv 1.6)" 
+	 date="16/06/2022"
+	 dll="1">
+
+	<init/>
+
+	<shortcut key="Ctrl Shift X" module="AIAutoPlay" function="launchAIAutoPlayDialog"/>
+
+</mod>

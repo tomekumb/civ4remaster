@@ -1,0 +1,268 @@
+trs.doc: Will try to keep this file up to date. Taurus additions here and
+in program code are tagged with "trs." or "trs.CAT" comments, where CAT
+describes th category of the change. There is also a Git repository:
+https://github.com/f1rpo/Taurus
+
+
+MODDING with BULL
+=================
+
+1. Introduction
+2. Optional Components
+3. Events
+4. Python API
+
+
+____________________________________________________________________________________________________
+1. INTRODUCTION
+
+This file contains information of use to modders and users wishing to build their own custom DLL from BULL's source code.
+
+The SDK folder includes all of the source files included with BTS along with the ones changed by BULL. I have marked all changes with single-line start and end comments such as these:
+
+	// BUG - Combat Events - start
+			CvEventReporter::getInstance().combatRetreat(this, pDefender);
+	// BUG - Combat Events - end
+
+Or you can use a tool like WinMerge to find all the differences by comparing the entire source tree to the original BTS files.
+
+trs.doc: About installing the compiler, see Leoreth's guide:
+https://forums.civfanatics.com/threads/the-easiest-way-to-compile-a-new-dll.608137/
+When using a more recent version of the Visual Studio IDE than VS2010,
+also consider this CFC post:
+https://forums.civfanatics.com/threads/modmodding-q-a-thread.516755/page-111#post-16257258
+The build system has moved into a subfolder "project" inside SDK.
+All local paths should be defined in project/Makefile.settings. Attempting to compile
+without setting any paths should cause that file to be generated.
+For documentation about the Makefile, see this thread:
+https://forums.civfanatics.com/threads/new-makefile-faster-compilation-profiling-and-more.499166/
+
+
+
+____________________________________________________________________________________________________
+2. OPTIONAL COMPONENTS
+
+The following are all of the compile-time options for BULL. Each one has a unique preprocessor flag that you must define to enable the component. You do this with the /D option in your makefile.
+
+[0] BUFFY
+(trs.doc: There aren't going to be multiple HOF-compatible mods, so this option
+is no longer fully supported. Well, so far only GameSetUpCheck.txt has been
+removed.)
+	Flag: _BUFFY
+	by BUG/HOF Team
+		
+		Flags the saved game as a HOF-compatible game
+
+[1] Fractional Trade Routes
+
+	Flag:  _MOD_FRACTRADE
+	by EmperorFool
+	
+		Trade Route profit fractions are rounded after adding all routes for a city instead of individually
+
+[2] Sentry Actions
+
+	Flag: _MOD_SENTRY
+	by Pep
+	http://forums.civfanatics.com/showthread.php?t=298512
+	
+		Move to while Sentry
+		Sentry Land/Sea
+
+[3] Governor Builds Workers
+
+	Flag: _MOD_GOVWORKERS
+	by Pep
+	http://forums.civfanatics.com/showthread.php?t=298512
+	
+		Options to keep City Governor from building Workers and Workboats
+
+[4] AI AutoPlay
+
+	Flag: _MOD_AIAUTOPLAY
+	by jdog5000
+	http://forums.civfanatics.com/showthread.php?t=174812
+	
+		Allows the player to have the AI take over for X turns at a time
+
+[5] Global Warming
+
+	Flag: _MOD_GWARM
+	by Minor Annoyance
+	http://forums.civfanatics.com/showthread.php?t=302649
+	
+		Makes effects of global warming more tolerable and interesting
+
+[5] Show Hidden Attitudes - Spoiler
+
+	Flag: _MOD_SHAM_SPOILER
+	by DaveMcW
+	http://forums.civfanatics.com/showthread.php?t=335966
+	
+		The mod is already enabled; setting this flag shows the Altered Gameplay modifiers
+
+
+____________________________________________________________________________________________________
+3. EVENTS
+
+These new events have already been added to BUG, but if you want to use them in a non-BUG-based mod you must add them yourself to the top of CvEventManager. (trs.doc: Never mind this. There is no non-BUG-based version of Taurus.)
+
+Player
+
+	playerRevolution(PlayerTypes ePlayer, int iAnarchyTurns, CivicTypes[] leOldCivics, CivicTypes[] leNewCivics)
+
+Unit
+
+	unitUpgraded(CyUnit pOldUnit, CyUnit pNewUnit, int iCost)
+	unitCaptured(PlayerTypes eOldOwner, UnitTypes eOldUnitType, CyUnit pNewUnit)
+	combatWithdrawal(CyUnit pAttacker, CyUnit pDefender)
+	combatRetreat(CyUnit pAttacker, CyUnit pDefender)
+	combatLogCollateral(CyUnit pAttacker, CyUnit pDefender, int iDamage)
+	combatLogFlanking(CyUnit pAttacker, CyUnit pDefender, int iDamage)
+
+City
+
+	cityBuildingProject(CyCity pCity, ProjectTypes eProjectType)
+	cityBuildingProcess(CyCity pCity, ProcessTypes eProcessType)
+
+
+____________________________________________________________________________________________________
+4. PYTHON API
+
+Any entry that requires one of the optional components above will be marked with its number between brackets, e.g. [1].
+
+CyGlobalContext
+
+	bool isBull()
+	int getBullApiVersion()
+	wstring getBullName()
+	wstring getBullVersion()
+
+[0]	bool isBuffy()
+[0]	int getBuffyApiVersion()
+[0]	wstring getBuffyName()
+[0]	wstring getBuffyVersion()
+
+	bool isUnofficialPatch()
+	int getUnofficialPatchVersion()
+
+CyGame
+
+	bool canRegenerateMap()
+	bool regenerateMap()
+
+	void saveGame(string filename)
+	void takeJPEGScreenShot(string filename)
+	
+	string getDLLPath()
+	string getExePath()
+
+CyPlayer
+
+	bool AI_isWillingToTalk(PlayerTypes ePlayer)
+	void changeExtraHealth(int iChange)
+	void addReminder(int iGameTurn, wstring szMessage)
+
+CyCity
+
+	bool isBuildingProductionDecay(BuildingTypes eIndex)
+	int getBuildingProductionDecay(BuildingTypes eIndex)
+	int getBuildingProductionDecayTurns(BuildingTypes eIndex)
+	
+	int getProjectProduction(ProjectTypes eIndex)
+	void setProjectProduction(ProjectTypes eIndex, int iNewValue)
+	void changeProjectProduction(ProjectTypes eIndex, int iChange)
+	
+	int getUnitProductionTime(UnitTypes eIndex) [EXPOSED]
+	void setUnitProductionTime(UnitTypes eIndex, int iNewValue) [EXPOSED]
+	void changeUnitProductionTime(UnitTypes eIndex, int iChange) [EXPOSED]
+	bool isUnitProductionDecay(UnitTypes eIndex)
+	int getUnitProductionDecay(UnitTypes eIndex)
+	int getUnitProductionDecayTurns(UnitTypes eIndex)
+	
+	int getAdditionalYieldRateByBuilding(YieldTypes eIndex, BuildingTypes eBuilding)
+	int getAdditionalBaseYieldRateByBuilding(YieldTypes eIndex, BuildingTypes eBuilding)
+	int getAdditionalYieldRateModifierByBuilding(YieldTypes eIndex, BuildingTypes eBuilding)
+	
+	int getAdditionalCommerceRateByBuilding(CommerceTypes eIndex, BuildingTypes eBuilding)
+	int getAdditionalCommerceRateTimes100ByBuilding(CommerceTypes eIndex, BuildingTypes eBuilding)
+	int getAdditionalBaseCommerceRateByBuilding(CommerceTypes eIndex, BuildingTypes eBuilding)
+	int getAdditionalCommerceRateModifierByBuilding(CommerceTypes eIndex, BuildingTypes eBuilding)
+	
+	int getAdditionalHappinessByBuilding(BuildingTypes eBuilding)
+	int getAdditionalGoodHappinessByBuilding(BuildingTypes eBuilding)
+	int getAdditionalBadHappinessByBuilding(BuildingTypes eBuilding)
+	int getAdditionalAngryPopulationByBuilding(BuildingTypes eBuilding)
+	
+	int getAdditionalHealthByBuilding(BuildingTypes eBuilding)
+	int getAdditionalGoodHealthByBuilding(BuildingTypes eBuilding)
+	int getAdditionalBadHealthByBuilding(BuildingTypes eBuilding)
+	int getAdditionalSpoiledFoodByBuilding(BuildingTypes eBuilding)
+	
+	int getAdditionalGreatPeopleRateByBuilding(BuildingTypes eBuilding)
+	int getAdditionalBaseGreatPeopleRateByBuilding(BuildingTypes eBuilding)
+	int getAdditionalGreatPeopleRateModifierByBuilding(BuildingTypes eBuilding)
+	
+	int getSavedMaintenanceByBuilding(BuildingTypes eBuilding)
+	int getSavedMaintenanceTimes100ByBuilding(BuildingTypes eBuilding)
+	
+	int getAdditionalDefenseByBuilding(BuildingTypes eBuilding)
+	int getAdditionalBombardDefenseByBuilding(BuildingTypes eBuilding)
+	
+[1]	int calculateTradeProfitTimes100(CyCity pCity)
+
+CyUnit
+
+	bool isFemale()
+
+CvUnitInfo
+
+	bool isFemale()
+
+CyDeal
+
+	bool isCancelable(PlayerTypes eByPlayer, bool bIgnoreWaitingPeriod=false)
+	wstring getCannotCancelReason(PlayerTypes eByPlayer)
+	int turnsToCancel(PlayerTypes eByPlayer)
+
+FontSymbols
+
+	CITIZEN_CHAR
+	GREAT_GENERAL_CHAR
+	AIRPORT_CHAR
+
+WidgetTypes
+
+	WIDGET_SET_PERCENT
+	WIDGET_TRADE_ROUTES
+	WIDGET_FOOD_MOD_HELP
+	
+	WIDGET_HELP_FINANCE_DOMESTIC_TRADE
+	WIDGET_HELP_FINANCE_FOREIGN_TRADE
+	WIDGET_HELP_FINANCE_SPECIALISTS
+	
+	WIDGET_PEDIA_JUMP_TO_BONUS_TRADE
+	WIDGET_PEDIA_JUMP_TO_TECH_TRADE
+	
+	WIDGET_LEADERHEAD_RELATIONS
+
+ActivityTypes
+
+[2]	ACTIVITY_SENTRY_WHILE_HEAL
+[2]	ACTIVITY_SENTRY_NAVAL_UNITS
+[2]	ACTIVITY_SENTRY_LAND_UNITS
+
+MissionTypes
+
+[2]	MISSION_MOVE_TO_SENTRY
+[2]	MISSION_SENTRY_WHILE_HEAL
+[2]	MISSION_SENTRY_NAVAL_UNITS
+[2]	MISSION_SENTRY_LAND_UNITS
+
+InterfaceModeTypes
+
+[2]	INTERFACEMODE_GO_TO_SENTRY
+
+GameOptionTypes
+
+[5] GAMEOPTION_RISING_SEAS

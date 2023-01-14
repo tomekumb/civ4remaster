@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<!-- trs. Original comment:
+	"BULL User Settings
+	This file is used only when BULL is running without BUG,
+	but it will cause no harm to include it with BUG."
+	Taurus is bundled with BUG, so we don't need that.
+	Will instead use this file for any GlobalDefines that Taurus adds. -->
+<Civ4Defines xmlns="x-schema:CIV4GlobalDefinesSchema.xml">
+
+	<!--
+		 Re-defines ...
+		 (As a convention, let's put any defines that override BtS upfront.)
+	-->
+
+	<!-- trs.camdist: As in BtS, copied here for the user's convenience.
+		 This value only gets used when the Default Camera Distance option
+		 (Map tab of the mod options screen) is set to "XML". -->
+	<Define>
+		<DefineName>CAMERA_START_DISTANCE</DefineName>
+		<fDefineFloatVal>2200</fDefineFloatVal>
+	</Define>
+	<!-- trs.camspeed: start -->
+	<!-- Same deal as above - these are as in BtS and get used when the
+		 Camera Scroll Speed option is set to "XML".
+		 While scrolling, the camera acelerates from the MIN speed value
+		 to the MAX within a second or so. -->
+	<Define>
+		<DefineName>CAMERA_MIN_SCROLL_SPEED</DefineName>
+		<fDefineFloatVal>300</fDefineFloatVal>
+	</Define>
+	<Define>
+		<DefineName>CAMERA_MAX_SCROLL_SPEED</DefineName>
+		<fDefineFloatVal>1800</fDefineFloatVal>
+	</Define>
+	<!-- trs.camspeed: end -->
+
+	<!--
+		Taurus defines ...
+	-->
+
+	<!-- trs.smc: Set to 1 to disable all code that modifies the EXE
+		 at runtime. In case that those modifications render the mod unplayable
+		 with some edition of BtS or operating system (and no one is around to
+		 properly fix the issue). -->
+	<Define>
+		<DefineName>DISABLE_EXE_RUNTIME_MODS</DefineName>
+        <iDefineIntVal>0</iDefineIntVal>
+    </Define>
+
+	<!-- trs.modname: start -->
+	<!-- This string (to be typed w/o quotation marks) is
+		 only used when the Save Mod Name option on the Saves tab of the
+		 mod options screen is _not_ checked.
+		 The string gets written into savegames as the name of the mod.
+		 An empty string allows unmodified BtS to load the mod's savegames.
+		 (For exporting a savegame to another mod, e.g. BUG, it should be
+		 more convenient to use the Ctrl+Shift+S shortcut.) -->
+	<Define>
+		<DefineName>REPLACEMENT_MOD_NAME</DefineName>
+        <DefineTextVal></DefineTextVal>
+    </Define>
+	<!-- If set 1, then Taurus will disable the mod name check in the EXE to
+		 load BtS savegames (with or without custom assets). If set to 0,
+		 savegames that don't contain a mod name are rejected. -->
+	<Define>
+		<DefineName>LOAD_BTS_SAVEGAMES</DefineName>
+        <iDefineIntVal>1</iDefineIntVal>
+    </Define>
+	<!-- Comma-separated list of name prefixes. Not case sensitive; spaces
+		 after a comma are ignored.
+		 If the mod name read from a savegame starts with one of these prefixes,
+		 then Taurus will disable the mod name check in the EXE to load the
+		 savegame. The list can be empty; Taurus will then still be able to load
+		 savegames whose mod name matches the name of the folder where Taurus
+		 is installed. If LOAD_BTS_SAVEGAMES is also disabled, then loading of
+		 savegames works just like in any other mod.
+		 Note that BUFFY saves are encrypted and therefore can't be loaded. -->
+	<Define>
+		<DefineName>COMPATIBLE_MOD_NAME_PREFIXES</DefineName>
+        <DefineTextVal>taurus, bug, bull, bat</DefineTextVal>
+    </Define>
+	<!-- Hint: Regardless of the two defines above, the 'x' key be held down
+		 while starting to load any savegame to suspend the mod name check
+		 in the EXE. This does not affect the SAVE_VERSION check; SAVE_VERSION
+		 can be re-defined (iDefineIntVal) in this XML file to work around
+		 that check. (But it's unlikely that loading will succeed when the
+		 save versions don't match.) -->
+	<!-- trs.modname: end -->
+
+	<!-- trs.replayname:
+		 If set to 0, the Taurus Hall of Fame screen lists only replays of
+		 Taurus games. (Such replays can be correctly identified even when the
+		 "Mod Name in Replays" option on the Saves tab of the mod
+		 options screen has been disabled.)
+		 If set to 1, the Taurus Hall of Fame screen also lists replays of
+		 BtS games played without mods.
+		 If set to 2, the Taurus Hall of Fame screen also lists replays of
+		 games played with any mod covered by COMPATIBLE_MOD_NAME_PREFIXES
+		 (see above).
+		 If set to 3, the Taurus Hall of Fame screen lists all replays found
+		 in the Replays folder (My Games\Beyond the Sword\Replays).
+		 If a replay contains unusual text or player colors, those colors are
+		 replaced with the colors available. Error handling code may discard
+		 replays with highly unusual game data (e.g. Caveman2Cosmos replays
+		 might get filtered out). -->
+	<Define>
+		<DefineName>HOF_LIST_OTHER_REPLAYS</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+
+	<!-- trs.lma:
+		 0 means that the check for the Lock Modified Assets (LMA) game option
+		 in the EXE is disabled for all savegames. LMA will then still disable
+		 access to developer tools (even if cheats are enabled through
+		 CivilizationIV.ini).
+
+		 1 means that the check is disabled for savegames created by other mods,
+		 i.e. for savegames that lack a particular bit that the Taurus DLL sets.
+
+		 2 means that the check is always enabled when loading savegames.
+
+		 In any case, LMA is never _written_ into savegames that are exported
+		 through Ctrl+Shift+S. For values 1 and 2, LMA _will_ be written into
+		 (non-exported) Taurus savegames even if the Save Mod Name option on
+		 the mod option screen is disabled. (BtS will then be unable to load
+		 those saves.)
+
+		 Caveat: When not disabled, the LMA check in the EXE may crash to
+		 desktop (instead of merely rejecting a save) when the original assets
+		 (BtS/ Warlords/ base game folder) have been modified. Perhaps also when
+		 there are custom assets under My Game. This appears to happen due to a bug
+		 in the EXE. -->
+	<Define>
+		<DefineName>RESPECT_LOCKED_ASSETS</DefineName>
+        <iDefineIntVal>1</iDefineIntVal>
+    </Define>
+
+	<!-- trs.cheats: If set to 1, Debug mode, WorldBuilder and developer tools
+		 can be used in Hot Seat multiplayer games. -->
+	<Define>
+		<DefineName>ALLOW_DEV_TOOLS_IN_HOTSEAT</DefineName>
+        <iDefineIntVal>0</iDefineIntVal>
+    </Define>
+
+	<!-- trs.camcity: Same as CAMERA_CITY_ZOOM_IN_DISTANCE in BtS - which now
+		 gets set, based on CAMERA_BASE_CITY_DISTANCE, field-of-view value and
+		 screen dimensions, by the DLL. -->
+	<Define>
+		<DefineName>CAMERA_BASE_CITY_DISTANCE</DefineName>
+        <fDefineFloatVal>3500</fDefineFloatVal>
+    </Define>
+
+</Civ4Defines>

@@ -1,0 +1,446 @@
+CHANGELOG for BULL
+==================
+
+1. Introduction
+2. Known Issues
+
+* BULL 1.3
+* BULL 1.2
+* BULL 1.1
+* BULL 1.0
+* BULL 0.9
+
+
+____________________________________________________________________________________________________
+1. INTRODUCTION
+
+This file lists the new features and fixes contained in each BULL release.  The changes for each 
+release are grouped into two major sections--CHANGES and MODDING--and within each section further 
+into New Features, Improvements, and Bug Fixes.
+
+The CHANGES sections are for end-users and list the visible changes in BULL.  New Features cover 
+major new additions that add completely new functionality.  Improvements are smaller changes made 
+to existing features.  Finally, Bug Fixes cover fixes to existing features in both BTS and BULL.
+
+The MODDING sections are mostly of interest to C++ modders merging BULL into their own mods or 
+Python modders using BUG and/or BULL.  Changes that affect the Python API are listed along with 
+new events and gameutils callbacks.
+
+Note: Changes marked [BUG] only take effect when the optional BUG Mod is installed.
+
+
+____________________________________________________________________________________________________
+2. KNOWN ISSUES
+
+- Multiplayer
+	To avoid OOS errors, all players must have the same settings for these options:
+	
+		Pre-Chop Forests
+		Pre-Chop Improvements
+		
+		Sentry Healing
+		Sentry Healing Only Neutral
+
+
+____________________________________________________________________________________________________
+BULL 1.3 released September 20th, 2010
+
+CHANGES
+
+New Features:
+
+- City Tiles
+	Activate by selecting one or more city bars on the map
+	The area of tiles that each city can work are highlighted (similar to selecting a Settler)
+	A colored circle on each tile represents its status: worked vs. not worked and improved vs. improvable vs. not improvable
+	Customize the colors and transparencies in Assets/XML/GlobalDefinesAlt.xml
+- Working City
+	Tile hover shows which city controls it and highlights the name in cyan if a citizen is working it
+- Recommended Build
+	Highlights which improvement an automated worker will build in the tile hover text
+- Actual Effects
+	Added health effects from actions that remove a feature (e.g. chopping a Forest or building a Farm on a Jungle)
+- Double Commerce
+	Shows the year each building was built in its hover and how many years until its commerce (typically culture) doubles
+
+Improvements:
+
+- Actual Effects
+	Added additional starvation due to spoiled food from health effects (red slice of bread)
+
+Bug Fixes:
+
+- Production Decay
+	Fixed bug that caused decay to be carried over to items of the same type if built consecutively
+- Actual Effects
+	Added extra modifier from buildings boosted by power when city already has power (e.g. rebuilding a Factory that was destroyed)
+- Pre-Chop
+	Workers in different selection groups also stop chopping
+- Miscellaneous
+	Fixed doubling of specialist name in the Remove Specialist button
+	Fixed missing normal prereq building in Building hover when a building requires a minimum number of other buildings
+	Added "Will remove the <improvement>" to Clear Feature Action hover when the feature is required by the improvement
+
+Merged Mods:
+
+- Unofficial Patch
+	Updated to release version 1.60
+
+
+MODDING
+
+New Features:
+
+- Events with Images
+	You can now add an image to any random event using the new <EventArt> tag
+- Female Great People
+	You can now add female great people using the new <bFemale> tag
+- API
+	Added CvCity::calculateFeatureHealthPercent(int& iGood, int& iBad)
+	Added CvCity::calculateFeatureHealthPercentChange(int& iGood, int& iBad, CvPlot* pIgnorePlot = NULL)
+	Added CvCity::getAdditionalHealthByFeature(FeatureTypes eFeature, int iChange)
+	Added CvCity::getAdditionalHealthByFeature(FeatureTypes eFeature, int iChange, int& iGood, int& iBad)
+	Added CvCity::getAdditionalHealth(int iGoodPercent, int iBadPercent, int& iGood, int& iBad)
+	Added CvCity::getAdditionalAngryPopuplation(int iGood, int iBad)
+	Added CvCity::getAdditionalSpoiledFood(int iGood, int iBad)
+	Added CvCity::getAdditionalStarvation(int iSpoiledFood)
+- Python API
+	Exposed CvCity::getAdditionalHealthByFeature(FeatureTypes eFeature, int iChange) [three forms]
+	Exposed CvCity::getAdditionalStarvationByBuilding(BuildingTypes eBuilding)
+
+Improvements:
+
+- API
+	Added separate functions in CvCity to calculate spoiled food, starvation, and angry population from health and happiness changes
+	Added getDefineFLOAT() and getDefineSTRING()
+- Compilation
+	Switched to Danny Daemonic's makefile; added differences at top
+	Created static libraries for CxImage and those it requires
+- Map Regeneration
+	Added call to gameStart event immediately before creating the initial autosave
+
+Bug Fixes:
+
+- API
+	CvCity::getSavedMaintenanceTimes100ByBuilding() now allows buildings that increase maintenance
+- Python API
+	Fixed exposed name of CvCity::getAdditionalSpoiledFoodByBuilding(BuildingTypes eBuilding)
+
+
+____________________________________________________________________________________________________
+BULL 1.2 released May 17th, 2010
+
+CHANGES
+
+New Features:
+
+- Ignore Harmless Barbarians
+	No warnings for nearby barbarians that cannot enter your lands
+- Starting Experience
+	Added starting experience and number of promotions a unit will receive
+	Added list of the present and missing sources of experience and their amounts similar to resource modifiers for buildings
+- Draft Unit and Limit
+	Added full unit description: strength, moves, XP, promotions, abilities, etc.
+	Added number of units you can draft this turn
+	Added messages to Draft button hover when you have reached the player or city limits
+- Cancel Deal Info
+	Can click an import/export bonus on the Foreign Advisor to cancel the deal and hover shows full deal [BUG]
+
+Improvements:
+
+- Building Actual Effects
+	Added Global Happiness and Health [Fuyu]
+	Added Building Class Happiness (unused in original game) [Fuyu]
+	Added Global War Weariness Modifier [Fuyu]
+	Added Angry Population affected by Happiness
+	Added Spoiled Food affected by Health
+- Show Hidden Attitudes
+	Debug mode exposes all modifiers
+
+Bug Fixes:
+
+- Leaderheads
+	Worst Enemies you haven't met are no longer shown
+- Show Hidden Attitudes
+	First Impression modifier resets to zero for each leader
+- Production Decay
+	Scales correctly with game speed
+- Options
+	Starting a new game no longer breaks BULL's access to BUG's options
+
+Merged Mods:
+
+- Unofficial Patch
+	Updated to release version 1.50
+
+
+MODDING
+
+New Features:
+
+- API
+	Added calculateExperience() in CvGameCoreUtils
+	Added calculateLevel() in CvGameCoreUtils
+	Added CvUnitInfo::canAcquireExperience()
+	Added CvGameTextMgr::setBasicUnitHelpWithCity()
+	Added CvGameTextMgr::setUnitExperienceHelp()
+- Python API
+	Exposed calculateExperience()
+	Exposed calculateLevel()
+	Exposed CvUnitInfo::canAcquireExperience()
+
+Improvements:
+
+- API
+	Added iAngryPop to CvCity::getAdditionalHappinessByBuilding()
+	Added iSpoiledFood to CvCity::getAdditionalHealthByBuilding()
+	Added CvCity::getAdditionalHappinessByBuilding() form that doesn't take any reference arguments
+	Added CvCity::getAdditionalHealthByBuilding() form that doesn't take any reference arguments
+- Python API
+	Exposed CvCity::get/set/changeProjectProduction()
+	Exposed CvCity::getAdditionalHappinessByBuilding(BuildingTypes eBuilding) [four forms]
+	Exposed CvCity::getAdditionalHealthByBuilding(BuildingTypes eBuilding) [four forms]
+
+Bug Fixes:
+
+- Initialization
+	Added setIsBug() that is called by BUG once all options have been read
+	The XML values or defaults are used until BUG has been initialized
+- Building Additional Effects
+	Only buildings that your civilization can build are checked so asserts aren't triggered
+- Production Decay
+	CvCity::isBuilding/UnitProductionDecay() and getBuilding/UnitProductionDecayTurns() scale with game speed
+
+
+____________________________________________________________________________________________________
+BULL 1.1 released February 16th, 2010
+
+CHANGES
+
+New Features:
+
+- Examine City button
+	Hover shows details using City Bar hover
+- Choose Production popup
+	Can set to train civilian and/or military units forever, similar to using ALT with buttons
+- Ask to Declare War
+	Can disable popup asking to declare war when moving onto tile containing a rival unit (won't declare war)
+	Will always ask when moving into rival territory without open borders
+- Culture Flip
+	Can examine the city before accepting or razing cities that flip due to your culture
+- Trade Deals
+	Trade Network and INFO Trade Routes hovers show trade deals
+	Hold CTRL to show trade deals in Leaderhead hover
+- Leaderheads
+	Wars, Peace Treaties, Defensive Pacts, and Worst Enemies shown in Leaderhead hover
+	Foreign Advisor and Military Advisor show relations only between the respective leaders when asking one about the other
+- Defense Hover
+	Shows breakdown of city defense modifier and damage from bombardment on City Screen
+- Reminders
+	Saves reminders for all players in multiplayer games [BUG]
+
+Improvements:
+
+- Pre-Chop
+	Displays a message similar to the one shown when you do the full chop
+	Works with Jungles or new features if you mod them to produce hammers when cleared
+- Sentry Healing
+	Units on Auto-Explore that are healing can act as sentries
+- Actual Effects
+	Added city and bombardment defense
+- Scoreboard
+	Redrawn in some cases when an AI's attitude toward the active player changes (memory counter)
+
+Bug Fixes:
+
+- Multiplayer
+	Fixed OOS errors in Safe Move when a human player attacks or unloads ships
+- Leaderhead Hover
+	Hide "War with <team>" if active player hasn't met <team>
+- Actual Effects
+	Fixed building unhealthiness effect shown when city has a Recycling Center
+	Fixed building unhealthiness effect shown for Recycling Center
+	Fixed display of negative commerce effects (e.g. when removing a specialist)
+- Collateral Damage
+	Removed extraneous effect from old 3.17 Unofficial Patch
+- Combat Hover
+	No longer shows friendly units as best defender (hold ALT for old behavior)
+
+Merged Mods:
+
+- Unofficial Patch
+	Updated to release version 1.40
+- Advanced Combat Odds
+	Updated to release version 2.01
+- Show Hidden Attitudes
+	Added release version
+
+
+MODDING
+
+New Features:
+
+- Merged BUFFY code into BULL
+- Python API
+	Building Additional [Bombard] Defense functions on CyCity
+
+Improvements:
+
+- Makefile
+	Added MODFLAGS variable to hold compiler flags for optional mods
+- Python API
+	Exposed CvPlayer::changeExtraHealth(int iChange)
+
+
+____________________________________________________________________________________________________
+BULL 1.0 released November 15th, 2009
+
+CHANGES
+
+New Features:
+
+- City Bar
+	Turns until city shrinks from starvation
+- City Bar hover
+	Building Actual Effects if city is constructing a building
+- Pre-Chop and Pre-Build
+	Workers stop clearing forests (and building improvements that clear forests) with one turn remaining
+- Specialist Actual Effects
+	Add/Remove Specialist and Settle Great Person button hovers
+- Zoom to City button
+	Hover shows details using City Bar hover
+- Longitude/Latitude
+	Shown on the map hover once the map is centered (e.g. Calendar or Stonehenge)
+- Fractional Trade Routes [optional]
+	Trade route yields are rounded down *after* adding them for each city, making Harbors much more useful
+
+Improvements:
+
+- Upgraded Advanced Combat Odds to 2.0.1
+- Building Actual Effects
+	Includes free specialists
+- Sped Up Techs
+	Shows "Sped up by ..." for optional prerequisites to techs you can research
+- Promoting a unit updates Plot List buttons [BUG]
+- Goody hut messages remain in the event log forever
+
+Bug Fixes:
+
+- Stack Attack game option no longer causes crash
+- Oracle/Liberalism allow only one free tech to be acquired
+- City Bar hover
+	Hide features for foreign cities
+		Hurry/Draft Anger Counter
+		Hurry Cost/Overflow
+		Building Actual Effects
+- Trade Route totals
+	Values no longer separated into continental/overseas totals
+		City Bar hover
+		Scoreboard Trade hover
+		Finance Advisor hovers
+		Foreign Advisor INFO tab trade hover
+- Hover text for rival no longer exposes unmet rivals with "Worst Enemy of <rival>"
+
+
+MODDING
+
+New Features:
+
+- Events
+	City building a Project
+	City building a Process
+	Player changes Civics (revolution)
+
+
+____________________________________________________________________________________________________
+BULL 0.9 released July 25, 2009 with BUFFY 3.19.001
+
+New Features:
+
+- City Bar
+	Airport Icon
+- City Bar hover
+	Net Health
+	Net Happiness
+	Hurry Anger Turns (# angry and timer)
+	Draft Anger Turns (# angry and timer)
+	Food Assist
+	Base Production
+	Trade (total, foreign, foreign overseas)
+	Commerce
+	Building icons
+	Culture Turns
+	Great Person Turns
+	Specialists and Settled Great People
+	Chance of Revolt
+	Control key to see base values without modifiers
+	Hide UI Instructions (city selection)
+- Tech hover
+	Shows "Speeds up ..." for leads-to techs you can already research
+- Unit hover
+	Remove "(name)" suffix when custom name already contains it
+	Replace unit type in name when upgrading
+	Production Decay
+- Building hover
+	Actual Effects (Happiness, Health, Trade, Yield, Commerce, Maintenance, GP)
+	Production Decay
+- Plot hover
+	Number of worker turns left for partially-completed actions
+- Scoreboard
+	Trade hover for Trade Network icon (continental vs. overseas) [BUG]
+- City Screen
+	Commerce Rate hovers
+		Base Commerce: subtotal before modifiers when at least two line items and one modifier
+		Actual effects of each building you can build
+	Maintenance hover
+		Actual effects of each building you can build
+	Food hover [BUG]
+		Gain: Worked Tiles, Trade, Corporations, Specialists, Buildings
+		Loss: Population, Bad Health, Production
+		Actual effects of each building you can build
+	Production Rate hover
+		Actual effects of each building you can build
+	Great People Bar hover
+		Breakdown of rate: Specialists and Buildings
+		Actual effects of each building you can build
+	Remove Specialist button hover shows effects of specialist (like add button)
+	Whip button hover shows Overflow Production and Gold
+- Unit Healing
+	May act as sentries; can limit to neutral territory
+- Safe Moves
+	Transports will not unload onto a square that wasn't revealed when order was issued
+	Units will not attack a plot containing an enemy that wasn't revealed when order was issued
+- MapFinder [BUG]
+	from HoF Mod
+- Auto Save [BUG]
+	Start of game
+	End of game
+	Exit via menu
+- Advanced Combat Odds 1.0
+	by PieceOfMind: http://forums.civfanatics.com/showthread.php?t=310415
+
+Improvements:
+
+- Min/Max Commerce Rate button hovers [BUG]
+	Message is clearer: "Set ___ Rate to ___%"
+- Finance Screen hovers
+	Domestic Trade (continental vs. overseas) [BUG]
+	Foreign Trade (continental vs. overseas) [BUG]
+	Specialist Gold (breakdown by type) [BUG]
+- Foreign Advisor hovers
+	Trade (continental vs. overseas) [BUG]
+	Trade Denial in Bonus/Tech hovers when won't trade
+
+Bug Fixes:
+
+- Unofficial Patch 1.0
+
+
+MODDING
+
+New Features:
+
+- Events
+	Unit Upgrade
+	Unit Withdrawal and Retreat
+	Unit Collateral and Flanking Damage

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Game Text Infos -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<!-- Sentry Actions -->
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SENTRY_WHILE_HEAL</Tag>
+		<English>Sentry Until Healed</English>
+		<French>Sentry Until Healed</French>
+		<German>Wache bis geheilt</German>
+		<Italian>Fai la sentinella fino alla guarigione</Italian>
+		<Spanish>Vigilar hasta curarse</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SENTRY_WHILE_HEAL_HELP</Tag>
+		<English>The unit remains inactive until it reaches full strength or an enemy unit enters its visibility range.</English>
+		<French>L'unit&#233; reste inactive tant qu'une unit&#233; ennemie ne p&#233;n&#232;tre pas dans son champ de vision.</French>
+		<German>Lässt eine Einheit inaktiv bleiben, bis sie vollständig geheilt ist oder sich eine feindliche Einheit nähert</German>
+		<Italian>L'unit&#224; rimane inattiva finch&#233; non ritorna a piena forza o un'unit&#224; nemica non diventa visibile.</Italian>
+		<Spanish>La unidad permanecer&#225; inactiva hasta que recobre el total de su fuerza o una unidad enemiga se sit&#250;e al alcance de la visibilidad.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SENTRY_NAVAL_UNITS</Tag>
+		<English>Sentry (Naval Units)</English>
+		<French>Sentry (Naval Units)</French>
+		<German>Wache (Marineeinheiten)</German>
+		<Italian>Sentinella (Unità Navali)</Italian>
+		<Spanish>Vigilar (unidades navales)</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SENTRY_NAVAL_UNITS_HELP</Tag>
+		<English>The unit remains inactive until an enemy naval unit enters its visibility range.</English>
+		<French>L'unit&#233; reste inactive tant qu'une unit&#233; ennemie ne p&#233;n&#232;tre pas dans son champ de vision.</French>
+		<German>Lässt eine Einheit inaktiv bleiben, bis sich eine feindliche Marineeinheit nähert</German>
+		<Italian>L'unit&#224; rimane inattiva finch&#233; un'unit&#224; nemica non diventa visibile.</Italian>
+		<Spanish>La unidad permanecer&#225; inactiva hasta que una unidad naval enemiga se sit&#250;e al alcance de la visibilidad.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SENTRY_LAND_UNITS</Tag>
+		<English>Sentry (Land Units)</English>
+		<French>Sentry (Land Units)</French>
+		<German>Wache (Landeinheiten)</German>
+		<Italian>Sentinella (Unità Terrestri)</Italian>
+		<Spanish>Vigilar (unidades terrestres)</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SENTRY_LAND_UNITS_HELP</Tag>
+		<English>The unit remains inactive until an enemy land unit enters its visibility range.</English>
+		<French>L'unit&#233; reste inactive tant qu'une unit&#233; ennemie ne p&#233;n&#232;tre pas dans son champ de vision.</French>
+		<German>Lässt eine Einheit inaktiv bleiben, bis sich eine feindliche Landeinheit nähert</German>
+		<Italian>L'unit&#224; rimane inattiva finch&#233; un'unit&#224; nemica non diventa visibile.</Italian>
+		<Spanish>La unidad permanecer&#225; inactiva hasta que una unidad terrestre enemiga se sit&#250;e al alcance de la visibilidad.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_MOVE_TO_SENTRY</Tag>
+		<English>Move and Sentry</English>
+		<French>Move and Sentry</French>
+		<German>Wache bei Fortbewegung</German>
+		<Italian>Muoviti e fai la sentinella</Italian>
+		<Spanish>Moverse y Vigilar</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_MOVE_TO_SENTRY_HELP</Tag>
+		<English>The unit moves until an enemy unit of the same type enters its visibility range.</English>
+		<French>L'unit&#233; reste inactive tant qu'une unit&#233; ennemie ne p&#233;n&#232;tre pas dans son champ de vision.</French>
+		<German>Lässt eine sich bewegende Einheit aktiv werden, wenn sie sich einer feindlichen Einheit desselben Einheitentyps nähert</German>
+		<Italian>L'unit&#224;si muove finch&#233; un'unit&#224; nemica non diventa visibile.</Italian>
+		<Spanish>La unidad se mueve hasta que una unidad enemiga del mismo tipo se sit&#250;e al alcance de la visibilidad.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_INTERFACEMODE_GO_TO_SENTRY</Tag>
+		<English>Go To and Sentry Mode</English>
+		<French>Aller &#224;</French>
+		<German>Wache bei Gehe-zu-Modus</German>
+		<Italian>Modalit&#224; 'Vai a fare la sentinella'</Italian>
+		<Spanish>Modo Ir a y Vigilar</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_INTERFACEMODE_GO_TO_SENTRY_HELP</Tag>
+		<English>Order the selected unit to move to a tile. The unit stops before reaching its destination if an enemy unit of the same type enters its visibility range.</English>
+		<French>Ordonner &#224; l'unit&#233; s&#233;lectionn&#233;e de se d&#233;placer vers une case.</French>
+		<German>Lässt eine Einheit, die zu einem bestimmten Geländefeld geschickt wird, aktiv werden, wenn sie sich einer feindlichen Einheit desselben Einheitentyps nähert</German>
+		<Italian>Ordina all'unit&#224; selezionata di muoversi verso una casella. L'unità si ferma prima di raggiungere la sua destinazione se un'unità nemica dello stesso tipo entra nel suo raggio di visibilità.</Italian>
+		<Spanish>Ordena a la unidad seleccionada que se mueva hasta una casilla.</Spanish>
+	</TEXT>
+</Civ4GameText>

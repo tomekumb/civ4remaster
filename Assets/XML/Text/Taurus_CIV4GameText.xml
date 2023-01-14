@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- trs.doc: Game text for misc. Taurus additions -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+
+	<!-- Redefines - start -->
+	<!-- trs.unitdisplay: Rename "Domestics" filter
+		 (Translations based on
+		 TXT_KEY_GLOBELAYER_UNITS_ENEMYMILITARY) -->
+	<TEXT>
+		<Tag>TXT_KEY_GLOBELAYER_UNITS_DOMESTICS</Tag>
+		<English>Civilians</English>
+		<French>Unités non militaires</French>
+		<German>Zivilisten</German>
+		<Italian>Eserciti non militari</Italian>
+		<Spanish>Ej&#233;rcitos no militares</Spanish>
+	</TEXT>
+	<!-- trs.savmsg: The EXE displays these, but we want
+		 the DLL to handle them. -->
+	<TEXT>
+		<Tag>TXT_KEY_AUTOSAVING</Tag>
+		<English></English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_QUICK_SAVING</Tag>
+		<English></English>
+	</TEXT>
+	<!-- Redefines - end -->
+
+	<!-- trs.savmsg: start -->
+	<!-- Copies of BtS game text, with a "2" appended.
+		 To replace the text cleared under Redefines above. -->
+	<TEXT>
+		<Tag>TXT_KEY_AUTOSAVING2</Tag>
+		<English>Autosaving...</English>
+		<French>Sauvegarde automatique...</French>
+		<German>Automatisches Speichern ...</German>
+		<Italian>Salvataggio automatico...</Italian>
+		<Spanish>Guardado autom&#225;tico...</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_QUICK_SAVING2</Tag>
+		<English>Quick Saving...</English>
+		<French>Sauvegarde rapide en cours...</French>
+		<German>Schnellspeichern ...</German>
+		<Italian>Salvataggio rapido in corso...</Italian>
+		<Spanish>Guardado r&#225;pido...</Spanish>
+	</TEXT>
+	<!-- trs.savmsg: end -->
+
+	<!-- trs.maxslider: start (from AdvCiv) -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_INCREASE_RATE_HINT</Tag>
+		<English>. (Right-click to set to 100%.)</English>
+		<French>.</French>
+		<German>. (Rechtsklick setzt die Rate auf 100%.)</German>
+		<Italian>.</Italian>
+		<Spanish>.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_DECREASE_RATE_HINT</Tag>
+		<English>. (Right-click to set to 0.)</English>
+		<French>.</French>
+		<German>. (Rechtsklick setzt die Rate auf 0.)</German>
+		<Italian>.</Italian>
+		<Spanish>.</Spanish>
+	</TEXT>
+	<!-- trs.maxslider: end -->
+
+	<!-- trs.modname: start -->
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_EXPORT_SAVE_TITLE</Tag>
+		<English>Export savegame</English>
+		<German>Spielstand exportieren</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MENU_ENTER_MOD_NAME</Tag>
+		<English>Please enter the (folder) name of the mod to export to or clear the text field to export to BtS.</English>
+		<German>Bitte geben Sie den (Ordner-)Namen der Mod ein, für die der Spielstand gedacht ist. Verwenden Sie ein leeres Feld, um für BtS zu exportieren.</German>
+	</TEXT>
+	<!-- trs.modname: end -->
+
+	<!-- trs.hofwarn (from AdvCiv): start -->
+	<TEXT>
+		<Tag>TXT_KEY_HOF_WARN</Tag>
+		<English>Known issue: If replay buttons at the bottom of the screen don't work, it can help to shorten the list through the menus.</English>
+		<German>Bekanntes Problem: Falls die Schaltflächen am unteren Ende des Bildschirms nicht funktionieren, kann es helfen, über die Menüs einen Filter einzustellen, so dass weniger Einträge angezeigt werden.</German>
+	</TEXT>
+	<!-- (Based on TXT_KEY_REPLAY_SCREEN_TITLE) -->
+	<TEXT>
+		<Tag>TXT_KEY_HOF_SHOW_REPLAY</Tag>
+		<English>Show Replay</English>
+		<French>Montrer film</French>
+		<German>Wiederholung abspielen</German>
+		<Italian>Mostra replay</Italian>
+		<Spanish>Mostrar repetición</Spanish>
+	</TEXT>
+	<!-- trs.hofwarn: end -->
+
+	<!-- trs.promoleads: start -->
+	<!-- (Akin to TXT_KEY_PEDIA_LEADS_TO) -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_PROMO_LEADS_TO</Tag>
+		<English>Leads to</English>
+		<French>M&#232;ne &#224;</French>
+		<German>F&#252;hrt zu</German>
+		<Italian>Conduce a</Italian>
+		<Spanish>Lleva a</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_PROMO_REQUIRED_FOR</Tag>
+		<English>Required for</English>
+		<French>N&#233;cessaire pour</French>
+		<German>Ben&#246;tigt f&#252;r</German>
+		<Italian>Necessario per</Italian>
+		<Spanish>Necesario por</Spanish>
+	</TEXT>
+	<!-- trs.promoleads: end -->
+
+	<!-- trs.spygold (based on TXT_KEY_ESPIONAGE_TARGET_STEAL_TREASURY) -->
+	<TEXT>
+		<Tag>TXT_KEY_ESPIONAGE_TARGET_STEAL_TREASURY_AMOUNT</Tag>
+		<English>%d1[ICON_GOLD] has been looted from our state treasury by enemy infiltrators!</English>
+		<French>%d1[ICON_GOLD] a &#233;t&#233; pill&#233;e de notre tr&#233;sor par des ennemis infiltr&#233;s !</French>
+		<German>%d1[ICON_GOLD] aus unserem Staatsschatz wurde von feindlichen Spionen erbeutet!</German>
+		<Italian>Infiltrati nemici hanno rubato %d1[ICON_GOLD] dal nostro tesoro di stato!</Italian>
+		<Spanish>&#161;Los enemigos infiltrados han saqueado %d1[ICON_GOLD] de nuestro tesoro!</Spanish>
+	</TEXT>
+
+	<!-- trs.1stcontact (from AdvCiv)
+		 (grammar in translations based on TXT_KEY_MISC_CIV_DESTROYED) -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_TEAM_MET</Tag>
+		<English>We have met the %s1_CivAdj civilization</English>
+		<French>Nous avons rencontrés les %s1_CivAdj</French>
+		<German>Wir sind erstmals der %s1:3_CivAdj Zivilisation begegnet</German>
+		<Italian>Abbiamo incontrato la civilt&#224; %s1:4_CivAdj</Italian>
+		<Spanish>Hemos encontrado la civilizaci&#243;n %s1:2_CivAdj</Spanish>
+	</TEXT>
+
+</Civ4GameText>

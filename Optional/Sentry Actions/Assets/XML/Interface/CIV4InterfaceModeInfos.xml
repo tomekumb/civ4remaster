@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- Interface Mode -->
+<Civ4InterfaceModeInfos xmlns="x-schema:CIV4InterfaceSchema.xml">
+	<InterfaceModeInfos>
+		<!-- Sentry Actions -->
+		<!-- Insert these after the last <InterfaceModeInfo> in the modified file -->
+		<InterfaceModeInfo>
+			<Type>INTERFACEMODE_GO_TO_SENTRY</Type>
+			<Description>TXT_KEY_INTERFACEMODE_GO_TO_SENTRY</Description>
+			<Help>TXT_KEY_INTERFACEMODE_GO_TO_SENTRY_HELP</Help>
+			<CursorType>CURSOR_GO_TO</CursorType>
+			<Mission>MISSION_MOVE_TO_SENTRY</Mission>
+			<HotKey>KB_X</HotKey>
+			<bAltDown>0</bAltDown>
+			<bShiftDown>0</bShiftDown>
+			<bCtrlDown>0</bCtrlDown>
+			<iHotKeyPriority>0</iHotKeyPriority>
+			<HotKeyAlt/>
+			<bAltDownAlt>0</bAltDownAlt>
+			<bShiftDownAlt>0</bShiftDownAlt>
+			<bCtrlDownAlt>0</bCtrlDownAlt>
+			<iHotKeyPriorityAlt>0</iHotKeyPriorityAlt>
+			<bVisible>1</bVisible>
+			<bGotoPlot>1</bGotoPlot>
+			<bHighlightPlot>0</bHighlightPlot>
+			<bSelectType>0</bSelectType>
+			<bSelectAll>0</bSelectAll>
+			<Button>,Art/Interface/Buttons/Actions/GoTo.dds,Art/Interface/Buttons/sentry_actions.dds,4,1</Button>
+		</InterfaceModeInfo>
+	</InterfaceModeInfos>
+</Civ4InterfaceModeInfos>

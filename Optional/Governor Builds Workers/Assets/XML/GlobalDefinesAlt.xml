@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- Global Defines -->
+<Civ4Defines xmlns="x-schema:CIV4GlobalDefinesSchema.xml">
+	<!-- Governor Builds Workers -->
+	<Define>
+		<DefineName>USE_MODDERS_PLAYEROPTION_1</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>USE_MODDERS_PLAYEROPTION_2</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+</Civ4Defines>
