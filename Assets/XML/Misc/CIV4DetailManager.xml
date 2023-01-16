@@ -118,7 +118,7 @@
 	<Fader>
 		<Name>CITY_LAYOUT_SIZE</Name>
 		<!-- controls how big a city is, in terms of numbers of plots -->
-		<Value>0.475</Value>
+		<Value>0.72</Value>
 	</Fader>
 	<Fader>
 		<Name>CITY_LAYOUT_NODE_WATERINESS</Name>
