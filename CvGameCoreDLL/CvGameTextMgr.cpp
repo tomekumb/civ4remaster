@@ -16129,8 +16129,8 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 			szBuffer.append(CvWString::format(L"%c", gDLL->getSymbolID(UNHEALTHY_CHAR)));
 		}
 
-		if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
-		{
+		//if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
+		//{
 			if (GET_PLAYER(pCity->getOwnerINLINE()).getNumCities() > 2)
 			{
 				if (pCity->findYieldRateRank(YIELD_PRODUCTION) == 1)
@@ -16146,7 +16146,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 					szBuffer.append(CvWString::format(L"%c", GC.getCommerceInfo(COMMERCE_RESEARCH).getChar()));
 				}
 			}
-		}
+		//}
 
 		if (pCity->isConnectedToCapital())
 		{
@@ -16245,8 +16245,8 @@ void CvGameTextMgr::buildCityBillboardCityNameString( CvWStringBuffer& szBuffer,
 
 	if (pCity->canBeSelected())
 	{
-		if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
-		{
+		//if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
+		//{
 			if (pCity->foodDifference() > 0)
 			{
 				int iTurns = pCity->getFoodTurnsLeft();
@@ -16274,7 +16274,7 @@ void CvGameTextMgr::buildCityBillboardCityNameString( CvWStringBuffer& szBuffer,
 				}
 			}
 // BUG - Starvation Turns - end
-		}
+		//}
 	}
 }
 
@@ -16284,15 +16284,15 @@ void CvGameTextMgr::buildCityBillboardProductionString( CvWStringBuffer& szBuffe
 	{
 		//szBuffer.assign(pCity->getProductionName());
 
-		if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
-		{
+		//if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
+		//{
 			int iTurns = pCity->getProductionTurnsLeft();
 
 			if (iTurns < MAX_INT)
 			{
 				szBuffer.append(CvWString::format(L"%d", iTurns));
 			}
-		}
+		//}
 	}
 	else
 	{
