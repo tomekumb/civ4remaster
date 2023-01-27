@@ -8,7 +8,7 @@
   <BuildingArtInfos>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_PALACE</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_PALACE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.8</fScale>
       <fInterfaceScale>0.2</fInterfaceScale>
@@ -18,7 +18,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_GREAT_PALACE</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_GREAT_PALACE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.1</fScale>
       <fInterfaceScale>0.7</fInterfaceScale>
@@ -28,7 +28,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_VERSAILLES</Type>
-      <LSystem>LSYSTEM_4x4</LSystem>
+      <LSystem>LSYSTEM_4x2</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.16</fScale>
       <fInterfaceScale>0.3</fInterfaceScale>
@@ -58,7 +58,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_CASTLE</Type>
-      <LSystem>LSYSTEM_3x3</LSystem>
+      <LSystem>LSYSTEM_CASTLE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.01</fScale>
       <fInterfaceScale>0.4</fInterfaceScale>
@@ -78,7 +78,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_BARRACKS</Type>
-      <LSystem>LSYSTEM_2x2</LSystem>
+      <LSystem>LSYSTEM_BARRACKS</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.27</fScale>
       <fInterfaceScale>0.52</fInterfaceScale>
@@ -98,7 +98,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_STABLE</Type>
-      <LSystem>LSYSTEM_2x1</LSystem>
+      <LSystem>LSYSTEM_STABLE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>0.8</fScale>
       <fInterfaceScale>0.75</fInterfaceScale>
@@ -108,7 +108,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_MONGOL_GER</Type>
-      <LSystem>LSYSTEM_2x2</LSystem>
+      <LSystem>LSYSTEM_3x3</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>0.88</fScale>
       <fInterfaceScale>0.75</fInterfaceScale>
@@ -138,7 +138,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_GRANARY</Type>
-      <LSystem>LSYSTEM_1x1</LSystem>
+      <LSystem>LSYSTEM_GRANARY</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.26</fScale>
       <fInterfaceScale>0.5</fInterfaceScale>
@@ -259,7 +259,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_DRYDOCK</Type>
-      <LSystem>LSYSTEM_COAST</LSystem>
+      <LSystem>LSYSTEM_DRYDOCK</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>3.0</fScale>
       <fInterfaceScale>1.0</fInterfaceScale>
@@ -269,7 +269,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_AIRPORT</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_AIRPORT</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>3.64</fScale>
       <fInterfaceScale>0.42</fInterfaceScale>
@@ -279,7 +279,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_FORGE</Type>
-      <LSystem>LSYSTEM_2x1</LSystem>
+      <LSystem>LSYSTEM_FORGE</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>1.31</fScale>
       <fInterfaceScale>0.47</fInterfaceScale>
@@ -299,7 +299,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_FACTORY</Type>
-      <LSystem>LSYSTEM_4x2</LSystem>
+      <LSystem>LSYSTEM_FACTORY</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.09</fScale>
       <fInterfaceScale>0.5</fInterfaceScale>
@@ -359,7 +359,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_INDUSTRIAL_PARK</Type>
-      <LSystem>LSYSTEM_3x3</LSystem>
+      <LSystem>LSYSTEM_INDUSTRIAL_PARK</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>.9</fScale>
       <fInterfaceScale>.75</fInterfaceScale>
@@ -389,7 +389,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ACADEMY</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_ACADEMY</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.2</fScale>
       <fInterfaceScale>0.9</fInterfaceScale>
@@ -399,7 +399,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_LIBRARY</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_LIBRARY</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.2</fScale>
       <fInterfaceScale>0.58</fInterfaceScale>
@@ -409,7 +409,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ARABIAN_MADRASSA</Type>
-      <LSystem>LSYSTEM_2x2</LSystem>
+      <LSystem>LSYSTEM_3x3</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.8</fScale>
       <fInterfaceScale>0.47</fInterfaceScale>
@@ -419,7 +419,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_UNIVERSITY</Type>
-      <LSystem>LSYSTEM_2x3</LSystem>
+      <LSystem>LSYSTEM_UNIVERSITY</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.35</fScale>
       <fInterfaceScale>0.67</fInterfaceScale>
@@ -479,7 +479,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_THEATRE</Type>
-      <LSystem>LSYSTEM_2x2</LSystem>
+      <LSystem>LSYSTEM_THEATRE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>0.95</fScale>
       <fInterfaceScale>1.11</fInterfaceScale>
@@ -509,7 +509,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_COLOSSEUM</Type>
-      <LSystem>LSYSTEM_3x3</LSystem>
+      <LSystem>LSYSTEM_COLOSSEUM</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.63</fScale>
       <fInterfaceScale>0.52</fInterfaceScale>
@@ -559,7 +559,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_AMERICAN_MALL</Type>
-      <LSystem>LSYSTEM_2x3</LSystem>
+      <LSystem>LSYSTEM_2x4</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.09</fScale>
       <fInterfaceScale>0.48</fInterfaceScale>
@@ -569,7 +569,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_MARKET</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_MARKET</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.05</fScale>
       <fInterfaceScale>0.6</fInterfaceScale>
@@ -599,7 +599,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_GROCER</Type>
-      <LSystem>LSYSTEM_1x1</LSystem>
+      <LSystem>LSYSTEM_GROCER</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.3</fScale>
       <fInterfaceScale>0.87</fInterfaceScale>
@@ -619,7 +619,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_BANK</Type>
-      <LSystem>LSYSTEM_1x2</LSystem>
+      <LSystem>LSYSTEM_BANK</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.58</fScale>
       <fInterfaceScale>0.67</fInterfaceScale>
@@ -649,7 +649,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_COURTHOUSE</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_COURTHOUSE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.8</fScale>
       <fInterfaceScale>0.61</fInterfaceScale>
@@ -699,7 +699,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_INTELLIGENCE_AGENCY</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_INTELLIGENCE_AGENCY</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>0.5</fScale>
       <fInterfaceScale>0.42</fInterfaceScale>
@@ -709,7 +709,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_NATIONAL_SECURITY</Type>
-      <LSystem>LSYSTEM_4x2</LSystem>
+      <LSystem>LSYSTEM_NATIONAL_SECURITY</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>0.4</fScale>
       <fInterfaceScale>0.6</fInterfaceScale>
@@ -829,7 +829,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ISLAMIC_TEMPLE</Type>
-      <LSystem>LSYSTEM_2x2</LSystem>
+      <LSystem>LSYSTEM_1x1</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>2.9</fScale>
       <fInterfaceScale>0.69</fInterfaceScale>
@@ -839,7 +839,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ISLAMIC_CATHEDRAL</Type>
-      <LSystem>LSYSTEM_4x4</LSystem>
+      <LSystem>LSYSTEM_4x2</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.58</fScale>
       <fInterfaceScale>0.57</fInterfaceScale>
@@ -849,7 +849,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ISLAMIC_MONASTERY</Type>
-      <LSystem>LSYSTEM_3x1</LSystem>
+      <LSystem>LSYSTEM_2x3</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>2.5</fScale>
       <fInterfaceScale>0.56</fInterfaceScale>
@@ -859,7 +859,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ISLAMIC_SHRINE</Type>
-      <LSystem>LSYSTEM_2x2</LSystem>
+      <LSystem>LSYSTEM_3x3</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.5</fScale>
       <fInterfaceScale>0.3</fInterfaceScale>
@@ -1029,7 +1029,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_HEROIC_EPIC</Type>
-      <LSystem>LSYSTEM_1x1</LSystem>
+      <LSystem>LSYSTEM_HEROIC_EPIC</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.4</fScale>
       <fInterfaceScale>0.64</fInterfaceScale>
@@ -1039,7 +1039,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_NATIONAL_EPIC</Type>
-      <LSystem>LSYSTEM_2x1</LSystem>
+      <LSystem>LSYSTEM_NATIONAL_EPIC</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.66</fScale>
       <fInterfaceScale>0.48</fInterfaceScale>
@@ -1049,7 +1049,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_GLOBE_THEATRE</Type>
-      <LSystem>LSYSTEM_3x3</LSystem>
+      <LSystem>LSYSTEM_GLOBE_THEATRE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.5</fScale>
       <fInterfaceScale>0.53</fInterfaceScale>
@@ -1059,7 +1059,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_HERMITAGE</Type>
-      <LSystem>LSYSTEM_4x2</LSystem>
+      <LSystem>LSYSTEM_HERMITAGE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.25</fScale>
       <fInterfaceScale>0.32</fInterfaceScale>
@@ -1079,7 +1079,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_WALL_STREET</Type>
-      <LSystem>LSYSTEM_2x1</LSystem>
+      <LSystem>LSYSTEM_2x2</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.5</fScale>
       <fInterfaceScale>0.33</fInterfaceScale>
@@ -1109,7 +1109,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_MT_RUSHMORE</Type>
-      <LSystem>LSYSTEM_4x2</LSystem>
+      <LSystem>LSYSTEM_MT_RUSHMORE</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.11</fScale>
       <fInterfaceScale>0.54</fInterfaceScale>
@@ -1129,7 +1129,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_SCOTLAND_YARD</Type>
-      <LSystem>LSYSTEM_3x2</LSystem>
+      <LSystem>LSYSTEM_SCOTLAND_YARD</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>1.75</fScale>
       <fInterfaceScale>0.34</fInterfaceScale>
@@ -1199,7 +1199,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_ORACLE</Type>
-      <LSystem>LSYSTEM_1x1</LSystem>
+      <LSystem>LSYSTEM_2x2</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>4.5</fScale>
       <fInterfaceScale>0.3</fInterfaceScale>
@@ -1409,7 +1409,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_SANKORE</Type>
-      <LSystem>LSYSTEM_2x3</LSystem>
+      <LSystem>LSYSTEM_2x4</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>4.0</fScale>
       <fInterfaceScale>0.3</fInterfaceScale>
@@ -1419,7 +1419,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_MILITARY_ACADEMY</Type>
-      <LSystem>LSYSTEM_2x1</LSystem>
+      <LSystem>LSYSTEM_MILITARY_ACADEMY</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>2.3</fScale>
       <fInterfaceScale>0.43</fInterfaceScale>
@@ -1429,7 +1429,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_MONUMENT</Type>
-      <LSystem>LSYSTEM_1x1</LSystem>
+      <LSystem>LSYSTEM_MONUMENT</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>1.0</fScale>
       <fInterfaceScale>0.4</fInterfaceScale>
@@ -1489,7 +1489,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_SHWEDAGON_PAYA</Type>
-      <LSystem>LSYSTEM_3x3</LSystem>
+      <LSystem>LSYSTEM_4x4</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>0.45</fScale>
       <fInterfaceScale>0.22</fInterfaceScale>
@@ -1519,7 +1519,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_CRISTO_REDENTOR</Type>
-      <LSystem>LSYSTEM_4x2</LSystem>
+      <LSystem>LSYSTEM_2x4</LSystem>
       <bAnimated>1</bAnimated>
       <fScale>2.3</fScale>
       <fInterfaceScale>0.2</fInterfaceScale>
@@ -1599,7 +1599,7 @@
     </BuildingArtInfo>
     <BuildingArtInfo>
       <Type>ART_DEF_BUILDING_APOSTOLIC_PALACE</Type>
-      <LSystem>LSYSTEM_2x4</LSystem>
+      <LSystem>LSYSTEM_4x4</LSystem>
       <bAnimated>0</bAnimated>
       <fScale>0.4</fScale>
       <fInterfaceScale>0.25</fInterfaceScale>
